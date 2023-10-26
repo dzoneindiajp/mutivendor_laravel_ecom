@@ -24,11 +24,10 @@ class AuthController extends Controller
     public function verifyLogin(AuthRequest $request)
     {
         try {
-            // dd($request->all());
             $credentials = $request->only('email', 'password');
             $user = Auth::attempt($credentials);
             if ($user) {
-                return redirect()->route('admin-dashboard')->with('success', 'you are logged in as admin');
+                return redirect()->route('dashboard')->with('success', 'you are logged in as admin');
             } else {
                 return redirect()->back()->withErrors(['email' => 'Invalid credentials'])->withInput();
             }

@@ -20,7 +20,7 @@ return new class extends Migration
             ->constrained('sub_categories')
             ->onDelete('CASCADE');
             $table->string('name');
-            $table->string('slug')->unique()->nullable();
+            $table->string('slug', 150)->unique()->nullable();
             $table->string('meta_title')->nullable();
             $table->longText('meta_description')->nullable();
             $table->text('meta_keywords')->nullable();
