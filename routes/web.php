@@ -136,5 +136,19 @@ Route::prefix('admin')->name('admin-')->group(function () {
          Route::post('acl/add-more/add-more', [App\Http\Controllers\Admin\AclController::class, 'addMoreRow'])->name('acl.addMoreRow');
          Route::get('acl/delete-function/{id}', [App\Http\Controllers\Admin\AclController::class, 'delete_function'])->name('acl.delete_function');
          /** Access Control Routes Ends **/
+
+
+          /* users routes */
+          Route::match(['get', 'post'], '/users', [App\Http\Controllers\Admin\UsersController::class, 'index'])->name('admin_users.index');
+          Route::match(['get', 'post'], '/users/create', [App\Http\Controllers\Admin\UsersController::class, 'create'])->name('admin_users.create');
+          Route::match(['get', 'post'], '/users/save', [App\Http\Controllers\Admin\UsersController::class, 'save'])->name('admin_users.save');
+          Route::match(['get', 'post'], '/users/edit/{enuserid}', [App\Http\Controllers\Admin\UsersController::class, 'edit'])->name('admin_users.edit');
+          Route::match(['get', 'post'], '/users/update/{enuserid}', [App\Http\Controllers\Admin\UsersController::class, 'update'])->name('admin_users.update');
+          Route::get('users/show/{enuserid}', [App\Http\Controllers\Admin\UsersController::class, 'show'])->name('admin_users.show');
+          Route::get('users/destroy/{enuserid?}', [App\Http\Controllers\Admin\UsersController::class, 'destroy'])->name('admin_users.delete');
+          Route::get('users/update-status/{id}/{status}', [App\Http\Controllers\Admin\UsersController::class, 'changeStatus'])->name('admin_users.status');
+          Route::match(['get', 'post'], 'users/changed-password/{enuserid?}', [App\Http\Controllers\Admin\UsersController::class, 'changedPassword'])->name('admin_users.changedPassword');
+          
+          /* users routes */
     });
 });

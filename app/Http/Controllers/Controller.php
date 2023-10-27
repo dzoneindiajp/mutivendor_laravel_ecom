@@ -62,4 +62,11 @@ class Controller extends BaseController
 
 		return $branch;
 	}
+
+	public function generateRandomPassword(){
+		
+		$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*_";
+		$password = substr( str_shuffle( $chars ), 0, 9 );
+		return $password;
+	}
 }

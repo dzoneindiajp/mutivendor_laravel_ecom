@@ -7,6 +7,10 @@ return [
     'DS'     				=> '/',
     'WEBSITE_URL'							=> $WEBSITE_URL,
 
+	'USER_IMAGE_PATH'                       => $WEBSITE_URL.'public/uploads/users/',
+	'USER_IMAGE_ROOT_PATH'                       => 'public/uploads/users/',
+	'USER_IMAGE_URL'                       => url('/').'/public/uploads/users/',
+	
     'ACL' => [
 		'ACLS_TITLE' => "Acl",
 		'ACL_TITLE' => "Acl Management",
@@ -14,7 +18,7 @@ return [
     'ROLE_ID' => [
 		'STAFF_ROLE_ID' 			=> 3,
 		'SUPER_ADMIN_ROLE_ID' 		=> 1,
-		'CLIENT_ROLE_ID' 			=> 2,
+		'CUSTOMER_ROLE_ID' 			=> 2,
 	],
     'DESIGNATION' => [
 		'DESIGNATIONS_TITLE' 	=> "Designations",

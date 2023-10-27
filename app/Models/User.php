@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use File;
 
 class User extends Authenticatable
 {
@@ -43,4 +44,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public static function getImageAttribute($value = ""){    
+        if($value != "" && File::exists(Config('constants.USER_IMAGE_ROOT_PATH').$value)){
+        $value = Config('constants.USER_IMAGE_PATH').$value;
+        }
+        return $value;
+    }
 }
