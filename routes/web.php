@@ -36,6 +36,7 @@ Route::prefix('file')->name('file-')->group(function () {
 
 Route::prefix('admin')->name('admin-')->group(function () {
 
+    Route::get('/', [AuthController::class, 'login'])->name('login');
     Route::get('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/verify-login', [AuthController::class, 'verifyLogin'])->name('verify-login');
     Route::middleware('auth')->group(function () {
