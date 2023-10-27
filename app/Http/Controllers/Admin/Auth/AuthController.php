@@ -27,7 +27,9 @@ class AuthController extends Controller
             $credentials = $request->only('email', 'password');
             $user = Auth::attempt($credentials);
             if ($user) {
-                return redirect()->route('dashboard')->with('success', 'you are logged in as admin');
+                $admin_modules	=	$this->buildTree(0);
+                Session()->put('acls',$admin_modules);
+                return redirect()->route('admin-dashboard')->with('success', 'you are logged in as admin');
             } else {
                 return redirect()->back()->withErrors(['email' => 'Invalid credentials'])->withInput();
             }

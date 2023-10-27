@@ -100,7 +100,40 @@ Route::prefix('admin')->name('admin-')->group(function () {
                     Route::delete('delete/{token}', [ChildCategoryController::class, 'destory'])->name('delete');
                     Route::get('child-sub-category-list', [ChildCategoryController::class, 'childSubCategories'])->name('child-sub-category-list');
                 });
+
+                
             });
         });
+
+         /** Department routes **/
+         Route::resource('departments', App\Http\Controllers\Admin\DepartmentsController::class);
+         Route::get('departments/update-status/{id}/{status}', [App\Http\Controllers\Admin\DepartmentsController::class, 'changeStatus'])->name('departments.status');
+         Route::get('departments/destroy/{endepid?}', [App\Http\Controllers\Admin\DepartmentsController::class, 'destroy'])->name('departments.delete');
+         // /* Department routes */
+
+         /**  Designations routes **/
+         Route::match(['get', 'post'], '/designations/{endesid?}', [App\Http\Controllers\Admin\DesignationsController::class, 'index'])->name('designations.index');
+         Route::match(['get', 'post'], 'designations/add/{endesid?}', [App\Http\Controllers\Admin\DesignationsController::class, 'add'])->name('designations.add');
+         Route::match(['get', 'post'], 'designations/edit/{endesid?}', [App\Http\Controllers\Admin\DesignationsController::class, 'update'])->name('designations.edit');
+         Route::get('designations/update-status/{id}/{status}', [App\Http\Controllers\Admin\DesignationsController::class, 'changeStatus'])->name('designations.status');
+         Route::get('designations/delete/{endesid?}', [App\Http\Controllers\Admin\DesignationsController::class, 'delete'])->name('designations.delete');
+         /* Designations routes */
+
+         /* staff routes */
+         Route::resource('staff', App\Http\Controllers\Admin\StaffController::class);
+         Route::get('staff/update-status/{id}/{status}', [App\Http\Controllers\Admin\StaffController::class, 'changeStatus'])->name('staff.status');
+         Route::get('staff/destroy/{enstfid?}', [App\Http\Controllers\Admin\StaffController::class, 'destroy'])->name('staff.delete');
+         Route::match(['get', 'post'], 'staff/changed-password/{enstfid?}', [App\Http\Controllers\Admin\StaffController::class, 'changedPassword'])->name('staff.changerpassword');
+         Route::match(['get', 'post'], 'staff/get-designations', [App\Http\Controllers\Admin\StaffController::class, 'getDesignations'])->name('staff.getDesignations');
+         Route::match(['get', 'post'], 'staff/get-staff-permission', [App\Http\Controllers\Admin\StaffController::class, 'getStaffPermission'])->name('staff.getStaffPermission');
+
+
+          /** Access Control Routes Starts **/
+         Route::resource('acl', App\Http\Controllers\Admin\AclController::class);
+         Route::get('acl/destroy/{enaclid?}', [App\Http\Controllers\Admin\AclController::class, 'destroy'])->name('acl.delete');
+         Route::get('acl/update-status/{id}/{status}', [App\Http\Controllers\Admin\AclController::class, 'changeStatus'])->name('acl.status');
+         Route::post('acl/add-more/add-more', [App\Http\Controllers\Admin\AclController::class, 'addMoreRow'])->name('acl.addMoreRow');
+         Route::get('acl/delete-function/{id}', [App\Http\Controllers\Admin\AclController::class, 'delete_function'])->name('acl.delete_function');
+         /** Access Control Routes Ends **/
     });
 });
