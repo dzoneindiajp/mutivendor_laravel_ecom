@@ -47,35 +47,35 @@ class StaffController extends Controller
             if ((!empty($searchData['date_from'])) && (!empty($searchData['date_to']))) {
                 $dateS = $searchData['date_from'];
                 $dateE = $searchData['date_to'];
-                $DB->whereBetween('admins.created_at', [$dateS . " 00:00:00", $dateE . " 23:59:59"]);
+                $DB->whereBetween('users.created_at', [$dateS . " 00:00:00", $dateE . " 23:59:59"]);
             } elseif (!empty($searchData['date_from'])) {
                 $dateS = $searchData['date_from'];
-                $DB->where('admins.created_at', '>=', [$dateS . " 00:00:00"]);
+                $DB->where('users.created_at', '>=', [$dateS . " 00:00:00"]);
             } elseif (!empty($searchData['date_to'])) {
                 $dateE = $searchData['date_to'];
-                $DB->where('admins.created_at', '<=', [$dateE . " 00:00:00"]);
+                $DB->where('users.created_at', '<=', [$dateE . " 00:00:00"]);
             }
             foreach ($searchData as $fieldName => $fieldValue) {
                 if ($fieldValue != "") {
                     if ($fieldName == "name") {
-                        $DB->where("admins.name", 'like', '%' . $fieldValue . '%');
+                        $DB->where("users.name", 'like', '%' . $fieldValue . '%');
                     }
                     if ($fieldName == "phone_number") {
-                        $DB->where("admins.phone_number", 'like', '%' . $fieldValue . '%');
+                        $DB->where("users.phone_number", 'like', '%' . $fieldValue . '%');
                     }
                     if ($fieldName == "email") {
-                        $DB->where("admins.email", 'like', '%' . $fieldValue . '%');
+                        $DB->where("users.email", 'like', '%' . $fieldValue . '%');
                     }
                     if ($fieldName == "is_active") {
-                        $DB->where("admins.is_active", $fieldValue);
+                        $DB->where("users.is_active", $fieldValue);
                     }
                 }
                 $searchVariable    =    array_merge($searchVariable, array($fieldName => $fieldValue));
             }
         }
 
-        $DB->where("user_role_id", "!=",1);
-        $DB->select("admins.*");
+        $DB->where("user_role_id", config('constant.ROLE_ID.STAFF_ROLE_ID'));
+        $DB->select("users.*");
         $sortBy = ($request->input('sortBy')) ? $request->input('sortBy') : 'created_at';
         $order  = ($request->input('order')) ? $request->input('order')   : 'DESC';
         $records_per_page    =    ($request->input('per_page')) ? $request->input('per_page') : Config("Reading.records_per_page");
@@ -102,21 +102,19 @@ class StaffController extends Controller
         if (!empty($formData)) {
             $validated = $request->validate([
                 'name'          =>        'required',
-                'email'         =>         'required|email|unique:admins',
-                'phone_number'  =>         'required|numeric|unique:admins',
+                'email'         =>         'required|email|unique:users',
+                'phone_number'  =>         'required|numeric|unique:users',
                 'password'      =>         ['required', Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
                 'confirm_password' =>      'required|same:password',
                 'department_id'  =>        'required',
                 'designation_id' =>         'required',
             ]);
 
-            $obj                                     =  new Admin;
+            $obj                                     =  new User;
             $obj->user_role_id                        =  Config('constant.ROLE_ID.STAFF_ROLE_ID');
             $obj->name                                 =  $request->input('name');
             $obj->email                             =  $request->input('email');
             $obj->phone_number                         =  $request->input('phone_number');
-            $obj->phone_number_prefix              =   $request->input('dial_code');
-            $obj->phone_number_country_code        =   $request->input('country_code');
             $obj->department_id                     =  $request->input('department_id');
             $obj->designation_id                     =  $request->input('designation_id');
             $obj->password                             =  Hash::make($request->input('password'));
@@ -268,8 +266,6 @@ class StaffController extends Controller
             $obj->name                  =  $request->input('name');
             $obj->email                 =  $request->input('email');
             $obj->phone_number          =  $request->input('phone_number');
-            $obj->phone_number_prefix              =   $request->dial_code;
-            $obj->phone_number_country_code        =   $request->country_code;
             $obj->department_id         =  $request->input('department_id');
             $obj->designation_id        =  $request->input('designation_id');
             $obj->save();
@@ -357,7 +353,7 @@ class StaffController extends Controller
                     if (!empty($aclModule['extModule'])) {
                         foreach ($aclModule['extModule'] as &$record) {
                             $action_id            =    $record->id;
-                            $record['module']    =    AclAdminAction::where('admin_module_id', $record->id)->where('is_show', 1)->select('name', 'function_name', 'id', DB::Raw("(select is_active from designation_permission_action where designation_id = $userId AND admin_sub_module_id = $action_id AND admin_module_action_id = acl_admin_actions.id LIMIT 1) as active"))->orderBy('name', 'ASC')->get();
+                            $record['module']    =    AclAdminAction::where('admin_module_id', $record->id)->where('is_show', 1)->select('name', 'function_name', 'id', DB::Raw("(select is_active from designation_permission_actions where designation_id = $userId AND admin_sub_module_id = $action_id AND admin_module_action_id = acl_admin_actions.id LIMIT 1) as active"))->orderBy('name', 'ASC')->get();
                         }
                     }
                     if (($aclModule['sub_module']->isEmpty()) && ($aclModule['extModule']->isEmpty())) {

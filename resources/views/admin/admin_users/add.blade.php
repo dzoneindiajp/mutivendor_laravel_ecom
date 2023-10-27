@@ -101,8 +101,8 @@
                                             </div>
 
                                             <div class="col-xl-6">
-                                                <label for="date_of_birth" class="form-label"><span class="text-danger">* </span>Phone Number</label>
-                                                <input type="date" class="form-control @error('date_of_birth') is-invalid @enderror" id="date_of_birth" name="date_of_birth" value="{{isset($userDetails->date_of_birth) ? $userDetails->date_of_birth: old('date_of_birth')}}" placeholder="Phone Number">
+                                                <label for="date_of_birth" class="form-label"><span class="text-danger">* </span>Date Of Birth</label>
+                                                <input type="date" class="form-control @error('date_of_birth') is-invalid @enderror" id="date_of_birth" name="date_of_birth" value="{{isset($userDetails->date_of_birth) ? $userDetails->date_of_birth: old('date_of_birth')}}" placeholder="Date Of Birth">
                                                 @if ($errors->has('date_of_birth'))
                                                     <div class=" invalid-feedback">
                                                         {{ $errors->first('date_of_birth') }}

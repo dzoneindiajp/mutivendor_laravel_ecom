@@ -281,6 +281,7 @@
         </div>
     </div>
 </div>
+@push('scripts')
 <script type="text/javascript">
     $(document).ready(function() {
         if ($(".parent:input").val() == 1) {
@@ -372,4 +373,5 @@
         });
     })
 </script>
+@endpush
 @stop

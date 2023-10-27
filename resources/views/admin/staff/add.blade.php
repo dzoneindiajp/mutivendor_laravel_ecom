@@ -148,6 +148,7 @@
     </div>
 </div>
 
+@push('scripts')
 <script type="text/javascript">
     $(document).ready(function() {
         if ($(".parent:input").val() == 1) {
@@ -170,6 +171,7 @@
     });
 </script>
 <script>
+   
     function DepartmentList() {
         departmentid = ($(".DepartmentList").val() != "") ? $(".DepartmentList").val() : 0;
         $.ajax({
@@ -189,6 +191,7 @@
     }
     $(function() {
         $(".DepartmentList").change(function() {
+            console.log('asdad')
             DepartmentList();
         });
         DepartmentList();
@@ -243,4 +246,5 @@
     })
    
 </script>
+@endpush
 @stop

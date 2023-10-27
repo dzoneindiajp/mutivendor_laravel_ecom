@@ -4,7 +4,7 @@ if (!empty($aclModules)) {
     <div class="card-body">
 
         <h3 class="mt-8 mb-8">Staff Permissions</h3>
-        <label class="font-size-lg font-weight-bold checkbox mb-5">
+        <label class="font-size-lg font-weight-bold checkbox ">
             <input type="checkbox" class="checkAll" />
             <span class="mr-2"></span>
             Check All
@@ -23,12 +23,12 @@ if (!empty($aclModules)) {
                                 <span class="mr-2"></span>
                             </label>
                         </div>
-                        <a class="text-dark px-2 py-4 w-100" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse{{$counter}}" aria-expanded="true" aria-controls="collapse{{$counter}}">
+                        <a class="text-dark px-2 py-4 w-100" role="button" data-bs-toggle="collapse" data-bs-parent="#accordion" href="#collapse{{$counter}}" aria-expanded="true" aria-controls="collapse{{$counter}}">
                             <i class="more-less glyphicon glyphicon-plus"></i>
                             {{strtoupper($aclModule->title ?? '')}}
                         </a>
                     </div>
-                    <div id="collapse{{$counter}}" class="collapse" data-parent="#accordion">
+                    <div id="collapse{{$counter}}" class="collapse" data-bs-parent="#accordion">
                         <?php if (!empty($aclModule['sub_module'])) { ?>
                             <div class="card-body ">
                                 <div class="">
