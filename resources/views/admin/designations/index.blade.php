@@ -31,7 +31,7 @@
                     Designations
                 </div>
                 <div class="prism-toggle">
-                    <a href="{{route('admin-'.$model.'.add')}}" class="btn btn-primary mb-3">Add
+                    <a href="{{route('admin-'.$model.'.add',base64_encode($dep_id))}}" class="btn btn-primary mb-3">Add
                         New Designation</a>
                 </div>
             </div>
