@@ -38,6 +38,56 @@
             }
         })
     });
+    $(document).on('click', '#deactivate-button', function (e) {
+        e.preventDefault();
+
+        var url = $(this).attr("href");
+
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success ms-2',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
+
+        swalWithBootstrapButtons.fire({
+            title: 'Are you sure?',
+            text: "want to deactivate it!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, deactivate it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            window.location.href = url;
+        })
+    });
+    $(document).on('click', '#activate-button', function (e) {
+        e.preventDefault();
+
+        var url = $(this).attr("href");
+
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success ms-2',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
+
+        swalWithBootstrapButtons.fire({
+            title: 'Are you sure?',
+            text: "want to activate it!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, activate it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            window.location.href = url;
+        })
+    });
 
 
 })();

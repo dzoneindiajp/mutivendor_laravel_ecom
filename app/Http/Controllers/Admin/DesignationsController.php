@@ -263,7 +263,7 @@ class DesignationsController extends Controller
                 if (!empty($aclModule['extModule'])) {
                     foreach ($aclModule['extModule'] as &$record) {
                         $action_id            =    $record->id;
-                        $record['module']    =    AclAdminAction::where('admin_module_id', $record->id)->where('is_show', 1)->select('name', 'function_name', 'id', DB::Raw("(select is_active from designation_permission_action where designation_id = $modell->id AND admin_sub_module_id = $action_id AND admin_module_action_id = acl_admin_actions.id LIMIT 1) as active"))->orderBy('name', 'ASC')->get();
+                        $record['module']    =    AclAdminAction::where('admin_module_id', $record->id)->where('is_show', 1)->select('name', 'function_name', 'id', DB::Raw("(select is_active from designation_permission_actions where designation_id = $modell->id AND admin_sub_module_id = $action_id AND admin_module_action_id = acl_admin_actions.id LIMIT 1) as active"))->orderBy('name', 'ASC')->get();
                     }
                 }
                 if (($aclModule['sub_module']->isEmpty()) && ($aclModule['extModule']->isEmpty())) {
@@ -299,10 +299,12 @@ class DesignationsController extends Controller
 
     public  function delete($endesid = null)
     {
+  
         $dep_id = '';
         if (!empty($endesid)) {
             $des_id = base64_decode($endesid);
         }
+        
         $depDetails   =   Designation::find($des_id);
         if (empty($depDetails)) {
             return Redirect()->route('admin-'.$this->model . '.index');

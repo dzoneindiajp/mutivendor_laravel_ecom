@@ -1,65 +1,71 @@
 @extends('admin.layout.master')
+
+@push('styles')
+<link href="{{ asset('assets/plugin/tagify/tagify.css') }}" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}">
+@endpush
+
 @section('content')
-<div class="content  d-flex flex-column flex-column-fluid" id="kt_content">
-	<div class="subheader py-2 py-lg-4  subheader-solid " id="kt_subheader">
-		<div class=" container-fluid  d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
-			<div class="d-flex align-items-center flex-wrap mr-1">
-				<div class="d-flex align-items-baseline flex-wrap mr-5">
-					<h5 class="text-dark font-weight-bold my-1 mr-5">
-						Edit {{Config('constant.DEPARTMENT.DEPARTMENT_TITLE')}} </h5>
-					<ul class="breadcrumb breadcrumb-transparent breadcrumb-dot font-weight-bold p-0 my-2 font-size-sm">
-						<li class="breadcrumb-item">
-							<a href="{{ route('admin-dashboard')}}" class="text-muted">Dashboard</a>
-						</li>
-						<li class="breadcrumb-item">
-							<a href="{{ route('admin-'.$model.'.index')}}" class="text-muted"> {{Config('constant.DEPARTMENT.DEPARTMENTS_TITLE')}}</a>
-						</li>
-					</ul>
-				</div>
-			</div>
-			@include("admin.elements.quick_links")
-		</div>
-	</div>
-	<div class="d-flex flex-column-fluid">
-		<div class=" container ">
-			<form action="{{route('admin-'.$model.'.update',base64_encode($depDetails->id))}}" method="post" class="mws-form" autocomplete="off" enctype="multipart/form-data">
-			@csrf
+@include('admin.layout.response_message')
+<!-- Page Header -->
+<div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
+    <a class="btn btn-dark" href="{{ url()->previous() }}">Back</a>
+    <div class="ms-md-1 ms-0">
+        <nav>
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ route('admin-dashboard') }}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Edit Department</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Page Header Close -->
+
+<div class="card custom-card">
+    <div class="card-header">
+        <div class="card-title">
+            Edit Department
+        </div>
+    </div>
+    <form action="{{route('admin-'.$model.'.update',base64_encode($depDetails->id))}}"
+        method="post" id="departmentForm" autocomplete="off" enctype="multipart/form-data">
+        @csrf
                 @method('PUT')
-				<div class="card">
-					<div class="card-body">
-						<div class="row">
-							<div class="col-xl-1"></div>
-							<div class="col-xl-10">
-								<h3 class="mb-10 font-weight-bold text-dark">
-									{{Config('constant.DEPARTMENT.DEPARTMENT_TITLE')}} Information
-								</h3>
-								<div class="row">
-									<div class="col-xl-6">
-										<div class="form-group">
-											<label for="name"> Name</label><span class="text-danger"> * </span>
-											<input type="text" name="name" class="form-control form-control-solid form-control-lg  @error('name') is-invalid @enderror" value="{{$depDetails->name ?? ''}}">
-											@if ($errors->has('name'))
-											<div class=" invalid-feedback">
-												{{ $errors->first('name') }}
-											</div>
-											@endif
-										</div>
-									</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-xl-6">
+                    <div class="card-body p-0">
+
+                        <div class="mb-3">
+                            <label for="name" class="form-label"><span class="text-danger">* </span>Name</label>
+                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name"
+                                placeholder="Enter Name" 
+                                value="{{ $depDetails->name ?? '' }}">
+								@if ($errors->has('name'))
+								<div class=" invalid-feedback">
+									{{ $errors->first('name') }}
 								</div>
-								<div class="d-flex justify-content-between border-top mt-5 pt-10">
-									<div>
-										<button button type="submit" class="btn btn-success font-weight-bold text-uppercase px-9 py-4">
-											Submit
-										</button>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</form>
-		</div>
-	</div>
+								@endif
+                        </div>
+
+                     
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="px-4 py-3 border-top border-block-start-dashed d-sm-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
 </div>
 
-@stop
+@endsection
+@push('scripts')
+<script src="{{ asset('assets/plugin/jquery-validation/jquery.validate.min.js') }}"></script>
+<script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+<script src="{{ asset('assets/js/sweet-alerts.js') }}"></script>
+<!-- <script src="{{ asset('assets/js/form-validation.js') }}"></script> -->
+<script src="{{ asset('assets/plugin/tagify/tagify.min.js') }}"></script>
+@endpush
+
