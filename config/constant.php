@@ -9,7 +9,7 @@ return [
 
 	'USER_IMAGE_PATH'                       => $WEBSITE_URL.'public/uploads/users/',
 	'USER_IMAGE_ROOT_PATH'                       => 'public/uploads/users/',
-	// 'USER_IMAGE_URL'                       => url('/').'/public/uploads/users/',
+	'USER_IMAGE_URL'                       => url('/').'/public/uploads/users/',
 	
     'ACL' => [
 		'ACLS_TITLE' => "Acl",
