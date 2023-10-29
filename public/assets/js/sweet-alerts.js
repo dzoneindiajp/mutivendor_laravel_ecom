@@ -51,7 +51,7 @@
             buttonsStyling: false
         })
 
-        swalWithBootstrapButtons.fire({
+        swalWithBootstrapButtons.fire({ 
             title: 'Are you sure?',
             text: "want to deactivate it!",
             icon: 'warning',
