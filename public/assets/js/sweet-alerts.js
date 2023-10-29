@@ -60,7 +60,19 @@
             cancelButtonText: 'No, cancel!',
             reverseButtons: true
         }).then((result) => {
-            window.location.href = url;
+            if (result.isConfirmed) {
+                window.location.href = url;
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelled',
+                    'Your imaginary file is safe :)',
+                    'error'
+                )
+            }
+            
         })
     });
     $(document).on('click', '#activate-button', function (e) {
@@ -85,7 +97,18 @@
             cancelButtonText: 'No, cancel!',
             reverseButtons: true
         }).then((result) => {
-            window.location.href = url;
+            if (result.isConfirmed) {
+                window.location.href = url;
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelled',
+                    'Your imaginary file is safe :)',
+                    'error'
+                )
+            }
         })
     });
 
