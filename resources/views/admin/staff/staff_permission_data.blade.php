@@ -4,9 +4,9 @@ if (!empty($aclModules)) {
     <div class="card-body">
 
         <h3 class="mt-8 mb-8">Staff Permissions</h3>
-        <label class="font-size-lg font-weight-bold checkbox ">
+        <label class="font-size-lg font-weight-bold checkbox mb-2">
             <input type="checkbox" class="checkAll" />
-            <span class="mr-2"></span>
+            <span class="mr-4"></span>
             Check All
         </label>
         <div id="accordion" role="tablist" class="accordion accordion-toggle-arrow">
@@ -22,11 +22,12 @@ if (!empty($aclModules)) {
                                 <input type="hidden" name="data[{{$counter}}][department_id]" value="{{$aclModule->id}}">
                                 <span class="mr-2"></span>
                             </label>
-                        </div>
-                        <a class="text-dark px-2 py-4 w-100" role="button" data-bs-toggle="collapse" data-bs-parent="#accordion" href="#collapse{{$counter}}" aria-expanded="true" aria-controls="collapse{{$counter}}">
+                            <a class="text-dark px-2 py-4 w-100" role="button" data-bs-toggle="collapse" data-bs-parent="#accordion" href="#collapse{{$counter}}" aria-expanded="true" aria-controls="collapse{{$counter}}">
                             <i class="more-less glyphicon glyphicon-plus"></i>
                             {{strtoupper($aclModule->title ?? '')}}
-                        </a>
+                            </a>
+                        </div>
+                        
                     </div>
                     <div id="collapse{{$counter}}" class="collapse" data-bs-parent="#accordion">
                         <?php if (!empty($aclModule['sub_module'])) { ?>

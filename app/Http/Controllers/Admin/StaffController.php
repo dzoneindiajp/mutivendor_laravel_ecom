@@ -16,6 +16,7 @@ use App\Models\DesignationPermission;
 use App\Models\DesignationPermissionAction;
 use  App\Models\UserPermission;
 use App\Models\UserPermissionAction;
+use Illuminate\Validation\Rule;
 
 class StaffController extends Controller
 {
@@ -104,6 +105,8 @@ class StaffController extends Controller
                 'name'          =>        'required',
                 'email'         =>         'required|email|unique:users',
                 'phone_number'  =>         'required|numeric|unique:users',
+                'phone_number' =>           ['required','numeric', Rule::unique('users')->where('user_role_id',config('constant.ROLE_ID.STAFF_ROLE_ID')),'digits:10'],
+                'image'         => 'nullable|mimes:jpg,jpeg,png',
                 'password'      =>         ['required', Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
                 'confirm_password' =>      'required|same:password',
                 'department_id'  =>        'required',
@@ -118,6 +121,21 @@ class StaffController extends Controller
             $obj->department_id                     =  $request->input('department_id');
             $obj->designation_id                     =  $request->input('designation_id');
             $obj->password                             =  Hash::make($request->input('password'));
+            if ($request->hasFile('image')) {
+                $extension = $request->file('image')->getClientOriginalExtension();
+                $originalName = $request->file('image')->getClientOriginalName();
+                $fileName = time() . '-image.' . $extension;
+
+                $folderName = strtoupper(date('M') . date('Y')) . "/";
+                $folderPath = Config('constant.USER_IMAGE_ROOT_PATH') . $folderName;
+                if (!File::exists($folderPath)) {
+                    File::makeDirectory($folderPath, $mode = 0777, true);
+                }
+                if ($request->file('image')->move($folderPath, $fileName)) {
+                    $obj->image = $folderName . $fileName;
+                }
+            }
+
             $obj->save();
             $userId                                    =    $obj->id;
             $staffInfo  =  User::where('id', $userId)->first();
@@ -214,7 +232,6 @@ class StaffController extends Controller
             return Redirect()->back();
         }
         $departments = Department::where('is_deleted', 0)->where('is_active', 1)->get();
-
         $designations = array();
         $aclModules        =    Acl::select('title', 'id', DB::Raw("(select is_active from user_permissions where user_id = $stf_id AND admin_module_id = acls.id LIMIT 1) as active"))->where('is_active', 1)->where('parent_id', 0)->get();
         if (!empty($aclModules)) {
@@ -260,6 +277,8 @@ class StaffController extends Controller
                 'phone_number'      =>        'required|numeric',
                 'department_id'     =>        'required',
                 'designation_id'    =>        'required',
+                'password'      =>         [Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
+                'confirm_password' =>      'same:password',
             ]);
             $obj                        =  User::find($stf_id);
             $obj->user_role_id          =  Config('constant.ROLE_ID.STAFF_ROLE_ID');
@@ -268,6 +287,24 @@ class StaffController extends Controller
             $obj->phone_number          =  $request->input('phone_number');
             $obj->department_id         =  $request->input('department_id');
             $obj->designation_id        =  $request->input('designation_id');
+            if ($request->hasFile('image')) {
+                $extension = $request->file('image')->getClientOriginalExtension();
+                $originalName = $request->file('image')->getClientOriginalName();
+                $fileName = time() . '-image.' . $extension;
+
+                $folderName = strtoupper(date('M') . date('Y')) . "/";
+                $folderPath = Config('constant.USER_IMAGE_ROOT_PATH') . $folderName;
+                if (!File::exists($folderPath)) {
+                    File::makeDirectory($folderPath, $mode = 0777, true);
+                }
+                if ($request->file('image')->move($folderPath, $fileName)) {
+                    $obj->image = $folderName . $fileName;
+                    // $obj->original_image_name = $originalName;
+                }
+            }
+            if(!empty($request->password)){
+                $obj->password                      = Hash::make($request->password);
+            }
             $obj->save();
             $userId                     =  $obj->id;
             $staffInfo                  =  User::where('id', $userId)->first();
