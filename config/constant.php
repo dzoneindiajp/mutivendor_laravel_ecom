@@ -10,6 +10,10 @@ return [
 	'USER_IMAGE_PATH'                       => $WEBSITE_URL.'public/uploads/users/',
 	'USER_IMAGE_ROOT_PATH'                       => 'public/uploads/users/',
 	'USER_IMAGE_URL'                       => url('/').'/public/uploads/users/',
+
+	'STAFF_IMAGE_PATH'                       => $WEBSITE_URL.'public/uploads/staffs/',
+	'STAFF_IMAGE_ROOT_PATH'                       => 'public/uploads/staffs/',
+	'STAFF_IMAGE_URL'                       => url('/').'/public/uploads/staffs/',
 	
     'ACL' => [
 		'ACLS_TITLE' => "Acl",
@@ -28,6 +32,7 @@ return [
 	'DEPARTMENT' => [
 		'DEPARTMENTS_TITLE' 	=> "Departments",
 		'DEPARTMENT_TITLE' 		=> "Department",
-	]
-
+	],
+	
+	'SETTING_FILE_PATH'	=> base_path() . "/" .'config'."/". 'settings.php',
 ];

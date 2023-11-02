@@ -30,7 +30,7 @@
                     <div class="col-xxl-3 col-xl-12">
                         <div class="row">
                             <div class="col-xxl-12 col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-md-5 mb-3">
-                                <p class="fs-15 fw-semibold mb-2">Image :</p>
+                                <p class="fs-15 fw-semibold mb-2">Profile Picture :</p>
                                 <img class="img-fluid" src="{{ $userDetails->image }}" alt="img">
                             </div>
                         </div>

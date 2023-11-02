@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\vrihatcpmaster;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -15,8 +15,9 @@ class SettingsController extends Controller
     public $model      =   'settings';
     public function __construct(Request $request)
     {   
-        parent::__construct();
+        $this->listRouteName = 'admin-settings.index';
         View()->share('model', $this->model);
+        View()->share('listRouteName', $this->listRouteName);
         $this->request = $request;
     }
 
@@ -38,8 +39,19 @@ class SettingsController extends Controller
         }
         $sortBy = ($request->input('sortBy')) ? $request->input('sortBy') : 'id';
         $order  = ($request->input('order')) ? $request->input('order')   : 'ASC';
-        $result = $DB->orderBy($sortBy, $order)->paginate(Config("Reading.records_per_page"));
-        return  view("admin.$this->model.index", compact('result', 'searchVariable', 'sortBy', 'order'));
+        $offset = !empty($request->input('offset')) ? $request->input('offset') : 0 ;
+        $limit =  !empty($request->input('limit')) ? $request->input('limit') : Config("Reading.records_per_page"); 
+        
+        $results = $DB->orderBy($sortBy, $order)->offset($offset)->limit($limit)->get();
+        $totalResults = $DB->count();
+
+        if($request->ajax()){
+
+            return  View("admin.$this->model.load_more_data", compact('results','totalResults'));
+        }else{
+            
+            return  View("admin.$this->model.index", compact('results','totalResults'));
+        }
     }
 
     public function create()
@@ -66,7 +78,7 @@ class SettingsController extends Controller
         $savedata = $obj->save();
         if ($savedata) {
             Session()->flash('flash_notice', 'Setting added successfully.');
-            return Redirect()->route($this->model . ".index");
+            return Redirect()->route("admin-".$this->model . ".index");
         }
     }
 
@@ -80,7 +92,7 @@ class SettingsController extends Controller
             $data = compact('setdetails');
             return  View("admin.$this->model.edit", $data);
         } else {
-            return Redirect()->route($this->model . ".index");
+            return Redirect()->route("admin-".$this->model . ".index");
         }
     }
 
@@ -92,7 +104,7 @@ class SettingsController extends Controller
         if (!empty($ensetid)) {
             $Set_id = base64_decode($ensetid);
         } else {
-            return Redirect()->route($this->model . ".index");
+            return Redirect()->route("admin-".$this->model . ".index");
         }
     
         $validated = $request->validate([
@@ -110,7 +122,7 @@ class SettingsController extends Controller
         $savedata = $obj->save();
         if ($savedata) {
             Session()->flash('flash_notice', 'Setting Updated successfully.');
-            return Redirect()->route($this->model . ".index");
+            return Redirect()->route("admin-".$this->model . ".index");
         }
     }
 
@@ -165,7 +177,7 @@ class SettingsController extends Controller
     {
         $DB    =  Setting::query();
         $list  =  $DB->orderBy('key', 'ASC')->get(array('key', 'value'))->toArray();
-        $file = Config('constants.SETTING_FILE_PATH');
+        $file = Config('constant.SETTING_FILE_PATH');
         $settingfile = '<?php ' . "\n";
         $append_string    =  "";
         foreach ($list as $value) {

@@ -13,12 +13,12 @@
 
 <!-- Page Header -->
 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
-    <h1 class="page-title fw-semibold fs-18 mb-0">Users</h1>
+    <h1 class="page-title fw-semibold fs-18 mb-0">Settings</h1>
     <div class="ms-md-1 ms-0">
         <nav>
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('admin-dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Users</li>
+                <li class="breadcrumb-item active" aria-current="page">Settings</li>
             </ol>
         </nav>
     </div>
@@ -29,17 +29,17 @@
         <div class="card custom-card">
             <div class="card-header justify-content-between">
                 <div class="card-title">
-                    Users
+                    Settings
                 </div>
                 <div class="prism-toggle">
                     <a href="javascript:void(0);" class="btn btn-primary dropdown-toggle mr-2" data-bs-toggle="collapse"
                         data-bs-target="#collapseOne6">
                         Search
                     </a>
-                    <a href="{{ route('admin-admin_users.create') }}" class="btn btn-primary"
+                    <a href="{{ route('admin-settings.create') }}" class="btn btn-primary"
                         style="margin-right: 10px;">
                         <!-- Adjust the margin-right as needed -->
-                        Add User
+                        Add Setting
                     </a>
                 </div>
             </div>
@@ -48,46 +48,13 @@
                     data-parent="#accordionExample6">
                     <div>
                         <form id="listSearchForm" class="row mb-6">
-                            <div class="col-lg-3  mb-lg-5 mb-6">
-
-                                <label>Status</label>
-                                <select name="is_active" class="form-control select2init"
-                                    value="{{$searchVariable['is_active'] ?? ''}}">
-                                    <option value="">All</option>
-                                    <option value="1">Activate</option>
-                                    <option value="0">Deactivate</option>
-                                </select>
-                            </div>
+                           
                             <div class="col-lg-3 mb-lg-5 mb-6">
-                                <label>Name</label>
-                                <input type="text" class="form-control" name="name" placeholder=" Name"
-                                    value="{{$searchVariable['name'] ?? '' }}">
+                                <label>Title</label>
+                                <input type="text" class="form-control" name="title" placeholder=" Title"
+                                    value="{{$searchVariable['title'] ?? '' }}">
                             </div>
-                            <div class="col-lg-3 mb-lg-5 mb-6">
-                                <label>Email</label>
-                                <input type="text" class="form-control" name="email" placeholder="Email"
-                                    value="{{$searchVariable['email'] ?? '' }}">
-                            </div>
-                            <div class="col-lg-3 mb-lg-5 mb-6">
-                                <label>Phone Number</label>
-                                <input type="text" class="form-control" name="phone_number" placeholder="Phone Number"
-                                    value="{{$searchVariable['phone_number'] ?? '' }}">
-                            </div>
-                            <div class="col-lg-3 mb-lg-5 mb-6">
-                                <label for="date_from" class="form-label"><span class="text-danger">* </span>Date
-                                    From</label>
-                                <input type="date" class="form-control @error('date_from') is-invalid @enderror"
-                                    id="date_from" name="date_from" placeholder="Date From">
-
-                            </div>
-                            <div class="col-lg-3 mb-lg-5 mb-6">
-                                <label for="date_to" class="form-label"><span class="text-danger">* </span>Date
-                                    To</label>
-                                <input type="date" class="form-control @error('date_to') is-invalid @enderror"
-                                    id="date_to" name="date_to" placeholder="Date To">
-
-                            </div>
-
+                            
 
                         </form>
                         <div class="row mt-8">
@@ -114,7 +81,7 @@
             </div>
 
             <div class="container mt-4">
-                <button type="button" class="btn btn-outline-primary my-1 me-2" fdprocessedid="g9dg58f"> Total Users:
+                <button type="button" class="btn btn-outline-primary my-1 me-2" fdprocessedid="g9dg58f"> Total Records:
                     <span class="badge ms-2 totalDataCount">{{ $totalResults }}</span> </button>
 
             </div>
@@ -122,14 +89,11 @@
                 style="width:100%">
                 <thead>
                     <tr id="tableHeaders">
-                        <th >Profile Picture </th>
-                        <th class="sortable" data-column="name">Name <i class="sort-icon ri-sort-asc"></i></th>
-                        <th class="sortable" data-column="email">Email <i class="sort-icon ri-sort-asc"></i></th>
-                        <th class="sortable" data-column="phone_number">Phone Number <i
+                        <th class="sortable" data-column="id">ID <i class="sort-icon ri-sort-asc"></i></th>
+                        <th class="sortable" data-column="title">Title <i class="sort-icon ri-sort-asc"></i></th>
+                        <th class="sortable" data-column="key">Key <i
                                 class="sort-icon ri-sort-asc"></i></th>
-                        <th class="sortable" data-column="gender">Gender <i class="sort-icon ri-sort-asc"></i></th>
-                        <th class="sortable" data-column="is_active">Status <i class="sort-icon ri-sort-asc"></i>
-                        </th>
+                        <th class="sortable" data-column="value">Value <i class="sort-icon ri-sort-asc"></i></th>
                         <th>Action </th>
                     </tr>
                 </thead>
@@ -143,7 +107,7 @@
                         </td>
                     </tr>
                     @if($results->isNotEmpty())
-                    @include('admin.admin_users.load_more_data', ['results' => $results])
+                    @include('admin.settings.load_more_data', ['results' => $results])
                     @else
                     <tr>
                         <td colspan="7" style="text-align: center;">No results found.</td>

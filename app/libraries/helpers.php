@@ -173,5 +173,32 @@ if(!function_exists('AclParnentByName'))
     } 
 }
 
+if(!function_exists('DepartmentbyName'))
+{
+    function DepartmentbyName($Departid=Null)
+    {
+      $Departmentname='';
+        if(!empty($Departid))
+        {
+      
+        $Departmentname=Department::where('id',$Departid)->value('name');
+        return $Departmentname; 
+        }
+    } 
+}
+
+if(!function_exists('DesignationbyName'))
+{
+    function DesignationbyName($Desid=Null)
+    {
+        if(!empty($Desid))
+        {
+          $Desginationname='';
+        $Desginationname=Designation::where('id',$Desid)->value('name');
+        return $Desginationname; 
+        }
+    } 
+}
+
 
 

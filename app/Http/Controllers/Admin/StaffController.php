@@ -17,6 +17,7 @@ use App\Models\DesignationPermissionAction;
 use  App\Models\UserPermission;
 use App\Models\UserPermissionAction;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\File;
 
 class StaffController extends Controller
 {
@@ -86,6 +87,13 @@ class StaffController extends Controller
         unset($complete_string["order"]);
         $query_string            =    http_build_query($complete_string);
         $results->appends($inputGet)->render();
+        if(!empty($results)) {
+            foreach($results as &$result) {
+                if(!empty($result->image)){
+                    $result->image = Config('constant.STAFF_IMAGE_URL').$result->image;
+                }
+            }
+        }
         return  View("admin.$this->model.index", compact('results', 'searchVariable', 'sortBy', 'order', 'query_string'));
     }
 
@@ -121,13 +129,14 @@ class StaffController extends Controller
             $obj->department_id                     =  $request->input('department_id');
             $obj->designation_id                     =  $request->input('designation_id');
             $obj->password                             =  Hash::make($request->input('password'));
+            
             if ($request->hasFile('image')) {
                 $extension = $request->file('image')->getClientOriginalExtension();
                 $originalName = $request->file('image')->getClientOriginalName();
                 $fileName = time() . '-image.' . $extension;
 
                 $folderName = strtoupper(date('M') . date('Y')) . "/";
-                $folderPath = Config('constant.USER_IMAGE_ROOT_PATH') . $folderName;
+                $folderPath = Config('constant.STAFF_IMAGE_ROOT_PATH') . $folderName;
                 if (!File::exists($folderPath)) {
                     File::makeDirectory($folderPath, $mode = 0777, true);
                 }
@@ -235,36 +244,42 @@ class StaffController extends Controller
         $designations = array();
         $aclModules        =    Acl::select('title', 'id', DB::Raw("(select is_active from user_permissions where user_id = $stf_id AND admin_module_id = acls.id LIMIT 1) as active"))->where('is_active', 1)->where('parent_id', 0)->get();
         if (!empty($aclModules)) {
-            foreach ($aclModules as &$aclModule) {
-                $aclModule['sub_module']    =    Acl::where('is_active', 1)->where('parent_id', $aclModule->id)->select('title', 'id')->get();
-                $module_ids            =    array();
-                if (!empty($aclModule['sub_module'])) {
-                    foreach ($aclModule['sub_module'] as &$module) {
-                        $module_id        =        $module->id;
-                        $module_ids[$module->id]        =        $module->id;
-                        $module['module']    =    AclAdminAction::where('admin_module_id', $module->id)->where('is_show', 1)->select('name', 'function_name', 'id', DB::Raw("(select is_active from user_permission_actions where user_id = $stf_id AND admin_sub_module_id = $module_id AND admin_module_action_id = acl_admin_actions.id LIMIT 1) as active"))->orderBy('name', 'ASC')->get();
-                    }
-                    $newArray    =    array();
-                    $aclModule['extModule']    =    Acl::where('is_active', 1)->whereIn('parent_id', $module_ids)->select('title', 'id')->get();
-                    if (!empty($aclModule['extModule'])) {
-                        foreach ($aclModule['extModule'] as &$record) {
-                            $action_id            =    $record->id;
-                            $record['module']    =    AclAdminAction::where('admin_module_id', $record->id)->where('is_show', 1)->select('name', 'function_name', 'id', DB::Raw("(select is_active from user_permission_actions where user_id = $stf_id AND admin_sub_module_id = $action_id AND admin_module_action_id = acl_admin_actions.id LIMIT 1) as active"))->orderBy('name', 'ASC')->get();
-                        }
-                    }
-                    if (($aclModule['sub_module']->isEmpty()) && ($aclModule['extModule']->isEmpty())) {
-                        $action_id            =    $aclModule->id;
-                        $aclModule['parent_module_action']    =    AclAdminAction::where('admin_module_id', $aclModule->id)->where('is_show', 1)->select('name', 'function_name', 'id', DB::Raw("(select is_active from user_permission_actions where user_id = $stf_id AND admin_sub_module_id = $action_id AND admin_module_action_id = acl_admin_actions.id LIMIT 1) as active"))->orderBy('name', 'ASC')->get();
+        foreach ($aclModules as &$aclModule) {
+            $aclModule['sub_module']    =    Acl::where('is_active', 1)->where('parent_id', $aclModule->id)->select('title', 'id')->get();
+            $module_ids            =    array();
+            if (!empty($aclModule['sub_module'])) {
+                foreach ($aclModule['sub_module'] as &$module) {
+                    $module_id        =        $module->id;
+                    $module_ids[$module->id]        =        $module->id;
+                    $module['module']    =    AclAdminAction::where('admin_module_id', $module->id)->where('is_show', 1)->select('name', 'function_name', 'id', DB::Raw("(select is_active from user_permission_actions where user_id = $stf_id AND admin_sub_module_id = $module_id AND admin_module_action_id = acl_admin_actions.id LIMIT 1) as active"))->orderBy('name', 'ASC')->get();
+                }
+                $newArray    =    array();
+                $aclModule['extModule']    =    Acl::where('is_active', 1)->whereIn('parent_id', $module_ids)->select('title', 'id')->get();
+                if (!empty($aclModule['extModule'])) {
+                    foreach ($aclModule['extModule'] as &$record) {
+                        $action_id            =    $record->id;
+                        $record['module']    =    AclAdminAction::where('admin_module_id', $record->id)->where('is_show', 1)->select('name', 'function_name', 'id', DB::Raw("(select is_active from user_permission_actions where user_id = $stf_id AND admin_sub_module_id = $action_id AND admin_module_action_id = acl_admin_actions.id LIMIT 1) as active"))->orderBy('name', 'ASC')->get();
                     }
                 }
+                if (($aclModule['sub_module']->isEmpty()) && ($aclModule['extModule']->isEmpty())) {
+                    $action_id            =    $aclModule->id;
+                    $aclModule['parent_module_action']    =    AclAdminAction::where('admin_module_id', $aclModule->id)->where('is_show', 1)->select('name', 'function_name', 'id', DB::Raw("(select is_active from user_permission_actions where user_id = $stf_id AND admin_sub_module_id = $action_id AND admin_module_action_id = acl_admin_actions.id LIMIT 1) as active"))->orderBy('name', 'ASC')->get();
+                }
             }
-            return  View("admin.$this->model.edit", compact('modell', 'departments', 'designations', 'aclModules'));
+        }
+
+        if(!empty($modell->image)){
+            $modell->image = Config('constant.STAFF_IMAGE_URL').$modell->image;
+        }
+
+        return  View("admin.$this->model.edit", compact('modell', 'departments', 'designations', 'aclModules'));
     }
 }
 
 
     public function update(Request $request, $enstfid)
     {
+        
         $stf_id = '';
         if (!empty($enstfid)) {
             $stf_id = base64_decode($enstfid);
@@ -277,7 +292,7 @@ class StaffController extends Controller
                 'phone_number'      =>        'required|numeric',
                 'department_id'     =>        'required',
                 'designation_id'    =>        'required',
-                'password'      =>         [Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
+                'password'          =>         ['nullable',Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
                 'confirm_password' =>      'same:password',
             ]);
             $obj                        =  User::find($stf_id);
@@ -293,7 +308,7 @@ class StaffController extends Controller
                 $fileName = time() . '-image.' . $extension;
 
                 $folderName = strtoupper(date('M') . date('Y')) . "/";
-                $folderPath = Config('constant.USER_IMAGE_ROOT_PATH') . $folderName;
+                $folderPath = Config('constant.STAFF_IMAGE_ROOT_PATH') . $folderName;
                 if (!File::exists($folderPath)) {
                     File::makeDirectory($folderPath, $mode = 0777, true);
                 }

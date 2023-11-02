@@ -22,9 +22,10 @@
 <!-- Page Header Close -->
 <div class="row">
     <div class="col-xl-12">
-        <form action="{{route('admin-'.$model.'.update',base64_encode($modell->id))}}" method="put" enctype="multipart/form-data"
-            id="editUserForm">
+        <form action="{{route('admin-'.$model.'.update',base64_encode($modell->id))}}" method="post" enctype="multipart/form-data"
+            id="editStaffForm">
             @csrf
+            @method('PUT')
             <div class="card custom-card">
                 <div class="card-header">
                     <div class="card-title">
@@ -156,14 +157,14 @@
                                                                                 <span class="mr-2"></span>
 
                                                                             </label>
-                                                                            <a class="text-dark px-2 py-4 w-100" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse{{$counter}}" aria-expanded="true" aria-controls="collapse{{$counter}}">
+                                                                            <a class="text-dark px-2 py-4 w-100" role="button" data-bs-toggle="collapse" data-bs-parent="#accordion" href="#collapse{{$counter}}" aria-expanded="true" aria-controls="collapse{{$counter}}">
                                                                             <i class="more-less glyphicon glyphicon-plus"></i>
                                                                             {{strtoupper($aclModule->title ?? '')}}
                                                                         </a>
                                                                         </div>
                                                                         
                                                                     </div>
-                                                                    <div id="collapse{{$counter}}" class="collapse" data-parent="#accordion">
+                                                                    <div id="collapse{{$counter}}" class="collapse" data-bs-parent="#accordion">
                                                                         <?php
                                                                         if (!empty($aclModule['sub_module'])) {
                                                                         ?>
@@ -295,7 +296,7 @@
                                 </div>
                             </div>
                             <div class="px-4 py-3 border-top border-block-start-dashed d-sm-flex justify-content-end">
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="button" id="editstaffformbutton" class="btn btn-primary">Submit</button>
                             </div>
                         </div>
                     </div>
@@ -325,6 +326,7 @@
 <!-- <script src="{{ asset('assets/js/form-validation.js') }}"></script> -->
 <script type="text/javascript">
     $(document).ready(function() {
+   
         if ($(".parent:input").val() == 1) {
             var parentid = $(".parent:input:checked").attr('id');
             $('.child' + parentid).attr('checked', true);
@@ -359,6 +361,10 @@
             },
             success: function(response) {
                 $(".designation_iddrop").html(response);
+                setTimeout(() => {
+                    
+                    $("#designation_id").val(parseInt('{{$modell->designation_id}}'))
+                }, 100);
             }
         });
     }
@@ -391,6 +397,10 @@
             }
         });
     });
+
+    $("#editstaffformbutton").click(function() {
+            $("#editStaffForm").submit();
+        });
 
 </script>
 
