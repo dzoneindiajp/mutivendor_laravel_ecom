@@ -11,14 +11,6 @@
 
 @include('admin.layout.response_message')
 
-<?php 
-    $createPermission   = functionCheckPermission("UsersController@create");
-    $editPermission   = functionCheckPermission("UsersController@edit");
-    $viewPermission     = functionCheckPermission("UsersController@view");
-    $deletePermission   = functionCheckPermission("UsersController@delete");
-    $statusPermission   = functionCheckPermission("UsersController@changeStatus");
-
-?>
 <!-- Page Header -->
 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
     <h1 class="page-title fw-semibold fs-18 mb-0">Users</h1>
@@ -40,88 +32,150 @@
                     Users
                 </div>
                 <div class="prism-toggle">
-                    <a href="{{ route('admin-admin_users.create') }}" class="btn btn-primary mb-3" style="float: right">Add
-                    User</a>
+                    <a href="javascript:void(0);" class="btn btn-primary dropdown-toggle mr-2" data-bs-toggle="collapse"
+                        data-bs-target="#collapseOne6">
+                        Search
+                    </a>
+                    <a href="{{ route('admin-admin_users.create') }}" class="btn btn-primary"
+                        style="margin-right: 10px;">
+                        <!-- Adjust the margin-right as needed -->
+                        Add User
+                    </a>
                 </div>
             </div>
-            <div class="card-body">
-                <table id="datatable-basic" class="table table-bordered text-nowrap" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>Image</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone Number</th>
-                            <th>Gender</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($results as $result)
-                        <tr>
-                            <td>
-                                @if (!empty($result->image))
-                                    <img height="50" width="50" src="{{isset($result->image)? $result->image:''}}" />
-                                @endif
-                            </td>
-                            
-                            <td>{{ $result->name ?? "N/A" }}</td>
-                            <td>
-                                {{ $result->email ?? "N/A" }}
-                            </td>
-                            <td>
-                                {{ $result->phone_number ?? "N/A" }}
-                            </td>
-                            <td>{{ $result->gender ?? "N/A" }}</td>
-                            <td>
-                                @if($result->is_active == 1)
-                                <span class="label label-lg label-light-success label-inline">Activated</span>
-                                @else
-                                <span class="label label-lg label-light-danger label-inline">Deactivated</span>
-                                @endif
-                            </td>
+            <div class="accordion accordion-solid accordion-toggle-plus" id="accordionExample6">
+                <div id="collapseOne6" class="collapse m-3 <?php echo !empty($searchVariable) ? 'show' : ''; ?>"
+                    data-parent="#accordionExample6">
+                    <div>
+                        <form id="listSearchForm" class="row mb-6">
+                            <div class="col-lg-3  mb-lg-5 mb-6">
 
-                            <td>
-                                <div class="hstack gap-2 flex-wrap">
-                                    @if($statusPermission == 1)
-                                        @if($result->is_active == 1)
-                                            <a href='{{route("admin-admin_users.status",array($result->id,0))}}'
-                                            class="btn btn-danger" id="deactivate-button"><i class="ri-close-line"></i></a>
-                                        @else
-                                            <a href='{{route("admin-admin_users.status",array($result->id,1))}}'
-                                            class="btn btn-success" id="activate-button"><i class="ri-check-line"></i></a>
-                                        @endif
-                                        
-                                    @endif
-                                    @if($viewPermission == 1)
-                                        <a href="{{route('admin-admin_users.show',base64_encode($result->id))}}"
-                                            class="btn btn-info"><i class="ri-eye-line"></i></a>
-                                    @endif
-                                    @if($editPermission == 1)
-                                        <a href="{{route('admin-admin_users.edit',base64_encode($result->id))}}"
-                                        class="btn btn-info"><i class="ri-edit-line"></i></a>
-                                    @endif
-                                    @if($deletePermission == 1)
-                                        <form method="GET"
-                                            action="{{route('admin-admin_users.delete',base64_encode($result->id))}}">
-                                            @csrf
-                                            <input name="_method" type="hidden" value="DELETE">
-                                            <button type="submit" class="btn btn-danger" id="confirm-button"><i
-                                                    class="ri-delete-bin-5-line"></i></button>
-                                        </form>
-                                    @endif
-                                    
-                                </div>
-                            </td>
-                        </tr>
-                        @empty
-                        @endforelse
-                    </tbody>
-                </table>
+                                <label>Status</label>
+                                <select name="is_active" class="form-control select2init"
+                                    value="{{$searchVariable['is_active'] ?? ''}}">
+                                    <option value="">All</option>
+                                    <option value="1">Activate</option>
+                                    <option value="0">Deactivate</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-3 mb-lg-5 mb-6">
+                                <label>Name</label>
+                                <input type="text" class="form-control" name="name" placeholder=" Name"
+                                    value="{{$searchVariable['name'] ?? '' }}">
+                            </div>
+                            <div class="col-lg-3 mb-lg-5 mb-6">
+                                <label>Email</label>
+                                <input type="text" class="form-control" name="email" placeholder="Email"
+                                    value="{{$searchVariable['email'] ?? '' }}">
+                            </div>
+                            <div class="col-lg-3 mb-lg-5 mb-6">
+                                <label>Phone Number</label>
+                                <input type="text" class="form-control" name="phone_number" placeholder="Phone Number"
+                                    value="{{$searchVariable['phone_number'] ?? '' }}">
+                            </div>
+                            <div class="col-lg-3 mb-lg-5 mb-6">
+                                <label for="date_from" class="form-label"><span class="text-danger">* </span>Date
+                                    From</label>
+                                <input type="date" class="form-control @error('date_from') is-invalid @enderror"
+                                    id="date_from" name="date_from" placeholder="Date From">
+
+                            </div>
+                            <div class="col-lg-3 mb-lg-5 mb-6">
+                                <label for="date_to" class="form-label"><span class="text-danger">* </span>Date
+                                    To</label>
+                                <input type="date" class="form-control @error('date_to') is-invalid @enderror"
+                                    id="date_to" name="date_to" placeholder="Date To">
+
+                            </div>
+
+
+                        </form>
+                        <div class="row mt-8">
+                            <div class="col-lg-12">
+                                <button class="btn btn-primary btn-primary--icon" id="kt_search_btn">
+                                    <span>
+                                        <i class="la la-search"></i>
+                                        <span>Search</span>
+                                    </span>
+                                </button>
+                                &nbsp;&nbsp;
+                                <a href='{{ route("admin-"."$model.index")}}'
+                                    class="btn btn-secondary btn-secondary--icon">
+                                    <span>
+                                        <i class="la la-close"></i>
+                                        <span>Clear Search</span>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                </div>
             </div>
+
+            <div class="container mt-4">
+                <button type="button" class="btn btn-outline-primary my-1 me-2" fdprocessedid="g9dg58f"> Total Users:
+                    <span class="badge ms-2 totalDataCount">{{ $totalResults }}</span> </button>
+
+            </div>
+            <table id="datatable-basic" data-sorting="" data-order="" class="table table-bordered text-nowrap"
+                style="width:100%">
+                <thead>
+                    <tr id="tableHeaders">
+                        <th >Image </th>
+                        <th class="sortable" data-column="name">Name <i class="sort-icon ri-sort-asc"></i></th>
+                        <th class="sortable" data-column="email">Email <i class="sort-icon ri-sort-asc"></i></th>
+                        <th class="sortable" data-column="phone_number">Phone Number <i
+                                class="sort-icon ri-sort-asc"></i></th>
+                        <th class="sortable" data-column="gender">Gender <i class="sort-icon ri-sort-asc"></i></th>
+                        <th class="sortable" data-column="is_active">Status <i class="sort-icon ri-sort-asc"></i>
+                        </th>
+                        <th>Action </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr id="loader-row" style="display: none;">
+                        <td colspan="7" style="text-align: center;">
+                            <button class="btn btn-light" type="button" disabled="">
+                                <span class="spinner-grow spinner-grow-sm align-middle" role="status"
+                                    aria-hidden="true"></span> Loading...
+                            </button>
+                        </td>
+                    </tr>
+                    @if($results->isNotEmpty())
+                    @include('admin.admin_users.load_more_data', ['results' => $results])
+                    @else
+                    <tr>
+                        <td colspan="7" style="text-align: center;">No results found.</td>
+                    </tr>
+                    @endif
+                </tbody>
+            </table>
+            @if($results->isNotEmpty() && $totalResults > Config('Reading.records_per_page'))
+            <div class="my-3" style="display: flex; justify-content: center;">
+                <button class="btn btn-primary-light btn-border-down" fdprocessedid="l5zhli" id="load-more"
+                    data-offset="{{ Config('Reading.records_per_page') }}" data-default-offset="0"
+                    data-limit="{{ Config('Reading.records_per_page') }}"
+                    data-default-limit="{{ Config('Reading.records_per_page') }}">
+                    <span class="loadMoreText me-2">Load More</span>
+                    <span class="loading"><i class="ri-refresh-line fs-16"></i></span>
+                </button>
+            </div>
+            @else
+            <div class="my-3" style="display: flex; justify-content: center;">
+                <button class="btn btn-primary-light btn-border-down" style="display:none;" fdprocessedid="l5zhli"
+                    id="load-more" data-offset="{{ Config('Reading.records_per_page') }}" data-default-offset="0"
+                    data-limit="{{ Config('Reading.records_per_page') }}"
+                    data-default-limit="{{ Config('Reading.records_per_page') }}">
+                    <span class="loadMoreText me-2">Load More</span>
+                    <span class="loading"><i class="ri-refresh-line fs-16"></i></span>
+                </button>
+            </div>
+            @endif
+
         </div>
     </div>
+</div>
 </div>
 @endsection
 
@@ -136,7 +190,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-
+<script>
+var routeName = '{{route($listRouteName)}}';
+// Your DataTables initialization or other JavaScript logic here
+</script>
 <!-- Internal Datatables JS -->
 <script src="{{ asset('assets/js/datatables.js') }}"></script>
 
