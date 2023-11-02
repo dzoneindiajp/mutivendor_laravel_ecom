@@ -137,6 +137,8 @@ class UsersController extends Controller
                     'image' => 'nullable|mimes:jpg,jpeg,png',
                     'gender' => 'required',
                     'date_of_birth' => 'required',
+                    'password'      =>         ['required', Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
+                    'confirm_password' =>      'required|same:password',
                 ),
                 array(
                     "name.required" => trans("The name field is required."),
@@ -163,7 +165,7 @@ class UsersController extends Controller
                 $obj->phone_number                  = $request->input('phone_number');
                 $obj->date_of_birth =   !empty($request->input('date_of_birth')) ? date('Y-m-d', strtotime($request->input('date_of_birth'))) : NULL;
                 $obj->gender = $request->input('gender');
-                $obj->password = Hash::make($this->generateRandomPassword());
+                $obj->password                             =  Hash::make($request->input('password'));
                 // if(!empty($request->password)){
                 //     $obj->password                      = Hash::make($request->password);
                 // }
@@ -219,6 +221,8 @@ class UsersController extends Controller
                         'image' => 'nullable|mimes:jpg,jpeg,png',
                         'gender' => 'required',
                         'date_of_birth' => 'required',
+                        'password'      =>         [Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
+                         'confirm_password' =>      'same:password',
 
                     ),
                     array(
@@ -262,6 +266,9 @@ class UsersController extends Controller
                             $obj->image = $folderName . $fileName;
                             // $obj->original_image_name = $originalName;
                         }
+                    }
+                    if(!empty($request->password)){
+                        $obj->password                      = Hash::make($request->password);
                     }
                     $obj->save();
                     $lastId = $obj->id;

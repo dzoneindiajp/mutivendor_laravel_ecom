@@ -150,5 +150,69 @@ Route::prefix('admin')->name('admin-')->group(function () {
           Route::match(['get', 'post'], 'users/changed-password/{enuserid?}', [App\Http\Controllers\Admin\UsersController::class, 'changedPassword'])->name('admin_users.changedPassword');
           
           /* users routes */
+
+          /** FooterCategory routes **/
+         Route::resource('footer-category', App\Http\Controllers\Admin\FooterCategoryController::class);
+         Route::get('footer-category/update-status/{id}/{status}', [App\Http\Controllers\Admin\FooterCategoryController::class, 'changeStatus'])->name('footer-category.status');
+         Route::get('footer-category/destroy/{endepid?}', [App\Http\Controllers\Admin\FooterCategoryController::class, 'destroy'])->name('footer-category.delete');
+         // /* FooterCategory routes */
+
+         /**  footer-subcategory routes **/
+         Route::match(['get', 'post'], '/footer-subcategory/{endesid?}', [App\Http\Controllers\Admin\FooterSubCategoryController::class, 'index'])->name('footer-subcategory.index');
+         Route::match(['get', 'post'], 'footer-subcategory/add/{endesid?}', [App\Http\Controllers\Admin\FooterSubCategoryController::class, 'add'])->name('footer-subcategory.add');
+         Route::match(['get', 'post'], 'footer-subcategory/edit/{endesid?}', [App\Http\Controllers\Admin\FooterSubCategoryController::class, 'update'])->name('footer-subcategory.edit');
+         Route::get('footer-subcategory/update-status/{id}/{status}', [App\Http\Controllers\Admin\FooterSubCategoryController::class, 'changeStatus'])->name('footer-subcategory.status');
+         Route::get('footer-subcategory/delete/{endesid?}', [App\Http\Controllers\Admin\FooterSubCategoryController::class, 'delete'])->name('footer-subcategory.delete');
+         /* footer-subcategory routes */
+
+         /* Lookups manager  module  routing start here */
+         Route::match(['get', 'post'], '/lookups-manager/{type}', [App\Http\Controllers\vrihatcpmaster\LookupsController::class, 'index'])->name('lookups-manager.index');
+         Route::match(['get', 'post'], '/lookups-manager/add/{type}', [App\Http\Controllers\vrihatcpmaster\LookupsController::class, 'add'])->name('lookups-manager.add');
+         Route::get('lookups-manager/destroy/{enlokid?}', [App\Http\Controllers\vrihatcpmaster\LookupsController::class, 'destroy'])->name('lookups-manager.delete');
+         Route::get('lookups-manager/update-status/{id}/{status}', [App\Http\Controllers\vrihatcpmaster\LookupsController::class, 'changeStatus'])->name('lookups-manager.status');
+         Route::match(['get', 'post'], 'lookups-manager/{type?}/edit/{enlokid?}', [App\Http\Controllers\vrihatcpmaster\LookupsController::class, 'update'])->name('lookups-manager.edit');
+         /* Lookups manager  module  routing start here */
+
+         /* Lookups manager  module  routing start here */
+         Route::match(['get','post'],'seo-page-manager', [App\Http\Controllers\vrihatcpmaster\SeoPageController::class, 'index'])->name('SeoPage.index');
+         // Route::post('seo-page-manager', [App\Http\Controllers\vrihatcpmaster\SeoPageController::class, 'index'])->name('SeoPage.index');
+         Route::get('seo-page-manager/add-doc', [App\Http\Controllers\vrihatcpmaster\SeoPageController::class, 'addDoc'])->name('SeoPage.create');
+         Route::post('seo-page-manager/add-doc', [App\Http\Controllers\vrihatcpmaster\SeoPageController::class, 'saveDoc'])->name('SeoPage.save');
+         Route::get('seo-page-manager/edit-doc/{id}', [App\Http\Controllers\vrihatcpmaster\SeoPageController::class, 'editDoc'])->name('SeoPage.edit');
+         Route::post('seo-page-manager/edit-doc/{id}', [App\Http\Controllers\vrihatcpmaster\SeoPageController::class, 'updateDoc'])->name('SeoPage.update');
+         Route::any('seo-page-manager/delete-page/{id}', [App\Http\Controllers\vrihatcpmaster\SeoPageController::class, 'deletePage'])->name('SeoPage.delete');
+
+          /** settings routing**/
+          Route::resource('settings', App\Http\Controllers\vrihatcpmaster\SettingsController::class);
+          Route::match(['get', 'post'], '/settings/prefix/{enslug?}', [App\Http\Controllers\vrihatcpmaster\SettingsController::class, 'prefix'])->name('settings.prefix');
+          Route::get('settings/destroy/{ensetid?}', [App\Http\Controllers\vrihatcpmaster\SettingsController::class, 'destroy'])->name('settings.delete');
+          /** settings routing**/
+
+          /* cms manager routes */
+          Route::resource('cms-manager', App\Http\Controllers\vrihatcpmaster\CmspagesController::class);
+          Route::get('cms-manager/destroy/{encmsid?}', [App\Http\Controllers\vrihatcpmaster\CmspagesController::class, 'destroy'])->name('cms-manager.delete');
+          //  cms manager routes
+
+          /*Banner Route*/
+          Route::get('banner', [App\Http\Controllers\vrihatcpmaster\BannerController::class, 'index'])->name('Banner.index');
+          Route::get('slider-add', [App\Http\Controllers\vrihatcpmaster\BannerController::class, 'create'])->name('Banner.create');
+          Route::post('slider-save', [App\Http\Controllers\vrihatcpmaster\BannerController::class, 'save'])->name('Banner.save');
+          Route::get('slider-status/{id}/{status}', [App\Http\Controllers\vrihatcpmaster\BannerController::class, 'changeStatus'])->name('Banner.status');
+          Route::get('banner/{id}', [App\Http\Controllers\vrihatcpmaster\BannerController::class, 'edit'])->name('Banner.edit');
+          Route::post('slider-update/{id}', [App\Http\Controllers\vrihatcpmaster\BannerController::class, 'update'])->name('Banner.update');
+          Route::get('slider-delete/{id}', [App\Http\Controllers\vrihatcpmaster\BannerController::class, 'destroy'])->name('Banner.delete');
+          Route::get('sliders/show/{enuserid}', [App\Http\Controllers\vrihatcpmaster\BannerController::class, 'show'])->name('Banner.show');
+          /*Banner Route*/
+
+          /* Testimonial routes */
+          Route::match(['get', 'post'], '/testimonials', [App\Http\Controllers\vrihatcpmaster\TestimonialController::class, 'index'])->name('testimonials.index');
+          Route::match(['get', 'post'], '/testimonials/create', [App\Http\Controllers\vrihatcpmaster\TestimonialController::class, 'create'])->name('testimonials.create');
+          Route::match(['get', 'post'], '/testimonials/save', [App\Http\Controllers\vrihatcpmaster\TestimonialController::class, 'save'])->name('testimonials.save');
+          Route::match(['get', 'post'], '/testimonials/edit/{enuserid}', [App\Http\Controllers\vrihatcpmaster\TestimonialController::class, 'edit'])->name('testimonials.edit');
+          Route::match(['get', 'post'], '/testimonials/update/{enuserid}', [App\Http\Controllers\vrihatcpmaster\TestimonialController::class, 'update'])->name('testimonials.update');
+          Route::get('testimonials/show/{enuserid}', [App\Http\Controllers\vrihatcpmaster\TestimonialController::class, 'show'])->name('testimonials.show');
+          Route::get('testimonials/destroy/{enuserid?}', [App\Http\Controllers\vrihatcpmaster\TestimonialController::class, 'destroy'])->name('testimonials.delete');
+          Route::get('testimonials/update-status/{id}/{status}', [App\Http\Controllers\vrihatcpmaster\TestimonialController::class, 'changeStatus'])->name('testimonials.status');
+          /* Testimonial routes */
     });
 });
