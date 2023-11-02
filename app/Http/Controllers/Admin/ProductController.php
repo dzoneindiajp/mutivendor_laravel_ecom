@@ -20,17 +20,80 @@ use App\Models\OptionValueProductVariant;
 class ProductController extends Controller
 {
     public $fileUploadService;
-
     public function __construct(FileUploadService $fileUploadService)
     {
         $this->fileUploadService = $fileUploadService;
+        $this->listRouteName = 'admin-product-list';
+        View()->share('listRouteName', $this->listRouteName);
     }
 
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $products = Product::get();
-            return view('admin.products.list', compact('products'));
+            $DB = Product::leftJoin('categories', 'products.category_id', '=', 'categories.id')->leftJoin('sub_categories', 'products.sub_category_id', '=', 'sub_categories.id')->leftJoin('child_categories', 'products.child_category_id', '=', 'child_categories.id');
+            $sortBy = $request->input('sortBy') ? $request->input('sortBy') : 'products.created_at';
+            $order = $request->input('order') ? $request->input('order') : 'desc';
+            $offset = !empty($request->input('offset')) ? $request->input('offset') : 0 ;
+            $limit =  !empty($request->input('limit')) ? $request->input('limit') : Config("Reading.records_per_page");
+
+            if ($request->all()) {
+                $searchData            =    $request->all();
+                unset($searchData['display']);
+                unset($searchData['_token']);
+                if (isset($searchData['order'])) {
+                    unset($searchData['order']);
+                }
+                if (isset($searchData['sortBy'])) {
+                    unset($searchData['sortBy']);
+                }
+                if (isset($searchData['offset'])) {
+                    unset($searchData['offset']);
+                }
+                if (isset($searchData['limit'])) {
+                    unset($searchData['limit']);
+                }
+                if ((!empty($searchData['date_from'])) && (!empty($searchData['date_to']))) {
+                    $dateS = $searchData['date_from'];
+                    $dateE = $searchData['date_to'];
+                    $DB->whereBetween('products.created_at', [$dateS . " 00:00:00", $dateE . " 23:59:59"]);
+                } elseif (!empty($searchData['date_from'])) {
+                    $dateS = $searchData['date_from'];
+                    $DB->where('products.created_at', '>=', [$dateS . " 00:00:00"]);
+                } elseif (!empty($searchData['date_to'])) {
+                    $dateE = $searchData['date_to'];
+                    $DB->where('products.created_at', '<=', [$dateE . " 00:00:00"]);
+                }
+                foreach ($searchData as $fieldName => $fieldValue) {
+                    if ($fieldValue != "") {
+                        if ($fieldName == "name") {
+                            $DB->where("products.name", 'like', '%' . $fieldValue . '%');
+                        }
+                        
+                        if ($fieldName == "category_id") {
+                            $DB->where("products.category_id", $fieldValue);
+                        }
+                        if ($fieldName == "sub_category_id") {
+                            $DB->where("products.sub_category_id", $fieldValue);
+                        }
+                        if ($fieldName == "child_category_id") {
+                            $DB->where("products.child_category_id", $fieldValue);
+                        }
+                    }
+                }
+            }
+
+
+            $results = $DB->select('products.*','categories.name as category_name','sub_categories.name as sub_category_name','child_categories.name as child_category_name')->orderBy($sortBy, $order)->offset($offset)->limit($limit)->get();
+            $totalResults = $DB->count();
+            if($request->ajax()){
+
+                return  View("admin.products.load_more_data", compact('results','totalResults'));
+            }else{
+                
+                $categories = Category::get();
+                return view('admin.products.list', compact('results','categories','totalResults'));
+            }
+            
         } catch (Exception $e) {
             Log::error($e);
             return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);

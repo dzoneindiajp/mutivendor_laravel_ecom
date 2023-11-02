@@ -19,17 +19,23 @@ class UsersController extends Controller
     public $model = 'admin_users';
     public function __construct(Request $request)
     {
+        $this->listRouteName = 'admin-admin_users.index';
         View()->share('model', $this->model);
+        View()->share('listRouteName', $this->listRouteName);
         $this->request = $request;
+        
     }
 
     public function index(Request $request)
     {
         $DB = User::query();
-        $searchVariable = array();
-        $inputGet = $request->all();
+        $sortBy = $request->input('sortBy') ? $request->input('sortBy') : 'users.created_at';
+        $order = $request->input('order') ? $request->input('order') : 'desc';
+        $offset = !empty($request->input('offset')) ? $request->input('offset') : 0 ;
+        $limit =  !empty($request->input('limit')) ? $request->input('limit') : Config("Reading.records_per_page"); 
+
         if ($request->all()) {
-            $searchData = $request->all();
+            $searchData            =    $request->all();
             unset($searchData['display']);
             unset($searchData['_token']);
             if (isset($searchData['order'])) {
@@ -38,8 +44,11 @@ class UsersController extends Controller
             if (isset($searchData['sortBy'])) {
                 unset($searchData['sortBy']);
             }
-            if (isset($searchData['page'])) {
-                unset($searchData['page']);
+            if (isset($searchData['offset'])) {
+                unset($searchData['offset']);
+            }
+            if (isset($searchData['limit'])) {
+                unset($searchData['limit']);
             }
             if ((!empty($searchData['date_from'])) && (!empty($searchData['date_to']))) {
                 $dateS = $searchData['date_from'];
@@ -64,26 +73,17 @@ class UsersController extends Controller
                         $DB->where("users.email", 'like', '%' . $fieldValue . '%');
                     }
                     if ($fieldName == "is_active") {
-                        $DB->where("users.is_active", 'like', '%' . $fieldValue . '%');
+                        $DB->where("users.is_active", $fieldValue);
                     }
                 }
-                $searchVariable = array_merge($searchVariable, array($fieldName => $fieldValue));
             }
         }
+
         $DB->where("users.is_deleted", 0);
         $DB->where("users.user_role_id", 2);
-        $sortBy = ($request->input('sortBy')) ? $request->input('sortBy') : 'users.created_at';
-        $order = ($request->input('order')) ? $request->input('order') : 'DESC';
-        $records_per_page = ($request->input('per_page')) ? $request->input('per_page') : Config("Reading.records_per_page");
-        $results = $DB->orderBy($sortBy, $order)->paginate($records_per_page);
-        
-        
-        $complete_string = $request->query();
-        unset($complete_string["sortBy"]);
-        unset($complete_string["order"]);
-        $query_string = http_build_query($complete_string);
-        $results->appends($inputGet)->render();
-        $resultcount = $results->count();
+       
+        $results = $DB->orderBy($sortBy, $order)->offset($offset)->limit($limit)->get();
+        $totalResults = $DB->count();
 
         if(!empty($results)) {
             foreach($results as &$result) {
@@ -92,7 +92,13 @@ class UsersController extends Controller
                 }
             }
         }
-        return View("admin.$this->model.index", compact('resultcount', 'results', 'searchVariable', 'sortBy', 'order', 'query_string'));
+        if($request->ajax()){
+
+            return  View("admin.$this->model.load_more_data", compact('results','totalResults'));
+        }else{
+            
+            return  View("admin.$this->model.index", compact('results','totalResults'));
+        }
     }
 
     public function create(Request $request)
@@ -303,9 +309,9 @@ class UsersController extends Controller
     public function changeStatus($modelId = 0, $status = 0)
     {
         if ($status == 1) {
-            $statusMessage = trans("User has been deactivated successfully");
+            $statusMessage = trans("User has been actvated successfully");
         } else {
-            $statusMessage = trans("User has been activated successfully");
+            $statusMessage = trans("User has been deactivated successfully");
         }
         $user = User::find($modelId);
         if ($user) {

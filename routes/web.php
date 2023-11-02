@@ -45,7 +45,7 @@ Route::prefix('admin')->name('admin-')->group(function () {
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         Route::prefix('product')->name('product-')->group(function () {
-            Route::get('list', [ProductController::class, 'index'])->name('list');
+            Route::match(['get', 'post'],'list', [ProductController::class, 'index'])->name('list');
             Route::get('create', [ProductController::class, 'create'])->name('create');
             Route::post('store', [ProductController::class, 'store'])->name('store');
             Route::get('view/{token}', [ProductController::class, 'view'])->name('view');
