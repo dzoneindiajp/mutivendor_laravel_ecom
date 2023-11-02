@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\vrihatcpmaster;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -21,7 +21,7 @@ class LookupsController extends Controller
     public function index(Request $request, $type = null)
     {
         if (empty($type)) {
-            return Redirect()->route('dashboard');
+            return Redirect()->route(dashboard);
         }
 
         $DB                =    Lookup::query()->where('lookup_type', $type);

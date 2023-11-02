@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\vrihatcpmaster;
+namespace App\Http\Controllers\Admin;
 
 use App\Config;
 use App\Http\Controllers\Controller;

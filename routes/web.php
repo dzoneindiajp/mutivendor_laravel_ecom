@@ -166,53 +166,53 @@ Route::prefix('admin')->name('admin-')->group(function () {
          /* footer-subcategory routes */
 
          /* Lookups manager  module  routing start here */
-         Route::match(['get', 'post'], '/lookups-manager/{type}', [App\Http\Controllers\vrihatcpmaster\LookupsController::class, 'index'])->name('lookups-manager.index');
-         Route::match(['get', 'post'], '/lookups-manager/add/{type}', [App\Http\Controllers\vrihatcpmaster\LookupsController::class, 'add'])->name('lookups-manager.add');
-         Route::get('lookups-manager/destroy/{enlokid?}', [App\Http\Controllers\vrihatcpmaster\LookupsController::class, 'destroy'])->name('lookups-manager.delete');
-         Route::get('lookups-manager/update-status/{id}/{status}', [App\Http\Controllers\vrihatcpmaster\LookupsController::class, 'changeStatus'])->name('lookups-manager.status');
-         Route::match(['get', 'post'], 'lookups-manager/{type?}/edit/{enlokid?}', [App\Http\Controllers\vrihatcpmaster\LookupsController::class, 'update'])->name('lookups-manager.edit');
+         Route::match(['get', 'post'], '/lookups-manager/{type}', [App\Http\Controllers\Admin\LookupsController::class, 'index'])->name('lookups-manager.index');
+         Route::match(['get', 'post'], '/lookups-manager/add/{type}', [App\Http\Controllers\Admin\LookupsController::class, 'add'])->name('lookups-manager.add');
+         Route::get('lookups-manager/destroy/{enlokid?}', [App\Http\Controllers\Admin\LookupsController::class, 'destroy'])->name('lookups-manager.delete');
+         Route::get('lookups-manager/update-status/{id}/{status}', [App\Http\Controllers\Admin\LookupsController::class, 'changeStatus'])->name('lookups-manager.status');
+         Route::match(['get', 'post'], 'lookups-manager/{type?}/edit/{enlokid?}', [App\Http\Controllers\Admin\LookupsController::class, 'update'])->name('lookups-manager.edit');
          /* Lookups manager  module  routing start here */
 
          /* Lookups manager  module  routing start here */
-         Route::match(['get','post'],'seo-page-manager', [App\Http\Controllers\vrihatcpmaster\SeoPageController::class, 'index'])->name('SeoPage.index');
-         // Route::post('seo-page-manager', [App\Http\Controllers\vrihatcpmaster\SeoPageController::class, 'index'])->name('SeoPage.index');
-         Route::get('seo-page-manager/add-doc', [App\Http\Controllers\vrihatcpmaster\SeoPageController::class, 'addDoc'])->name('SeoPage.create');
-         Route::post('seo-page-manager/add-doc', [App\Http\Controllers\vrihatcpmaster\SeoPageController::class, 'saveDoc'])->name('SeoPage.save');
-         Route::get('seo-page-manager/edit-doc/{id}', [App\Http\Controllers\vrihatcpmaster\SeoPageController::class, 'editDoc'])->name('SeoPage.edit');
-         Route::post('seo-page-manager/edit-doc/{id}', [App\Http\Controllers\vrihatcpmaster\SeoPageController::class, 'updateDoc'])->name('SeoPage.update');
-         Route::any('seo-page-manager/delete-page/{id}', [App\Http\Controllers\vrihatcpmaster\SeoPageController::class, 'deletePage'])->name('SeoPage.delete');
+         Route::match(['get','post'],'seo-page-manager', [App\Http\Controllers\Admin\SeoPageController::class, 'index'])->name('SeoPage.index');
+         // Route::post('seo-page-manager', [App\Http\Controllers\Admin\SeoPageController::class, 'index'])->name('SeoPage.index');
+         Route::get('seo-page-manager/add-doc', [App\Http\Controllers\Admin\SeoPageController::class, 'addDoc'])->name('SeoPage.create');
+         Route::post('seo-page-manager/add-doc', [App\Http\Controllers\Admin\SeoPageController::class, 'saveDoc'])->name('SeoPage.save');
+         Route::get('seo-page-manager/edit-doc/{id}', [App\Http\Controllers\Admin\SeoPageController::class, 'editDoc'])->name('SeoPage.edit');
+         Route::post('seo-page-manager/edit-doc/{id}', [App\Http\Controllers\Admin\SeoPageController::class, 'updateDoc'])->name('SeoPage.update');
+         Route::any('seo-page-manager/delete-page/{id}', [App\Http\Controllers\Admin\SeoPageController::class, 'deletePage'])->name('SeoPage.delete');
 
           /** settings routing**/
-          Route::resource('settings', App\Http\Controllers\vrihatcpmaster\SettingsController::class);
-          Route::match(['get', 'post'], '/settings/prefix/{enslug?}', [App\Http\Controllers\vrihatcpmaster\SettingsController::class, 'prefix'])->name('settings.prefix');
-          Route::get('settings/destroy/{ensetid?}', [App\Http\Controllers\vrihatcpmaster\SettingsController::class, 'destroy'])->name('settings.delete');
+          Route::resource('settings', App\Http\Controllers\Admin\SettingsController::class);
+          Route::match(['get', 'post'], '/settings/prefix/{enslug?}', [App\Http\Controllers\Admin\SettingsController::class, 'prefix'])->name('settings.prefix');
+          Route::get('settings/destroy/{ensetid?}', [App\Http\Controllers\Admin\SettingsController::class, 'destroy'])->name('settings.delete');
           /** settings routing**/
 
           /* cms manager routes */
-          Route::resource('cms-manager', App\Http\Controllers\vrihatcpmaster\CmspagesController::class);
-          Route::get('cms-manager/destroy/{encmsid?}', [App\Http\Controllers\vrihatcpmaster\CmspagesController::class, 'destroy'])->name('cms-manager.delete');
+          Route::resource('cms-manager', App\Http\Controllers\Admin\CmspagesController::class);
+          Route::get('cms-manager/destroy/{encmsid?}', [App\Http\Controllers\Admin\CmspagesController::class, 'destroy'])->name('cms-manager.delete');
           //  cms manager routes
 
           /*Banner Route*/
-          Route::get('banner', [App\Http\Controllers\vrihatcpmaster\BannerController::class, 'index'])->name('Banner.index');
-          Route::get('slider-add', [App\Http\Controllers\vrihatcpmaster\BannerController::class, 'create'])->name('Banner.create');
-          Route::post('slider-save', [App\Http\Controllers\vrihatcpmaster\BannerController::class, 'save'])->name('Banner.save');
-          Route::get('slider-status/{id}/{status}', [App\Http\Controllers\vrihatcpmaster\BannerController::class, 'changeStatus'])->name('Banner.status');
-          Route::get('banner/{id}', [App\Http\Controllers\vrihatcpmaster\BannerController::class, 'edit'])->name('Banner.edit');
-          Route::post('slider-update/{id}', [App\Http\Controllers\vrihatcpmaster\BannerController::class, 'update'])->name('Banner.update');
-          Route::get('slider-delete/{id}', [App\Http\Controllers\vrihatcpmaster\BannerController::class, 'destroy'])->name('Banner.delete');
-          Route::get('sliders/show/{enuserid}', [App\Http\Controllers\vrihatcpmaster\BannerController::class, 'show'])->name('Banner.show');
+          Route::get('banner', [App\Http\Controllers\Admin\BannerController::class, 'index'])->name('Banner.index');
+          Route::get('slider-add', [App\Http\Controllers\Admin\BannerController::class, 'create'])->name('Banner.create');
+          Route::post('slider-save', [App\Http\Controllers\Admin\BannerController::class, 'save'])->name('Banner.save');
+          Route::get('slider-status/{id}/{status}', [App\Http\Controllers\Admin\BannerController::class, 'changeStatus'])->name('Banner.status');
+          Route::get('banner/{id}', [App\Http\Controllers\Admin\BannerController::class, 'edit'])->name('Banner.edit');
+          Route::post('slider-update/{id}', [App\Http\Controllers\Admin\BannerController::class, 'update'])->name('Banner.update');
+          Route::get('slider-delete/{id}', [App\Http\Controllers\Admin\BannerController::class, 'destroy'])->name('Banner.delete');
+          Route::get('sliders/show/{enuserid}', [App\Http\Controllers\Admin\BannerController::class, 'show'])->name('Banner.show');
           /*Banner Route*/
 
           /* Testimonial routes */
-          Route::match(['get', 'post'], '/testimonials', [App\Http\Controllers\vrihatcpmaster\TestimonialController::class, 'index'])->name('testimonials.index');
-          Route::match(['get', 'post'], '/testimonials/create', [App\Http\Controllers\vrihatcpmaster\TestimonialController::class, 'create'])->name('testimonials.create');
-          Route::match(['get', 'post'], '/testimonials/save', [App\Http\Controllers\vrihatcpmaster\TestimonialController::class, 'save'])->name('testimonials.save');
-          Route::match(['get', 'post'], '/testimonials/edit/{enuserid}', [App\Http\Controllers\vrihatcpmaster\TestimonialController::class, 'edit'])->name('testimonials.edit');
-          Route::match(['get', 'post'], '/testimonials/update/{enuserid}', [App\Http\Controllers\vrihatcpmaster\TestimonialController::class, 'update'])->name('testimonials.update');
-          Route::get('testimonials/show/{enuserid}', [App\Http\Controllers\vrihatcpmaster\TestimonialController::class, 'show'])->name('testimonials.show');
-          Route::get('testimonials/destroy/{enuserid?}', [App\Http\Controllers\vrihatcpmaster\TestimonialController::class, 'destroy'])->name('testimonials.delete');
-          Route::get('testimonials/update-status/{id}/{status}', [App\Http\Controllers\vrihatcpmaster\TestimonialController::class, 'changeStatus'])->name('testimonials.status');
+          Route::match(['get', 'post'], '/testimonials', [App\Http\Controllers\Admin\TestimonialController::class, 'index'])->name('testimonials.index');
+          Route::match(['get', 'post'], '/testimonials/create', [App\Http\Controllers\Admin\TestimonialController::class, 'create'])->name('testimonials.create');
+          Route::match(['get', 'post'], '/testimonials/save', [App\Http\Controllers\Admin\TestimonialController::class, 'save'])->name('testimonials.save');
+          Route::match(['get', 'post'], '/testimonials/edit/{enuserid}', [App\Http\Controllers\Admin\TestimonialController::class, 'edit'])->name('testimonials.edit');
+          Route::match(['get', 'post'], '/testimonials/update/{enuserid}', [App\Http\Controllers\Admin\TestimonialController::class, 'update'])->name('testimonials.update');
+          Route::get('testimonials/show/{enuserid}', [App\Http\Controllers\Admin\TestimonialController::class, 'show'])->name('testimonials.show');
+          Route::get('testimonials/destroy/{enuserid?}', [App\Http\Controllers\Admin\TestimonialController::class, 'destroy'])->name('testimonials.delete');
+          Route::get('testimonials/update-status/{id}/{status}', [App\Http\Controllers\Admin\TestimonialController::class, 'changeStatus'])->name('testimonials.status');
           /* Testimonial routes */
     });
 });

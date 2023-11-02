@@ -87,7 +87,7 @@
 
                                             <div class="col-xl-6">
                                                 <label for="image" class="form-label"><span class="text-danger">
-                                                    </span>Image</label>
+                                                    </span>Profile Picture</label>
                                                 <input type="file" class="form-control @error('profile_image') is-invalid @enderror" id="image" name="image">
                                                 @if (!empty($userDetails->image))
                                                     <img height="50" width="50" src="{{isset($userDetails->image)? $userDetails->image:''}}" />
@@ -105,6 +105,26 @@
                                                 @if ($errors->has('date_of_birth'))
                                                     <div class=" invalid-feedback">
                                                         {{ $errors->first('date_of_birth') }}
+                                                    </div>
+                                                @endif
+                                            </div>
+
+                                            <div class="col-xl-6">
+                                                <label for="password" class="form-label"><span class="text-danger"> </span>Password</label>
+                                                <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" value="{{ old('password') }}" placeholder="Password">
+                                                @if ($errors->has('password'))
+                                                    <div class=" invalid-feedback">
+                                                        {{ $errors->first('password') }}
+                                                    </div>
+                                                @endif
+                                            </div>
+
+                                            <div class="col-xl-6">
+                                                <label for="confirm_password" class="form-label"><span class="text-danger"> </span>Confirm Password</label>
+                                                <input type="password" class="form-control @error('confirm_password') is-invalid @enderror" id="confirm_password" name="confirm_password" value="{{old('confirm_password') }}" placeholder="Confirm Password">
+                                                @if ($errors->has('confirm_password'))
+                                                    <div class=" invalid-feedback">
+                                                        {{ $errors->first('confirm_password') }}
                                                     </div>
                                                 @endif
                                             </div>

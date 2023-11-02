@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\vrihatcpmaster;
+namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\SeoPage;
 use App\Models\SeoDescription;
@@ -11,7 +11,7 @@ use Auth,Blade,Config,Cache,Cookie,DB,File,Hash,Input,Redirect,Response,Session,
 *
 * Add your methods in the class below
 *
-* This file will render views from views/vrihatcpmaster
+* This file will render views from views/admin
 */
 class SeoPageController extends Controller {
 
@@ -155,7 +155,7 @@ function saveDoc(Request $request){
 		}
 			DB::commit();
 			Session::flash('flash_notice', trans("Seo page added successfully")); 
-			return Redirect::to('vrihatcpmaster/seo-page-manager');
+			return Redirect::to('admin/seo-page-manager');
 		}
       }
 	}//end saveBlock()
@@ -170,7 +170,7 @@ public function editDoc($Id){
 	$ids	= base64_decode($Id); 
 	$docs				=	SeoPage::where('id',$ids)->first();
 	if(empty($docs)) {
-		return Redirect::to('vrihatcpmaster/seo-page-manager');
+		return Redirect::to('admin/seo-page-manager');
 	}
 	 return  View::make('admin.SeoPage.edit',array('doc'=>$docs));
 	}// end editBlock()
@@ -184,7 +184,7 @@ public function editDoc($Id){
 function updateDoc($Id,Request $request){
 $docs				=	SeoPage::find($Id);
 	if(empty($docs)) {
-		return Redirect::to('vrihatcpmasterno-cms-manager');
+		return Redirect::to('admin/no-cms-manager');
 	}
 	$request->replace($this->arrayStripTags($request->all()));
 	$this_data				=	$request->all();
@@ -242,7 +242,7 @@ $docs				=	SeoPage::find($Id);
 		}		
 			DB::commit();
 			Session::flash('flash_notice',  trans("Seo page updated successfully")); 
-			return Redirect::intended('vrihatcpmaster/seo-page-manager');
+			return Redirect::intended('admin/seo-page-manager');
       }
 	}// end updateSeoPage()
 /**
@@ -264,7 +264,7 @@ public function updateDocStatus($Id = 0, $Status = 0){
 		}
 		$this->_update_all_status('seos',$Id,$Status);
 		Session::flash('flash_notice', $statusMessage); 
-		return Redirect::to('vrihatcpmaster/no-cms-manager');
+		return Redirect::to('admin/no-cms-manager');
 	}// end updateSeoPageStatus()
 /**
 * Function for delete seo 
@@ -278,7 +278,7 @@ public function deletePage($modelId, Request $request){
 	$ids	= base64_decode($modelId);
 		$delete_item = SeoPage::where('id',$ids)->update(array('is_deleted' => 1,));
       Session::flash('flash_notice', trans("Seo page has been removed successfully"));
-	  return Redirect::to('vrihatcpmaster/seo-page-manager');
+	  return Redirect::to('admin/seo-page-manager');
 	}// end deleteSeoPage()
 /**
 * Function for delete multiple seo
