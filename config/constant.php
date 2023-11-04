@@ -37,6 +37,18 @@ return [
 		'DEPARTMENTS_TITLE' 	=> "Departments",
 		'DEPARTMENT_TITLE' 		=> "Department",
 	],
+	'VARIANT' => [
+		'VARIANTS_TITLE' 	=> "Variants",
+		'VARIANT_TITLE' 		=> "Variant",
+	],
+	'SPECIFICATION' => [
+		'SPECIFICATIONS_TITLE' 	=> "Specifications",
+		'SPECIFICATION_TITLE' 		=> "Specification",
+	],
+	'SPECIFICATION_GROUP' => [
+		'SPECIFICATION_GROUPS_TITLE' 	=> "Specification Groups",
+		'SPECIFICATION_GROUP_TITLE' 		=> "Specification Group",
+	],
 	
 	'SETTING_FILE_PATH'	=> base_path() . "/" .'config'."/". 'settings.php',
 ];

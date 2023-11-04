@@ -265,5 +265,30 @@ Route::prefix('admin')->name('admin-')->group(function () {
           Route::get('testimonials/destroy/{enuserid?}', [App\Http\Controllers\Admin\TestimonialController::class, 'destroy'])->name('testimonials.delete');
           Route::get('testimonials/update-status/{id}/{status}', [App\Http\Controllers\Admin\TestimonialController::class, 'changeStatus'])->name('testimonials.status');
           /* Testimonial routes */
+
+        /** Variant routes **/
+        Route::match(['get', 'post'],'/variants', [App\Http\Controllers\Admin\VariantController::class, 'index'])->name('variants.index');
+        Route::post('/variants/add', [App\Http\Controllers\Admin\VariantController::class, 'store'])->name('variants.store');
+        Route::resource('variants', App\Http\Controllers\Admin\VariantController::class)->except(['index', 'store']);
+         Route::get('variants/update-status/{id}/{status}', [App\Http\Controllers\Admin\VariantController::class, 'changeStatus'])->name('variants.status');
+         Route::get('variants/destroy/{endepid?}', [App\Http\Controllers\Admin\VariantController::class, 'destroy'])->name('variants.delete');
+         /* Variant routes */
+
+         /** Specification Group routes **/
+         Route::match(['get', 'post'],'/specification-groups', [App\Http\Controllers\Admin\SpecificationGroupController::class, 'index'])->name('specification_groups.index');
+         Route::post('/specification-groups/add', [App\Http\Controllers\Admin\SpecificationGroupController::class, 'store'])->name('specification_groups.store');
+         Route::resource('specification-groups', App\Http\Controllers\Admin\SpecificationGroupController::class)->except(['index', 'store']);
+         Route::get('specification-groups/update-status/{id}/{status}', [App\Http\Controllers\Admin\SpecificationGroupController::class, 'changeStatus'])->name('specification_groups.status');
+         Route::get('specification-groups/destroy/{endepid?}', [App\Http\Controllers\Admin\SpecificationGroupController::class, 'destroy'])->name('specification_groups.delete');
+         /* Specification Group routes */
+
+         /**  Specification routes **/
+         Route::match(['get', 'post'], '/specifications/{endesid?}', [App\Http\Controllers\Admin\SpecificationController::class, 'index'])->name('specifications.index');
+         Route::match(['get', 'post'], 'specifications/add/{endesid?}', [App\Http\Controllers\Admin\SpecificationController::class, 'add'])->name('specifications.add');
+         Route::match(['get', 'post'], 'specifications/edit/{endesid?}', [App\Http\Controllers\Admin\SpecificationController::class, 'update'])->name('specifications.edit');
+         Route::get('specifications/update-status/{id}/{status}', [App\Http\Controllers\Admin\SpecificationController::class, 'changeStatus'])->name('specifications.status');
+         Route::get('specifications/delete/{endesid?}', [App\Http\Controllers\Admin\SpecificationController::class, 'delete'])->name('specifications.delete');
+         /* Specification routes */
+
     });
 });
