@@ -14,6 +14,10 @@ return [
 	'STAFF_IMAGE_PATH'                       => $WEBSITE_URL.'public/uploads/staffs/',
 	'STAFF_IMAGE_ROOT_PATH'                       => 'public/uploads/staffs/',
 	'STAFF_IMAGE_URL'                       => url('/').'/public/uploads/staffs/',
+
+	'CATEGORY_IMAGE_PATH'                       => $WEBSITE_URL.'public/uploads/categories/',
+	'CATEGORY_IMAGE_ROOT_PATH'                       => 'public/uploads/categories/',
+	'CATEGORY_IMAGE_URL'                       => url('/').'/public/uploads/categories/',
 	
     'ACL' => [
 		'ACLS_TITLE' => "Acl",

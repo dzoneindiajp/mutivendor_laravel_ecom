@@ -12,7 +12,7 @@
         <nav>
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('admin-dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Crate Option Value</li>
+                <li class="breadcrumb-item active" aria-current="page">Create Option Value</li>
             </ol>
         </nav>
     </div>
@@ -22,7 +22,7 @@
     <div class="card custom-card">
         <div class="card-header">
             <div class="card-title">
-                Crate Option Value
+                Create Option Value
             </div>
         </div>
         <form action="{{ route('admin-product-options-values-store') }}" method="post" id="productOptionValuesForm">

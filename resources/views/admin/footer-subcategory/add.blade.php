@@ -14,7 +14,7 @@
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('admin-dashboard') }}">Home</a></li>
                 <li class="breadcrumb-item"><a href="{{  route('admin-footer-category.index')}}">Footer Categories</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Crate Footer Subcategory</li>
+                <li class="breadcrumb-item active" aria-current="page">Create Footer Subcategory</li>
             </ol>
         </nav>
     </div>
@@ -24,7 +24,7 @@
 <div class="card custom-card">
     <div class="card-header">
         <div class="card-title">
-            Crate Footer Subcategory
+            Create Footer Subcategory
         </div>
     </div>
     <form action="{{route('admin-'.$model.'.add',['endesid'=>base64_encode($dep_id)])}}" method="post"

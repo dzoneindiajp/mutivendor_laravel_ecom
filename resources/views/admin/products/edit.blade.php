@@ -41,8 +41,8 @@
                                             <div class="col-xl-12">
                                                 <label for="product-name-add" class="form-label"><span
                                                         class="text-danger">* </span>Product Name</label>
-                                                <input type="text" class="form-control" id="name" name="name"
-                                                    placeholder="Name" value="{{ $product->name }}">
+                                                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter Name" onkeyup="editDisplaySlug($(this))" value="{{ $product->name }}">
+                                                    <h6 class="edit-product-slug mt-2"></h6>
                                             </div>
 
                                             <div class="col-xl-12">

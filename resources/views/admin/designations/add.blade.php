@@ -14,7 +14,7 @@
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('admin-dashboard') }}">Home</a></li>
                 <li class="breadcrumb-item"><a href="{{  route('admin-departments.index')}}">Departments</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Crate Designation</li>
+                <li class="breadcrumb-item active" aria-current="page">Create Designation</li>
             </ol>
         </nav>
     </div>
@@ -24,7 +24,7 @@
 <div class="card custom-card">
     <div class="card-header">
         <div class="card-title">
-            Crate Designation
+            Create Designation
         </div>
     </div>
     <form action="{{route('admin-'.$model.'.add',['endesid'=>base64_encode($dep_id)])}}" method="post"

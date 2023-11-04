@@ -8,14 +8,14 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Models\Language;
 use App\Models\Cms;
-use App\Models\CmsDescription;
 
 class CmspagesController extends Controller
 {
     public $model = 'cms-manager';
     public function __construct(Request $request){
-        parent::__construct();
-        View()->share('modelName', $this->model);
+        $this->listRouteName = 'admin-cms-manager.index';
+        View()->share('model', $this->model);
+        View()->share('listRouteName', $this->listRouteName);
         $this->request = $request;
     }
     public function index(Request $request)
@@ -51,35 +51,35 @@ class CmspagesController extends Controller
         }
         $sortBy = ($request->input('sortBy')) ? $request->input('sortBy') : 'created_at';
         $order = ($request->input('order')) ? $request->input('order') : 'DESC';
-        $records_per_page = ($request->input('per_page')) ? $request->input('per_page') : Config("Reading.records_per_page");
-        $results = $DB->orderBy($sortBy, $order)->paginate($records_per_page);
-        $complete_string = $request->query();
-        unset($complete_string["sortBy"]);
-        unset($complete_string["order"]);
-        $query_string = http_build_query($complete_string);
-        $results->appends($inputGet)->render();
-        return View("admin.$this->model.index", compact('results', 'searchVariable', 'sortBy', 'order', 'query_string'));
+        $offset = !empty($request->input('offset')) ? $request->input('offset') : 0 ;
+        $limit =  !empty($request->input('limit')) ? $request->input('limit') : Config("Reading.records_per_page"); 
+
+        $results = $DB->orderBy($sortBy, $order)->offset($offset)->limit($limit)->get();
+        $totalResults = $DB->count();
+
+        if($request->ajax()){
+
+            return  View("admin.$this->model.load_more_data", compact('results','totalResults'));
+        }else{
+            
+            return  View("admin.$this->model.index", compact('results','totalResults'));
+        }
     }
 
 
     public function create()
     {
-        $languages = Language::where('is_active', 1)->get();
-        $language_code = Config('constants.DEFAULT_LANGUAGE.LANGUAGE_ID');
-        return View("admin.$this->model.add", compact('languages', 'language_code'));
+        return View("admin.$this->model.add");
     }
 
     public function store(Request $request)
     {
             $thisData                       =    $request->all();
-            $default_language           =    Config('constants.DEFAULT_LANGUAGE.FOLDER_CODE');
-            $language_code              =   Config('constants.DEFAULT_LANGUAGE.LANGUAGE_ID');
-            $dafaultLanguageArray       =    $thisData['data'][$language_code];
             $validator = Validator::make(
                 array(
                     'page_name'         => $request->input('page_name'),
-                    'title'             => $dafaultLanguageArray['title'],
-                    'body'              => $dafaultLanguageArray['body'],
+                    'title'             => $request->input('title'),
+                    'body'              => $request->input('body'),
                 ),
                 array(
                     'page_name'         => 'required',
@@ -93,21 +93,12 @@ class CmspagesController extends Controller
                 $obj = new Cms;
                 $obj->page_name = $request->input('page_name');
                 $obj->slug     = $this->getSlug($request->input('page_name'),'slug',"Cms");
-                $obj->title     = $dafaultLanguageArray['title'];
-                $obj->body      = $dafaultLanguageArray['body'];
+                $obj->title     = $request->input('title');
+                $obj->body      = $request->input('body');
                 $obj->save();
                 $lastId = $obj->id;
-                if (!empty($thisData)) {
-                    foreach ($thisData['data'] as $language_id => $value) {
-                        $subObj                 = new CmsDescription();
-                        $subObj->language_id    = $language_id;
-                        $subObj->parent_id      = $lastId;
-                        $subObj->title          = $value['title'];
-                        $subObj->body           = $value['body'];
-                        $subObj->save();
-                    }
-                }
-                Session()->flash('success', Config('constants.CMS_MANAGER.CMS_PAGE_TITLE') . " has been added successfully");
+                
+                Session()->flash('success',"Cms has been added successfully");
                 return Redirect()->route($this->model . ".index");
             }
     }
@@ -130,20 +121,11 @@ class CmspagesController extends Controller
     public function edit($encmsid)
     {
         $cms_id = '';
-        $multiLanguage =    array();
         if (!empty($encmsid)) {
             $cms_id = base64_decode($encmsid);
             $cmsDetails         =   Cms::find($cms_id);
-            $cmsdescriptiondetl = CmsDescription::where('parent_id', $cms_id)->get();
-            if (!empty($cmsdescriptiondetl)) {
-                foreach ($cmsdescriptiondetl as $description) {
-                    $multiLanguage[$description->language_id]['title']    =    $description->title;
-                    $multiLanguage[$description->language_id]['body']    =    $description->body;
-                }
-            }
-            $languages = Language::where('is_active', 1)->get();
-            $language_code = Config('constants.DEFAULT_LANGUAGE.LANGUAGE_ID');
-            return View("admin.$this->model.edit", compact('multiLanguage', 'cmsdescriptiondetl', 'cmsDetails', 'languages', 'language_code'));
+            
+            return View("admin.$this->model.edit", compact('cmsDetails'));
 
         }else{
             return Redirect()->route($this->model . ".index");
@@ -157,14 +139,11 @@ class CmspagesController extends Controller
         if (!empty($encmsid)) {
             $cms_id = base64_decode($encmsid);
             $thisData                    =    $request->all();
-            $default_language            =    Config('constants.DEFAULT_LANGUAGE.FOLDER_CODE');
-            $language_code                 =   Config('constants.DEFAULT_LANGUAGE.LANGUAGE_ID');
-            $dafaultLanguageArray        =    $thisData['data'][$language_code];
             $validator = Validator::make(
                 array(
-                    'page_name'         => $request->input("page_name"),
-                    'title'             => $dafaultLanguageArray['title'],
-                    'body'                => $dafaultLanguageArray['body'],
+                    'page_name'         => $request->input('page_name'),
+                    'title'             => $request->input('title'),
+                    'body'              => $request->input('body'),
                 ),
                 array(
                     'page_name'         => 'required',
@@ -178,22 +157,12 @@ class CmspagesController extends Controller
                 $obj   =   Cms::find($cms_id);
                 $obj->page_name             = $request->input('page_name');
                 $obj->slug                  = $this->getSlug($request->input('page_name'),'slug',"Cms");
-                $obj->title                 = $dafaultLanguageArray['title'];
-                $obj->body                  = $dafaultLanguageArray['body'];
+                $obj->title                 = $request->input('title');
+                $obj->body                  = $request->input('body');
                 $obj->save();
                 $lastId                     =    $obj->id;
-                CmsDescription::where("parent_id", $lastId)->delete();
-                if (!empty($thisData)) {
-                    foreach ($thisData['data'] as $language_id => $value) {
-                        $subObj                =    new CmsDescription();
-                        $subObj->language_id   =    $language_id;
-                        $subObj->parent_id     =    $lastId;
-                        $subObj->title         =    $value['title'];
-                        $subObj->body          =    $value['body'];
-                        $subObj->save();
-                    }
-                }
-                Session()->flash('success', Config('constants.CMS_MANAGER.CMS_PAGE_TITLE') .  " has been updated successfully");
+                
+                Session()->flash('success', "Cms has been updated successfully");
                 return Redirect()->route($this->model . ".index");
             }
         
@@ -218,8 +187,7 @@ class CmspagesController extends Controller
         
         if ($CmsDetails) {
             $CmsDetails->delete();
-            CmsDescription::where("parent_id", $cms_id)->delete();
-            Session()->flash('flash_notice', trans(Config('constants.CMS_MANAGER.CMS_PAGE_TITLE') . " has been removed successfully"));
+            Session()->flash('flash_notice', trans("Cms has been removed successfully"));
         }
         return back();
     }

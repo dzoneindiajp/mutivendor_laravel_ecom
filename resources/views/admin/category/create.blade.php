@@ -13,7 +13,7 @@
         <nav>
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('admin-dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Crate Category</li>
+                <li class="breadcrumb-item active" aria-current="page">Create Category</li>
             </ol>
         </nav>
     </div>
@@ -23,42 +23,54 @@
 <div class="card custom-card">
     <div class="card-header">
         <div class="card-title">
-            Crate Category
+            Create Category
         </div>
     </div>
-    <form action="{{ route('admin-product-categories-category-store') }}" method="post" id="categoryForm">
+    <form action="{{ route('admin-category.store') }}" method="post" id="categoryForm" enctype="multipart/form-data">
         @csrf
         <div class="card-body">
             <div class="row">
                 <div class="col-xl-6">
                     <div class="card-body p-0">
                         <div class="mb-3">
-                            <label for="category" class="form-label"><span class="text-danger">* </span>Category</label>
-                            <input type="text" class="form-control" id="name" name="name" placeholder="Enter Category"
+                            <label for="name" class="form-label"><span class="text-danger">* </span>Name</label>
+                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="Enter Name"
                                 onkeyup="displaySlug($(this))">
                             <h6 class="category-slug mt-2"></h6>
+                            @if ($errors->has('name'))
+                            <div class="invalid-feedback">
+                                {{ $errors->first('name') }}
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
                 <div class="col-xl-6">
-                    <div class="card-body p-0">
-                        <div class="col-xl-12">
-                            <label for="meta_title" class="form-label">Meta Title</label>
-                            <input type="text" class="form-control" id="meta_title"
-                                name="meta_title" placeholder="Meta TItle">
-                        </div>
-                        <div class="col-xl-12 mt-3">
-                            <label for="meta_description" class="form-label">Meta Description</label>
-                            <textarea class="form-control" name="meta_description"
-                                id="meta_description" cols="30" rows="5"></textarea>
-                        </div>
-                        <div class="col-xl-12 mt-3">
-                            <label for="meta_keywords" class="form-label">Meta Keywords</label>
-                            <input type="text" class="form-control" id="meta_keywords"
-                                name="meta_keywords" placeholder="Meta Keywords">
-                        </div>
+                    <label for="image" class="form-label"><span class="text-danger">
+                        </span>Image</label>
+                    <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image">
+                    @if ($errors->has('image'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('image') }}
                     </div>
+                    @endif
                 </div>
+                <div class="col-xl-6">
+                    <label for="meta_title" class="form-label">Meta Title</label>
+                    <input type="text" class="form-control" id="meta_title"
+                        name="meta_title" placeholder="Meta TItle">
+                </div>
+                <div class="col-xl-6">
+                    <label for="meta_keywords" class="form-label">Meta Keywords</label>
+                    <input type="text" class="form-control" id="meta_keywords"
+                        name="meta_keywords" placeholder="Meta Keywords">
+                </div>
+                <div class="col-xl-6 mt-3">
+                    <label for="meta_description" class="form-label">Meta Description</label>
+                    <textarea class="form-control" name="meta_description"
+                        id="meta_description" cols="30" rows="5"></textarea>
+                </div>
+                
             </div>
         </div>
         <div class="px-4 py-3 border-top border-block-start-dashed d-sm-flex justify-content-end">

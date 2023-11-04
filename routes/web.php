@@ -73,43 +73,82 @@ Route::prefix('admin')->name('admin-')->group(function () {
                 Route::delete('delete/{token}', [ProductValuesController::class, 'destory'])->name('delete');
             });
 
-            Route::name('categories-')->group(function () {
-                Route::prefix('category')->name('category-')->group(function () {
-                    Route::get('list', [CategoryController::class, 'index'])->name('list');
-                    Route::get('create', [CategoryController::class, 'create'])->name('create');
-                    Route::post('store', [CategoryController::class, 'store'])->name('store');
-                    Route::get('edit/{token}', [CategoryController::class, 'edit'])->name('edit');
-                    Route::post('update/{token}', [CategoryController::class, 'update'])->name('update');
-                    Route::delete('delete/{token}', [CategoryController::class, 'destory'])->name('delete');
-                });
+            // Route::name('categories-')->group(function () {
+                
 
-                Route::prefix('sub-category')->name('sub-category-')->group(function () {
-                    Route::get('list', [SubCategoryController::class, 'index'])->name('list');
-                    Route::get('create', [SubCategoryController::class, 'create'])->name('create');
-                    Route::post('store', [SubCategoryController::class, 'store'])->name('store');
-                    Route::get('edit/{token}', [SubCategoryController::class, 'edit'])->name('edit');
-                    Route::post('update/{token}', [SubCategoryController::class, 'update'])->name('update');
-                    Route::delete('delete/{token}', [SubCategoryController::class, 'destory'])->name('delete');
-                });
+            //     // Route::prefix('sub-category')->name('sub-category-')->group(function () {
+            //     //     Route::get('list', [SubCategoryController::class, 'index'])->name('list');
+            //     //     Route::get('create', [SubCategoryController::class, 'create'])->name('create');
+            //     //     Route::post('store', [SubCategoryController::class, 'store'])->name('store');
+            //     //     Route::get('edit/{token}', [SubCategoryController::class, 'edit'])->name('edit');
+            //     //     Route::post('update/{token}', [SubCategoryController::class, 'update'])->name('update');
+            //     //     Route::delete('delete/{token}', [SubCategoryController::class, 'destory'])->name('delete');
+            //     // });
 
-                Route::prefix('child-category')->name('child-category-')->group(function () {
-                    Route::get('list', [ChildCategoryController::class, 'index'])->name('list');
-                    Route::get('create', [ChildCategoryController::class, 'create'])->name('create');
-                    Route::post('store', [ChildCategoryController::class, 'store'])->name('store');
-                    Route::get('edit/{token}', [ChildCategoryController::class, 'edit'])->name('edit');
-                    Route::post('update/{token}', [ChildCategoryController::class, 'update'])->name('update');
-                    Route::delete('delete/{token}', [ChildCategoryController::class, 'destory'])->name('delete');
-                    Route::get('child-sub-category-list', [ChildCategoryController::class, 'childSubCategories'])->name('child-sub-category-list');
-                });
+            //     Route::prefix('child-category')->name('child-category-')->group(function () {
+            //         Route::get('list', [ChildCategoryController::class, 'index'])->name('list');
+            //         Route::get('create', [ChildCategoryController::class, 'create'])->name('create');
+            //         Route::post('store', [ChildCategoryController::class, 'store'])->name('store');
+            //         Route::get('edit/{token}', [ChildCategoryController::class, 'edit'])->name('edit');
+            //         Route::post('update/{token}', [ChildCategoryController::class, 'update'])->name('update');
+            //         Route::delete('delete/{token}', [ChildCategoryController::class, 'destory'])->name('delete');
+            //         Route::get('child-sub-category-list', [ChildCategoryController::class, 'childSubCategories'])->name('child-sub-category-list');
+            //     });
 
                 
-            });
+            // });
         });
 
+         /** category routes **/
+         Route::match(['get', 'post'], '/category', [App\Http\Controllers\Admin\CategoryController::class, 'index'])->name('category.index');
+          Route::match(['get', 'post'], '/category/create', [App\Http\Controllers\Admin\CategoryController::class, 'create'])->name('category.create');
+          Route::match(['get', 'post'], '/category/save', [App\Http\Controllers\Admin\CategoryController::class, 'store'])->name('category.store');
+          Route::match(['get', 'post'], '/category/edit/{enuserid}', [App\Http\Controllers\Admin\CategoryController::class, 'edit'])->name('category.edit');
+          Route::match(['get', 'post'], '/category/update/{enuserid}', [App\Http\Controllers\Admin\CategoryController::class, 'update'])->name('category.update');
+          Route::get('category/show/{enuserid}', [App\Http\Controllers\Admin\CategoryController::class, 'show'])->name('category.show');
+        //  Route::resource('category', App\Http\Controllers\Admin\CategoryController::class);
+         Route::get('category/update-status/{id}/{status}', [App\Http\Controllers\Admin\CategoryController::class, 'changeStatus'])->name('category.status');
+         Route::get('category/destroy/{endepid?}', [App\Http\Controllers\Admin\CategoryController::class, 'destroy'])->name('category.delete');
+         // /* category routes */
+
+        /** brand routes **/
+        Route::match(['get', 'post'], '/brand', [App\Http\Controllers\Admin\BrandController::class, 'index'])->name('brand.index');
+        Route::match(['get', 'post'], '/brand/create', [App\Http\Controllers\Admin\BrandController::class, 'create'])->name('brand.create');
+        Route::match(['get', 'post'], '/brand/save', [App\Http\Controllers\Admin\BrandController::class, 'store'])->name('brand.store');
+        Route::match(['get', 'post'], '/brand/edit/{enuserid}', [App\Http\Controllers\Admin\BrandController::class, 'edit'])->name('brand.edit');
+        Route::match(['get', 'post'], '/brand/update/{enuserid}', [App\Http\Controllers\Admin\BrandController::class, 'update'])->name('brand.update');
+        Route::get('brand/show/{enuserid}', [App\Http\Controllers\Admin\BrandController::class, 'show'])->name('brand.show');
+        //  Route::resource('brand', App\Http\Controllers\Admin\BrandController::class);
+         Route::get('brand/update-status/{id}/{status}', [App\Http\Controllers\Admin\BrandController::class, 'changeStatus'])->name('brand.status');
+         Route::get('brand/destroy/{id?}', [App\Http\Controllers\Admin\BrandController::class, 'destroy'])->name('brand.delete');
+         // /* brand routes */
+
+         /**  SubCategory routes **/
+         Route::match(['get', 'post'], '/sub-category/{endesid?}', [App\Http\Controllers\Admin\SubCategoryController::class, 'index'])->name('sub-category.index');
+         Route::match(['get', 'post'], 'sub-category/add/{endesid?}', [App\Http\Controllers\Admin\SubCategoryController::class, 'add'])->name('sub-category.add');
+         Route::match(['get', 'post'], 'sub-category/edit/{endesid?}', [App\Http\Controllers\Admin\SubCategoryController::class, 'update'])->name('sub-category.edit');
+         Route::get('sub-category/update-status/{id}/{status}', [App\Http\Controllers\Admin\SubCategoryController::class, 'changeStatus'])->name('sub-category.status');
+         Route::get('sub-category/delete/{endesid?}', [App\Http\Controllers\Admin\SubCategoryController::class, 'delete'])->name('sub-category.delete');
+         /* SubCategory routes */
+
+         /**  ChildCategory routes **/
+         Route::match(['get', 'post'], '/child-category/{endesid?}', [App\Http\Controllers\Admin\ChildCategoryController::class, 'index'])->name('child-category.index');
+         Route::match(['get', 'post'], 'child-category/add/{endesid?}', [App\Http\Controllers\Admin\ChildCategoryController::class, 'add'])->name('child-category.add');
+         Route::match(['get', 'post'], 'child-category/edit/{endesid?}', [App\Http\Controllers\Admin\ChildCategoryController::class, 'update'])->name('child-category.edit');
+         Route::get('child-category/update-status/{id}/{status}', [App\Http\Controllers\Admin\ChildCategoryController::class, 'changeStatus'])->name('child-category.status');
+         Route::get('child-category/delete/{endesid?}', [App\Http\Controllers\Admin\ChildCategoryController::class, 'delete'])->name('child-category.delete');
+         /* ChildCategory routes */
+
          /** Department routes **/
-         Route::resource('departments', App\Http\Controllers\Admin\DepartmentsController::class);
-         Route::get('departments/update-status/{id}/{status}', [App\Http\Controllers\Admin\DepartmentsController::class, 'changeStatus'])->name('departments.status');
-         Route::get('departments/destroy/{endepid?}', [App\Http\Controllers\Admin\DepartmentsController::class, 'destroy'])->name('departments.delete');
+        //  Route::resource('departments', App\Http\Controllers\Admin\DepartmentsController::class);
+        Route::match(['get', 'post'], '/departments', [App\Http\Controllers\Admin\DepartmentsController::class, 'index'])->name('departments.index');
+        Route::match(['get', 'post'], '/departments/create', [App\Http\Controllers\Admin\DepartmentsController::class, 'create'])->name('departments.create');
+        Route::match(['get', 'post'], '/departments/save', [App\Http\Controllers\Admin\DepartmentsController::class, 'store'])->name('departments.store');
+        Route::match(['get', 'post'], '/departments/edit/{enuserid}', [App\Http\Controllers\Admin\DepartmentsController::class, 'edit'])->name('departments.edit');
+        Route::match(['get', 'post'], '/departments/update/{enuserid}', [App\Http\Controllers\Admin\DepartmentsController::class, 'update'])->name('departments.update');
+        Route::get('departments/show/{enuserid}', [App\Http\Controllers\Admin\DepartmentsController::class, 'show'])->name('departments.show');
+        Route::get('departments/update-status/{id}/{status}', [App\Http\Controllers\Admin\DepartmentsController::class, 'changeStatus'])->name('departments.status');
+        Route::get('departments/destroy/{endepid?}', [App\Http\Controllers\Admin\DepartmentsController::class, 'destroy'])->name('departments.delete');
          // /* Department routes */
 
          /**  Designations routes **/
@@ -121,7 +160,13 @@ Route::prefix('admin')->name('admin-')->group(function () {
          /* Designations routes */
 
          /* staff routes */
-         Route::resource('staff', App\Http\Controllers\Admin\StaffController::class);
+        //  Route::resource('staff', App\Http\Controllers\Admin\StaffController::class);
+        Route::match(['get', 'post'], '/staff', [App\Http\Controllers\Admin\StaffController::class, 'index'])->name('staff.index');
+        Route::match(['get', 'post'], '/staff/create', [App\Http\Controllers\Admin\StaffController::class, 'create'])->name('staff.create');
+        Route::match(['get', 'post'], '/staff/save', [App\Http\Controllers\Admin\StaffController::class, 'store'])->name('staff.store');
+        Route::match(['get', 'post'], '/staff/edit/{enuserid}', [App\Http\Controllers\Admin\StaffController::class, 'edit'])->name('staff.edit');
+        Route::match(['get', 'post'], '/staff/update/{enuserid}', [App\Http\Controllers\Admin\StaffController::class, 'update'])->name('staff.update');
+        Route::get('staff/show/{enuserid}', [App\Http\Controllers\Admin\StaffController::class, 'show'])->name('staff.show');
          Route::get('staff/update-status/{id}/{status}', [App\Http\Controllers\Admin\StaffController::class, 'changeStatus'])->name('staff.status');
          Route::get('staff/destroy/{enstfid?}', [App\Http\Controllers\Admin\StaffController::class, 'destroy'])->name('staff.delete');
          Route::match(['get', 'post'], 'staff/changed-password/{enstfid?}', [App\Http\Controllers\Admin\StaffController::class, 'changedPassword'])->name('staff.changerpassword');
@@ -189,7 +234,13 @@ Route::prefix('admin')->name('admin-')->group(function () {
           /** settings routing**/
 
           /* cms manager routes */
-          Route::resource('cms-manager', App\Http\Controllers\Admin\CmspagesController::class);
+        //   Route::resource('cms-manager', App\Http\Controllers\Admin\CmspagesController::class);
+          Route::match(['get', 'post'], '/cms-manager', [App\Http\Controllers\Admin\CmspagesController::class, 'index'])->name('cms-manager.index');
+          Route::match(['get', 'post'], '/cms-manager/create', [App\Http\Controllers\Admin\CmspagesController::class, 'create'])->name('cms-manager.create');
+          Route::match(['get', 'post'], '/cms-manager/save', [App\Http\Controllers\Admin\CmspagesController::class, 'store'])->name('cms-manager.store');
+          Route::match(['get', 'post'], '/cms-manager/edit/{enuserid}', [App\Http\Controllers\Admin\CmspagesController::class, 'edit'])->name('cms-manager.edit');
+          Route::match(['get', 'post'], '/cms-manager/update/{enuserid}', [App\Http\Controllers\Admin\CmspagesController::class, 'update'])->name('cms-manager.update');
+          Route::get('cms-manager/show/{enuserid}', [App\Http\Controllers\Admin\CmspagesController::class, 'show'])->name('cms-manager.show');
           Route::get('cms-manager/destroy/{encmsid?}', [App\Http\Controllers\Admin\CmspagesController::class, 'destroy'])->name('cms-manager.delete');
           //  cms manager routes
 

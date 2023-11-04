@@ -72,12 +72,14 @@ class FooterCategoryController extends Controller
         return view("admin.$this->model.add");
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $validated = $request->validate([
             'name' => 'required'
         ]);
         $obj           =  new FooterCategory;
         $obj->name     =  $request->name;
+        $obj->is_active     =  !empty($request->is_show) ? $request->is_show : 0;
         $SavedResponse =      $obj->save();
         if (!$SavedResponse) {
             Session()->flash('error', trans("Something went wrong."));
@@ -88,7 +90,8 @@ class FooterCategoryController extends Controller
         }
     }
 
-    public function edit($endepid){
+    public function edit($endepid)
+    {
         $dep_id = '';
         if (!empty($endepid)) {
             $dep_id = base64_decode($endepid);
@@ -99,7 +102,8 @@ class FooterCategoryController extends Controller
         }
     }
 
-    public function update(Request $request, $endepid){
+    public function update(Request $request, $endepid)
+    {
         $dep_id = '';
         if (!empty($endepid)) {
             $dep_id = base64_decode($endepid);
@@ -111,6 +115,7 @@ class FooterCategoryController extends Controller
         ]);
         $obj           =  FooterCategory::find($dep_id);
         $obj->name     =  $request->name;
+        $obj->is_active     =  !empty($request->is_show) ? $request->is_show : 0;
         $SavedResponse =  $obj->save();
         if (!$SavedResponse) {
             Session()->flash('error', trans("Something went wrong."));

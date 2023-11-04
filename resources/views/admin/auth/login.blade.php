@@ -21,17 +21,23 @@
                         <div class="row gy-3">
                             <div class="col-xl-12">
                                 <label for="email" class="form-label text-default">Email</label>
-                                <input type="text" class="form-control form-control-lg" id="email" name="email"
-                                    placeholder="Enter Email">
+                                <input type="text" class="form-control form-control-lg @error('email') is-invalid @enderror" id="email" name="email" placeholder="Enter Email" value="{{old('email')}}">
+                                @if ($errors->has('email'))
+                                <div class="invalid-feedback">
+                                    {{ $errors->first('email') }}
+                                </div>
+                                @endif
                             </div>
                             <div class="col-xl-12 mb-2">
                                 <label for="password" class="form-label text-default d-block">Password</label>
                                 <div class="input-group">
-                                    <input type="password" class="form-control form-control-lg" id="password" name="password"
-                                        placeholder="password">
+                                    <input type="password" class="form-control form-control-lg @error('password') is-invalid @enderror" id="password" name="password" placeholder="password" value="" autocomplete="false">
                                     <button class="btn btn-light" type="button"
                                         onclick="createpassword('signin-password',this)" id="button-addon2"><i
                                             class="ri-eye-off-line align-middle"></i></button>
+                                    @if ($errors->has('password'))
+                                    <div class="invalid-feedback">{{ $errors->first('password') }}</div>
+                                    @endif
                                 </div>
                                 <div class="mt-2">
                                     <div class="form-check">

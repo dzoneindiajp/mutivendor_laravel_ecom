@@ -41,8 +41,8 @@
                                             <div class="col-xl-12">
                                                 <label for="product-name-add" class="form-label"><span
                                                         class="text-danger">* </span>Product Name</label>
-                                                <input type="text" class="form-control" id="name" name="name"
-                                                    placeholder="Name">
+                                                <input type="text" class="form-control" id="name" name="name" placeholder="Enter Name" onkeyup="displaySlug($(this))">
+                                                <h6 class="product-slug mt-2"></h6>
                                             </div>
 
                                             <div class="col-xl-12">

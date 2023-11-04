@@ -69,4 +69,17 @@ class Controller extends BaseController
 		$password = substr( str_shuffle( $chars ), 0, 9 );
 		return $password;
 	}
+
+	public function getSlug($title, $fieldName,$modelName,$limit = 30){
+		$slug 		= 	 substr(Str::slug($title),0 ,$limit);
+		$Model		=	 "\App\Models\\$modelName";
+		$slugCount 	=    count($Model::where($fieldName, $slug)->get());
+		if($slugCount > 0){
+			$slugCount 	=    count($Model::where($fieldName,"LIKE", "%".$slug."%")->get());
+			return $slug."-".$slugCount;
+		}else {
+			return $slug;
+		}
+		
+	}//end getSlug()
 }

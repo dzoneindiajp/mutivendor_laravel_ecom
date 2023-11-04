@@ -88,7 +88,7 @@
                                             <div class="col-xl-6">
                                                 <label for="image" class="form-label"><span class="text-danger">
                                                     </span>Profile Picture</label>
-                                                <input type="file" class="form-control @error('profile_image') is-invalid @enderror" id="image" name="image">
+                                                <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image">
                                                 @if (!empty($userDetails->image))
                                                     <img height="50" width="50" src="{{isset($userDetails->image)? $userDetails->image:''}}" />
                                                 @endif
