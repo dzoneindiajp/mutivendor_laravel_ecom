@@ -31,6 +31,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" class="svg-info" viewBox="0 0 128 128"><path d="M64 128C28.7 128 0 99.3 0 64S28.7 0 64 0s64 28.7 64 64-28.7 64-64 64z"/><path fill="#fff" d="M94.3 71.4c-.5-3.6-2.3-6.4-5.4-8.2-1.4-.8-3.1-1.4-4.7-2.1.2-.1.3-.3.4-.3 7.9-4.1 7.2-16.3 1.5-20.5-2.3-1.7-4.9-2.8-7.7-3.4-2-.4-3.9-.7-6-1.1 0-3.5.1-8.5.1-12.4H65c0 3.8-.1 8.7-.1 12.1H59c0-3.5 0-8.3.1-12.1h-7.4c0 4-.1 8.8-.1 12.3-5.1 0-10-.1-15-.1 0 2.7 0 5.3-.1 7.9h3c.9 0 1.9 0 2.8.1 2.6.2 3.9 1.6 3.9 4.2l-.3 31.9c0 2.3-1 3.3-3.3 3.3h-5c-.5 3-1 5.9-1.6 8.9 5 .1 10 .1 15 .2 0 3.8 0 8.7-.1 12.7h7.4c0-4 .1-8.7.1-12.5 2.1.1 4 .1 5.9.2 0 3.8-.1 8.4-.1 12.3h7.4c0-4 .1-8.7.1-12.4.3 0 .5-.1.6-.1 3.5-.6 7.2-.9 10.6-1.7 4.5-1.1 8.1-3.7 9.9-8.2 1.7-3.6 2-7.2 1.5-11zM59 44.3c4.6 0 9.1-.4 13.4 1.5 2.8 1.2 4.2 3.5 4 6.3-.2 2.9-1.9 5-4.8 6-4.1 1.3-8.3 1.3-12.7 1.1 0-5 .1-9.8.1-14.9zm16.2 37.1c-4.1 1.8-8.5 1.8-12.8 1.9-1.2 0-2.4-.1-3.8-.1.1-5.5.1-10.9.2-16.4 5.6 0 11.2-.4 16.5 1.9 2.7 1.2 4.3 3.3 4.3 6.4 0 3.1-1.6 5.1-4.4 6.3z"/></svg>
                         </span>
                     </div> --}}
+                    <a href="{{ route('admin-admin_users.index') }}">
                     <div class="flex-fill">
                         <div class="d-flex flex-wrap align-items-center justify-content-between fs-14 mb-2">
                             <span class="flex-fill">Total Users</span>
@@ -40,6 +41,7 @@
                             <div id="btcCoin"></div>
                         </div>
                     </div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -53,6 +55,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" class="svg-info" viewBox="0 0 128 128"><path d="M64 128C28.7 128 0 99.3 0 64S28.7 0 64 0s64 28.7 64 64-28.7 64-64 64z"/><path fill="#fff" d="M94.3 71.4c-.5-3.6-2.3-6.4-5.4-8.2-1.4-.8-3.1-1.4-4.7-2.1.2-.1.3-.3.4-.3 7.9-4.1 7.2-16.3 1.5-20.5-2.3-1.7-4.9-2.8-7.7-3.4-2-.4-3.9-.7-6-1.1 0-3.5.1-8.5.1-12.4H65c0 3.8-.1 8.7-.1 12.1H59c0-3.5 0-8.3.1-12.1h-7.4c0 4-.1 8.8-.1 12.3-5.1 0-10-.1-15-.1 0 2.7 0 5.3-.1 7.9h3c.9 0 1.9 0 2.8.1 2.6.2 3.9 1.6 3.9 4.2l-.3 31.9c0 2.3-1 3.3-3.3 3.3h-5c-.5 3-1 5.9-1.6 8.9 5 .1 10 .1 15 .2 0 3.8 0 8.7-.1 12.7h7.4c0-4 .1-8.7.1-12.5 2.1.1 4 .1 5.9.2 0 3.8-.1 8.4-.1 12.3h7.4c0-4 .1-8.7.1-12.4.3 0 .5-.1.6-.1 3.5-.6 7.2-.9 10.6-1.7 4.5-1.1 8.1-3.7 9.9-8.2 1.7-3.6 2-7.2 1.5-11zM59 44.3c4.6 0 9.1-.4 13.4 1.5 2.8 1.2 4.2 3.5 4 6.3-.2 2.9-1.9 5-4.8 6-4.1 1.3-8.3 1.3-12.7 1.1 0-5 .1-9.8.1-14.9zm16.2 37.1c-4.1 1.8-8.5 1.8-12.8 1.9-1.2 0-2.4-.1-3.8-.1.1-5.5.1-10.9.2-16.4 5.6 0 11.2-.4 16.5 1.9 2.7 1.2 4.3 3.3 4.3 6.4 0 3.1-1.6 5.1-4.4 6.3z"/></svg>
                         </span>
                     </div> --}}
+                    <a href="{{ route('admin-category.index') }}">
                     <div class="flex-fill">
                         <div class="d-flex flex-wrap align-items-center justify-content-between fs-14 mb-2">
                             <span class="flex-fill">Total Categories</span>
@@ -62,11 +65,12 @@
                             <div id="btcCoin"></div>
                         </div>
                     </div>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-xxl-3 col-xl-3 col-lg-6 col-md-6">
+    <!-- <div class="col-xxl-3 col-xl-3 col-lg-6 col-md-6">
         <div class="card custom-card">
             <div class="card-body">
                 <div class="d-flex align-items-top">
@@ -80,15 +84,15 @@
                             <span class="flex-fill">Sotal Sub Categories</span>
                         </div>
                         <div class="d-flex flex-wrap align-items-center justify-content-between">
-                            <h5 class="fw-semibold mb-0">{{ $subCategoriesCount ?? 0 }}</h5>
+                            <h5 class="fw-semibold mb-0"></h5>
                             <div id="ethCoin"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-xxl-3 col-xl-3 col-lg-6 col-md-6">
+    </div> -->
+    <!-- <div class="col-xxl-3 col-xl-3 col-lg-6 col-md-6">
         <div class="card custom-card">
             <div class="card-body">
                 <div class="d-flex align-items-top">
@@ -102,7 +106,7 @@
                             <span class="flex-fill">Total Child Category</span>
                         </div>
                         <div class="d-flex flex-wrap align-items-center justify-content-between">
-                            <h5 class="fw-semibold mb-0">{{ $childCategoriesCount ?? 0 }}</h5>
+                            <h5 class="fw-semibold mb-0"></h5>
                             <div id="dshCoin"></div>
                         </div>
                     </div>
@@ -110,7 +114,7 @@
 
             </div>
         </div>
-    </div>
+    </div> -->
     <div class="col-xxl-3 col-xl-3 col-lg-6 col-md-6">
         <div class="card custom-card">
             <div class="card-body">

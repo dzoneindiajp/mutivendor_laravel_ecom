@@ -49,7 +49,7 @@
                         @foreach($results as $result)
                         <tr>
                         <td>{{ $result->name ?? "N/A" }}</td>
-                        <td>{{ date(config("Reading.date_format"),strtotime($result->created_at)) }}</td>
+                        <td>{{ date("Y-m-d",strtotime($result->created_at)) }}</td>
                         <td>
                             @if($result->is_active == 1)
                             <span class="badge bg-success">Activated</span>

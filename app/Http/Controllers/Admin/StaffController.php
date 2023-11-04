@@ -180,7 +180,7 @@ class StaffController extends Controller
                 Session()->flash(trans("Something went wrong."));
                 return Redirect()->back()->withInput();
             }
-            Session()->flash('success', Config('constant.STAFF.STAFF_TITLE') . " has been added successfully");
+            Session()->flash('success', "Staff has been added successfully");
             return Redirect()->route('admin-'.$this->model . ".index");
         }
     }
@@ -355,7 +355,7 @@ class StaffController extends Controller
                 Session()->flash(trans("Something went wrong."));
                 return Redirect()->back()->withInput();
             }
-            Session()->flash('success', Config('constant.STAFF.STAFF_TITLE') . " has been updated successfully");
+            Session()->flash('success', "Staff has been updated successfully");
             return Redirect()->route('admin-'.$this->model . ".index");
         }
     }
@@ -373,7 +373,7 @@ class StaffController extends Controller
         }
         if ($stf_id) {
             User::where('id', $stf_id)->update(array('is_deleted' => 1));
-            Session()->flash('flash_notice', trans(Config('constant.STAFF.STAFF_TITLE') . " has been removed successfully"));
+            Session()->flash('flash_notice', trans("Staff has been removed successfully"));
         }
         return back();
     }
@@ -422,9 +422,9 @@ class StaffController extends Controller
 
     public function changeStatus($modelId = 0, $status = 0){
         if ($status == 1) {
-            $statusMessage   =   trans(Config('constant.STAFF.STAFF_TITLE') . " has been deactivated successfully");
+            $statusMessage   =   trans("Staff has been deactivated successfully");
         } else {
-            $statusMessage   =   trans(Config('constant.STAFF.STAFF_TITLE') . " has been activated successfully");
+            $statusMessage   =   trans("Staff has been activated successfully");
         }
         $user = User::find($modelId);
         if ($user) {

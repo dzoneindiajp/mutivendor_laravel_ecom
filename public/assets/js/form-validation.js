@@ -2,6 +2,7 @@ $("#categoryForm").validate({
     rules: {
         name: "required",
     },
+    
     errorPlacement: function (label, element) {
         label.addClass("mt-1 text-danger");
         // label.appendTo(element.parents("div.level-error-show"));
@@ -145,6 +146,19 @@ $("#editProductOptionsForm").validate({
     rules: {
         name: "required",
     },
+    errorPlacement: function (label, element) {
+        label.addClass("mt-1 text-danger");
+        // label.appendTo(element.parents("div.level-error-show"));
+        label.insertAfter(element);
+    }
+});
+
+
+$("#brandForm").validate({
+    rules: {
+        name: "required",
+    },
+    
     errorPlacement: function (label, element) {
         label.addClass("mt-1 text-danger");
         // label.appendTo(element.parents("div.level-error-show"));

@@ -13,7 +13,7 @@
         <nav>
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('admin-dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Crate Department</li>
+                <li class="breadcrumb-item active" aria-current="page">Create Department</li>
             </ol>
         </nav>
     </div>
@@ -23,7 +23,7 @@
 <div class="card custom-card">
     <div class="card-header">
         <div class="card-title">
-            Crate Department
+            Create Department
         </div>
     </div>
     <form action="{{route('admin-'.$model.'.store')}}" method="post" id="departmentForm" autocomplete="off" enctype="multipart/form-data">

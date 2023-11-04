@@ -133,6 +133,7 @@
                     <thead>
                         <tr>
                             <th class="sortable" data-column="products.name">Name <i class="sort-icon ri-sort-asc"></i></th>
+                            <th class="sortable" data-column="products.slug">Slug <i class="sort-icon ri-sort-asc"></i></th>
                             <th class="sortable" data-column="category_name">Category <i class="sort-icon ri-sort-asc"></i></th>
                             <th class="sortable" data-column="sub_category_name">Sub Category <i class="sort-icon ri-sort-asc"></i>
                             </th>

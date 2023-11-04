@@ -48,7 +48,9 @@
 								@endif
                         </div>
 
-                     
+                        <div class="mb-3">
+                            <div class="form-check"> <input class="form-check-input" name="is_show" type="checkbox" value="1" id="flexCheckDefault" @if($depDetails->is_active == 1) checked @endif> <label class="form-check-label" for="flexCheckDefault"> Show On Header</label> </div>
+                        </div>
                     </div>
                 </div>
 

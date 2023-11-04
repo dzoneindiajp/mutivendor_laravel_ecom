@@ -14,7 +14,7 @@
         <nav>
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('admin-dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">{{ $prefix }} Setting</li>
+                <li class="breadcrumb-item active" aria-current="page">{{ ucfirst($prefix) }} Setting</li>
             </ol>
         </nav>
     </div>

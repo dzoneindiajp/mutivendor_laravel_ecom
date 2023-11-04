@@ -30,7 +30,6 @@
     <form action="{{route('admin-'.$model.'.update',base64_encode($depDetails->id))}}"
         method="post" id="departmentForm" autocomplete="off" enctype="multipart/form-data">
         @csrf
-                @method('PUT')
         <div class="card-body">
             <div class="row">
                 <div class="col-xl-6">

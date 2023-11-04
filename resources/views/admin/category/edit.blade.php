@@ -27,8 +27,8 @@
             Edit Category
         </div>
     </div>
-    <form action="{{ route('admin-product-categories-category-update',['token' => encrypt($category->id)]) }}"
-        method="post" id="categoryForm">
+    <form action="{{route('admin-'.$model.'.update',base64_encode($category->id))}}"
+        method="post" id="categoryForm" enctype="multipart/form-data">
         @csrf
         <div class="card-body">
             <div class="row">
@@ -36,9 +36,9 @@
                     <div class="card-body p-0">
 
                         <div class="mb-3">
-                            <label for="category" class="form-label"><span class="text-danger">* </span>Category</label>
+                            <label for="name" class="form-label"><span class="text-danger">* </span>Name</label>
                             <input type="text" class="form-control" id="edit_name" name="name"
-                                placeholder="Enter Category" onkeyup="editDisplaySlug($(this))"
+                                placeholder="Enter Name" onkeyup="editDisplaySlug($(this))"
                                 value="{{ $category->name }}">
                             <h6 class="edit-category-slug mt-2"></h6>
                         </div>
@@ -50,24 +50,35 @@
                     </div>
                 </div>
                 <div class="col-xl-6">
-                    <div class="card-body p-0">
-                        <div class="col-xl-12">
-                            <label for="meta_title" class="form-label">Meta Title</label>
-                            <input type="text" class="form-control" id="meta_title" name="meta_title"
-                                placeholder="Meta TItle" value="{{ $category->meta_title }}">
-                        </div>
-                        <div class="col-xl-12 mt-3">
-                            <label for="meta_description" class="form-label">Meta Description</label>
-                            <textarea class="form-control" name="meta_description" id="meta_description" cols="30"
-                                rows="5">{{ $category->meta_description }}</textarea>
-                        </div>
-                        <div class="col-xl-12 mt-3">
-                            <label for="meta_keywords" class="form-label">Meta Keywords</label>
-                            <input type="text" class="form-control" id="meta_keywords" name="meta_keywords"
-                                placeholder="Meta Keywords" value="{{ $category->meta_keywords }}">
-                        </div>
+                    <label for="image" class="form-label"><span class="text-danger">
+                        </span>Image</label>
+                    <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image">
+                    @if (!empty($category->image))
+                        <img height="50" width="50" src="{{isset($category->image)? $category->image:''}}" />
+                    @endif
+                    @if ($errors->has('image'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('image') }}
                     </div>
+                    @endif
                 </div>
+                <div class="col-xl-6">
+                    <label for="meta_title" class="form-label">Meta Title</label>
+                    <input type="text" class="form-control" id="meta_title" name="meta_title"
+                        placeholder="Meta TItle" value="{{ $category->meta_title }}">
+                </div>
+                <div class="col-xl-6">
+                    <label for="meta_keywords" class="form-label">Meta Keywords</label>
+                    <input type="text" class="form-control" id="meta_keywords" name="meta_keywords"
+                        placeholder="Meta Keywords" value="{{ $category->meta_keywords }}">
+                </div>
+                <div class="col-xl-6 mt-3">
+                    <label for="meta_description" class="form-label">Meta Description</label>
+                    <textarea class="form-control" name="meta_description" id="meta_description" cols="30"
+                        rows="5">{{ $category->meta_description }}</textarea>
+                </div>
+                
+               
             </div>
         </div>
         <div class="px-4 py-3 border-top border-block-start-dashed d-sm-flex justify-content-end">
@@ -75,38 +86,6 @@
         </div>
     </form>
 </div>
-{{-- <div class="row">
-    <div class="col-xl-12">
-        <div class="card custom-card">
-            <div class="card-header justify-content-between">
-                <div class="card-title">
-                    Edit Category
-                </div>
-            </div>
-            <div class="card-body">
-                <form
-                    action="{{ route('admin-product-categories-category-update',['token' => encrypt($category->id)]) }}"
-                    method="post" id="editCategoryForm">
-                    @csrf
-                    <div class="mb-3">
-                        <label for="category" class="form-label"><span class="text-danger">* </span>Category</label>
-                        <input type="text" class="form-control" id="edit_name" name="name" placeholder="Enter Category"
-                            onkeyup="editDisplaySlug($(this))" value="{{ $category->name }}">
-                        <h6 class="edit-category-slug mt-2"></h6>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="category" class="form-label"><span class="text-danger">* </span>Slug</label>
-                        <input type="text" class="form-control" disabled value="{{ $category->slug }}">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-            </div>
-            <div class="card-footer d-none border-top-0">
-            </div>
-        </div>
-    </div>
-</div> --}}
 
 @endsection
 @push('scripts')

@@ -1,4 +1,6 @@
 <?php 
 config(["Reading.records_per_page"=>"10"]);
+config(["Site.copyright"=>"Copyright © 2023 Jaipurjewellaryhouse."]);
 config(["Site.from_email"=>"noreply@jaipurjewellary.com"]);
 config(["Site.title"=>"Jaipur Jewellery House."]);
+config(["Social.instagram"=>"lokesh"]);

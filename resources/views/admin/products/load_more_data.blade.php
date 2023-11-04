@@ -2,6 +2,7 @@
 @forelse($results as $product)
 <tr class="list-data-row" data-total-count="{{$totalResults}}">
     <td>{{ $product->name ?? "N/A" }}</td>
+    <td>{{ $product->slug ?? "N/A" }}</td>
     <td>
         {{ $product->category->name ?? "N/A" }}
     </td>

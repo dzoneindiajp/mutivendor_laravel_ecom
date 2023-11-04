@@ -13,7 +13,7 @@
         <nav>
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('admin-dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Crate Footer Category</li>
+                <li class="breadcrumb-item active" aria-current="page">Create Footer Category</li>
             </ol>
         </nav>
     </div>
@@ -23,7 +23,7 @@
 <div class="card custom-card">
     <div class="card-header">
         <div class="card-title">
-            Crate Footer Category
+            Create Footer Category
         </div>
     </div>
     <form action="{{route('admin-'.$model.'.store')}}" method="post" id="departmentForm" autocomplete="off" enctype="multipart/form-data">
@@ -43,8 +43,13 @@
 								</div>
 								@endif
                         </div>
+
+                        <div class="mb-3">
+                            <div class="form-check"> <input class="form-check-input" name="is_show" type="checkbox" value="1" checked id="flexCheckDefault"> <label class="form-check-label" for="flexCheckDefault"> Show On Header</label> </div>
+                        </div>
                     </div>
                 </div>
+               
                 
             </div>
         </div>

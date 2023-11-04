@@ -25,7 +25,6 @@
         <form action="{{route('admin-'.$model.'.update',base64_encode($modell->id))}}" method="post" enctype="multipart/form-data"
             id="editStaffForm">
             @csrf
-            @method('PUT')
             <div class="card custom-card">
                 <div class="card-header">
                     <div class="card-title">

@@ -161,3 +161,23 @@ $('#edit_sub_category_id').on('change', function (e) {
         }
     });
 });
+
+
+
+function displaySlug(ele) {
+    let $this = ele;
+        product = $this.val(),
+        lowercaseString = product.toLowerCase(),
+        replacedString = lowercaseString.replace(/ /g, '-');
+
+        $('.product-slug').text('Slug : https://jaipurjewelleryhouse.com/' + replacedString);
+}
+
+function editDisplaySlug(ele) {
+    let $this = ele;
+        editProduct = $this.val(),
+        editLowercaseString = editProduct.toLowerCase(),
+        editReplacedString = editLowercaseString.replace(/ /g, '-');
+
+        $('.edit-product-slug').text('Slug : https://jaipurjewelleryhouse.com/' + editReplacedString);
+}
