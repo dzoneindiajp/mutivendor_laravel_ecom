@@ -24,7 +24,7 @@
 		<div class=" container ">
 			<form action="{{route('admin-'.$model.'.update',base64_encode($aclDetails->id))}}" method="post" class="mws-form" autocomplete="off" enctype="multipart/form-data">
 			@csrf
-                @method('PUT')
+                <!-- @method('PUT') -->
 				<div class="card">
 					<div class="card-body">
 						<div class="row">
@@ -314,7 +314,7 @@
 
 				$.ajax({
                 
-                url: "{{URL::to('myastropanel/acl/delete-function')}}"+'/'+data,
+                url: "{{URL::to('admin/acl/delete-function')}}"+'/'+data,
                     'type': 'GET',
                
                 headers: {
