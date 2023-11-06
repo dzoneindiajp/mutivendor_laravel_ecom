@@ -66,7 +66,7 @@ class SettingsController extends Controller
         $validated = $request->validate([
             'title' => 'required',
             'key' => 'required',
-            'key'  => 'required',
+            // 'key'  => 'required',
             'input_type' => 'required',
         ]);
         $obj              = new Setting;
@@ -75,6 +75,25 @@ class SettingsController extends Controller
         $obj->value       = $request->value;
         $obj->input_type  = $request->input_type;
         $obj->editable    = 1;
+
+        if ($request->input_type == "file" || $request->input_type == "File") {
+            if ($request->hasFile('value')) {
+                $extension = $request->file('value')->getClientOriginalExtension();
+                $originalName = $request->file('value')->getClientOriginalName();
+                $fileName = time() . '-settings.' . $extension;
+
+                $folderName = strtoupper(date('M') . date('Y')) . "/";
+                $folderPath = Config('constant.SETTINGS_IMAGE_ROOT_PATH') . $folderName;
+                if (!File::exists($folderPath)) {
+                    File::makeDirectory($folderPath, $mode = 0777, true);
+                }
+                if ($request->file('value')->move($folderPath, $fileName)) {
+                    $obj->value = $folderName . $fileName;
+                }
+            } else {
+                $obj->value       =  "";
+            }
+        }
         $savedata = $obj->save();
         if ($savedata) {
             Session()->flash('flash_notice', 'Setting added successfully.');
@@ -110,7 +129,7 @@ class SettingsController extends Controller
         $validated = $request->validate([
             'title' => 'required',
             'key' => 'required',
-            'key'  => 'required',
+            // 'key'  => 'required',
             'input_type' => 'required',
         ]);
         $obj   = Setting::find($Set_id);
@@ -119,6 +138,25 @@ class SettingsController extends Controller
         $obj->value       = $request->value;
         $obj->input_type       = $request->input_type;
         $obj->editable      = 1;
+
+        if ($request->input_type == "file" || $request->input_type == "File") {
+            if ($request->hasFile('value')) {
+                $extension = $request->file('value')->getClientOriginalExtension();
+                $originalName = $request->file('value')->getClientOriginalName();
+                $fileName = time() . '-settings.' . $extension;
+
+                $folderName = strtoupper(date('M') . date('Y')) . "/";
+                $folderPath = Config('constant.SETTINGS_IMAGE_ROOT_PATH') . $folderName;
+                if (!File::exists($folderPath)) {
+                    File::makeDirectory($folderPath, $mode = 0777, true);
+                }
+                if ($request->file('value')->move($folderPath, $fileName)) {
+                    $obj->value = $folderName . $fileName;
+                }
+            } else {
+                $obj->value       =  "";
+            }
+        }
         $savedata = $obj->save();
         if ($savedata) {
             Session()->flash('flash_notice', 'Setting Updated successfully.');
@@ -142,18 +180,44 @@ class SettingsController extends Controller
 
     public function prefix(Request $request, $enslug = null)
     {       
-      
         $prefix = $enslug;
         if ($request->isMethod('POST')) {
            
             $allData        =  $request->all();
-          
             if (!empty($allData)) {
                 if (!empty($allData['Setting'])) {
                     foreach ($allData['Setting'] as $key => $value) {
                         if (!empty($value["'id'"]) && !empty($value["'key'"])) {
                             if ($value["'type'"] == 'checkbox') {
                                 $val  =  (isset($value["'value'"])) ? 1 : 0;
+                            } elseif ($value["'type'"] == 'file'){
+                                if(!empty($value["'value'"])) {
+                                    if ($value["'value'"] instanceof \Symfony\Component\HttpFoundation\File\UploadedFile) {
+                                        // Handle file upload here
+                                        $uploadedFile = $value["'value'"];
+                    
+                                        // Generate a unique file name
+                                        $extension = $uploadedFile->getClientOriginalExtension();
+                                        $fileName = time() . '-settings.' . $extension;
+                    
+                                        // Define the folder path to store the uploaded file
+                                        $folderName = strtoupper(date('M') . date('Y')) . "/";
+                                        $folderPath = Config('constant.SETTINGS_IMAGE_ROOT_PATH') . $folderName;
+                    
+                                        // Ensure the folder exists
+                                        if (!File::exists($folderPath)) {
+                                            File::makeDirectory($folderPath, $mode = 0777, true);
+                                        }
+                    
+                                        // Move the uploaded file to the specified folder
+                                        if ($uploadedFile->move($folderPath, $fileName)) {
+                                            $val = $folderName . $fileName;
+                                        }
+                                    }
+                                } else {
+                                    $SettingData = Setting::where('id', $value["'id'"])->first();
+                                    $val = $SettingData->value;
+                                }
                             } else {
                                 $val  =  (isset($value["'value'"])) ? $value["'value'"] : '';
                             }
@@ -170,6 +234,13 @@ class SettingsController extends Controller
             return  Redirect()->back();
         }
         $result = Setting::where('key', 'like', $prefix . '%')->orderBy('id', 'ASC')->get()->toArray();
+        if(!empty($result)) {
+            foreach($result as &$val) {
+               if($val['input_type'] == "file") {
+                    $val['value'] = Config('constant.SETTINGS_IMAGE_URL').$val['value'];
+               }
+            }
+        }
         return  View('admin.settings.prefix', compact('result', 'prefix'));
     }
 

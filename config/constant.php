@@ -26,6 +26,10 @@ return [
 	'BANNER_VIDEO_PATH'                       => $WEBSITE_URL.'public/uploads/banners-video/',
 	'BANNER_VIDEO_ROOT_PATH'                       => 'public/uploads/banners-video/',
 	'BANNER_VIDEO_URL'                       => url('/').'/public/uploads/banners-video/',
+
+	'SETTINGS_IMAGE_PATH'                       => $WEBSITE_URL.'public/uploads/settings/',
+	'SETTINGS_IMAGE_ROOT_PATH'                       => 'public/uploads/settings/',
+	'SETTINGS_IMAGE_URL'                       => url('/').'/public/uploads/settings/',
 	
 
     'ACL' => [

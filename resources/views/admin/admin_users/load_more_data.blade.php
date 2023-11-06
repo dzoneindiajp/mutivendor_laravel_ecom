@@ -25,9 +25,9 @@
     <td>{{ $result->gender ?? "N/A" }}</td>
     <td>
         @if($result->is_active == 1)
-        <span class="label label-lg label-light-success label-inline">Activated</span>
+        <span class="badge bg-success">Activated</span>
         @else
-        <span class="label label-lg label-light-danger label-inline">Deactivated</span>
+        <span class="badge bg-danger">Deactivated</span>
         @endif
     </td>
 

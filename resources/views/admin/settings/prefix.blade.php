@@ -36,87 +36,103 @@
                 <div class="card-body add-products p-0">
                     <div class="p-4">
 						<div class="row gx-5">
-							<?php
-							if (!empty($result)) {
-								$i = 0;
-								$half = floor(count($result) / 2);
-								foreach ($result as $setting) {
-									$text_extention 	= 	'';
-									$key				= 	$setting['key'];
-									$keyE 				= 	explode('.', $key);
-									$keyTitle 			= 	$keyE['1'];
+							<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12">
+                                <div class="card custom-card shadow-none mb-0 border-0">
+                                    <div class="card-body p-0">
+                                        <div class="row gy-3">
 
-									$label = $keyTitle;
-									if ($setting['title'] != null) {
-										$label = $setting['title'];
-									}
+											<?php
+											if (!empty($result)) {
+												$i = 0;
+												$half = floor(count($result) / 2);
+												foreach ($result as $setting) {
+													$text_extention 	= 	'';
+													$key				= 	$setting['key'];
+													$keyE 				= 	explode('.', $key);
+													$keyTitle 			= 	$keyE['1'];
 
-									$inputType = 'text';
-									if ($setting['input_type'] != null) {
-										$inputType = $setting['input_type'];
-									} ?>
-									<input type="hidden" name="Setting[{{$i}}]['type']" value="{{$inputType ?? ''}}">
-									<input type="hidden" name="Setting[{{$i}}]['id']" value="{{$setting['id'] ?? ''}}">
-									<input type="hidden" name="Setting[{{$i}}]['key']" value="{{$setting['key'] ?? ''}}">
+													$label = $keyTitle;
+													if ($setting['title'] != null) {
+														$label = $setting['title'];
+													}
 
-									<?php
-									switch ($inputType) {
-										case 'checkbox': ?>
-											<div class="col-xl-6">
-												<label style="width:300px;"><?php echo $label; ?></label>
-												<div class="mws-form-item clearfix">
-													<ul class="mws-form-list inline">
+													$inputType = 'text';
+													if ($setting['input_type'] != null) {
+														$inputType = $setting['input_type'];
+													} ?>
+													<input type="hidden" name="Setting[{{$i}}]['type']" value="{{$inputType ?? ''}}">
+													<input type="hidden" name="Setting[{{$i}}]['id']" value="{{$setting['id'] ?? ''}}">
+													<input type="hidden" name="Setting[{{$i}}]['key']" value="{{$setting['key'] ?? ''}}">
+
+													<?php
+													switch ($inputType) {
+														case 'checkbox': ?>
+															<div class="col-xl-6">
+																<label class="form-label" style="width:300px;"><?php echo $label; ?></label>
+																<div class="mws-form-item clearfix">
+																	<ul class="mws-form-list inline">
+																		<?php
+																		$checked = ($setting['value'] == 1) ? true : false;
+																		$val	 = (!empty($setting['value'])) ? $setting['value'] : 0;
+																		?>
+																		<input type="checkbox" name="Setting[{{$i}}]['value']" value="{{$val ?? ''}}">
+
+																	</ul>
+																</div>
+															</div>
 														<?php
-														$checked = ($setting['value'] == 1) ? true : false;
-														$val	 = (!empty($setting['value'])) ? $setting['value'] : 0;
-														?>
-														<input type="checkbox" name="Setting[{{$i}}]['value']" value="{{$val ?? ''}}">
-
-													</ul>
-												</div>
-											</div>
-										<?php
-											break;
-										case 'text': ?>
-											<div class="col-xl-6">
-												<label><?php echo $label; ?></label>
-												@if($key == "Social.facebook_link" || $key == "Site.android_link" || $key == "Site.iphone_link" || $key == "Social.instagram_link" || $key == "Social.twitter_link") -->
-												<input type="{{$inputType}}" value="Setting[$i]['value']" value="{{$setting['value'] ?? ''}}" class="form-control form-control-solid form-control-lg" id="$key" ]>
-												@else
-												<input type="{{$inputType}}" name="Setting[{{$i}}]['value']" value="{{$setting['value'] ?? ''}}" class="form-control form-control-solid form-control-lg valid" id="$key" ]>
-												@endif
-												<div class="invalid-feedback"></div>
-											</div>
-										<?php
-											break;
-										case 'select': ?>
-											<div class="col-xl-6">
-												<label><?php echo $label; ?></label>
-												<select name="Setting[{{$i}}]['value']" class="form-control form-control-solid form-control-lg" id="$key">
-													<option value="pay_later">Pay Later</option>
-													<option value="pay_now">Pay Now</option>
-												</select>
-												<div class="invalid-feedback"></div>
-											</div>
-										<?php
-											break;
-										case 'textarea': ?>
-											<div class="col-xl-6">
-												<label><?php echo $label; ?></label>
-												<textarea name="Setting[{{$i}}]['value']" class="form-control form-control-solid form-control-lg  textarea_resize" rows=3,cols=3></textarea>
-											</div>
-										<?php
-											break;
-										}
-										if ($i == $half)
-											echo '</div><div class="row">';
-										$i++;
+															break;
+														case 'text': ?>
+															<div class="col-xl-6">
+																<label class="form-label"><?php echo $label; ?></label>
+																<input type="{{$inputType}}" name="Setting[{{$i}}]['value']" value="{{$setting['value'] ?? ''}}" class="form-control" id="$key" ]>
+																<div class="invalid-feedback"></div>
+															</div>
+														<?php
+															break;
+														case 'select': ?>
+															<div class="col-xl-6">
+																<label class="form-label"><?php echo $label; ?></label>
+																<select name="Setting[{{$i}}]['value']" class="form-control " id="$key">
+																	<option value="pay_later">Pay Later</option>
+																	<option value="pay_now">Pay Now</option>
+																</select>
+																<div class="invalid-feedback"></div>
+															</div>
+														<?php
+															break;
+														case 'file': ?>
+															<div class="col-xl-6">
+																<label class="form-label"><?php echo $label; ?></label>
+																<input type="{{$inputType}}" name="Setting[{{$i}}]['value']" class="form-control" accept="image/*" id="$key" ]>
+																@if (!empty($setting['value']))
+																	<img height="70" width="70" src="{{isset($setting['value'])? $setting['value']:''}}" />
+																@endif
+																<div class="invalid-feedback"></div>
+															</div>
+														<?php
+															break;
+														case 'textarea': ?>
+															<div class="col-xl-6">
+																<label><?php echo $label; ?></label>
+																<textarea name="Setting[{{$i}}]['value']" class="form-control textarea_resize" rows=3,cols=3></textarea>
+															</div>
+														<?php
+															break;
+														}
+														if ($i == $half)
+															echo '</div><div class="row">';
+														$i++;
+															}
 											}
-										}
-										?>
-						</div>
-						<div class="px-4 py-3 border-top border-block-start-dashed d-sm-flex justify-content-end">
-							<button type="submit" class="btn btn-primary">Submit</button>
+											?>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="px-4 py-3 border-top border-block-start-dashed d-sm-flex justify-content-end">
+								<button type="submit" class="btn btn-primary">Submit</button>
+							</div>
 						</div>
                     </div>
                 </div>

@@ -175,7 +175,12 @@ Route::prefix('admin')->name('admin-')->group(function () {
 
 
           /** Access Control Routes Starts **/
-         Route::resource('acl', App\Http\Controllers\Admin\AclController::class);
+        //  Route::resource('acl', App\Http\Controllers\Admin\AclController::class);
+         Route::match(['get', 'post'], '/acl', [App\Http\Controllers\Admin\AclController::class, 'index'])->name('acl.index');
+         Route::match(['get', 'post'], '/acl/create', [App\Http\Controllers\Admin\AclController::class, 'create'])->name('acl.create');
+         Route::match(['get', 'post'], '/acl/save', [App\Http\Controllers\Admin\AclController::class, 'store'])->name('acl.store');
+         Route::match(['get', 'post'], '/acl/edit/{enuserid}', [App\Http\Controllers\Admin\AclController::class, 'edit'])->name('acl.edit');
+         Route::match(['get', 'post'], '/acl/update/{enuserid}', [App\Http\Controllers\Admin\AclController::class, 'update'])->name('acl.update');
          Route::get('acl/destroy/{enaclid?}', [App\Http\Controllers\Admin\AclController::class, 'destroy'])->name('acl.delete');
          Route::get('acl/update-status/{id}/{status}', [App\Http\Controllers\Admin\AclController::class, 'changeStatus'])->name('acl.status');
          Route::post('acl/add-more/add-more', [App\Http\Controllers\Admin\AclController::class, 'addMoreRow'])->name('acl.addMoreRow');

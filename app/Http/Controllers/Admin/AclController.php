@@ -15,8 +15,10 @@ class AclController extends Controller
 	public $model =	'acl';
 	public function __construct(Request $request)
 	{	
-		
-		View()->share('model', $this->model);
+		$this->listRouteName = 'admin-acl.index';
+        View()->share('model', $this->model);
+        View()->share('listRouteName', $this->listRouteName);
+        $this->request = $request;
 	}
 
 	public function index(Request $request)
@@ -50,16 +52,21 @@ class AclController extends Controller
 		}
 		$sortBy = ($request->input('sortBy')) ? $request->input('sortBy') : 'acls.module_order';
 		$order  = ($request->input('order')) ? $request->input('order')   : 'DESC';
-		$records_per_page  =   ($request->input('per_page')) ? $request->input('per_page') : Config("Reading.records_per_page");
-		$results = $DB->orderBy($sortBy, $order)->paginate($records_per_page);
-		$complete_string =  $request->query();
-		unset($complete_string["sortBy"]);
-		unset($complete_string["order"]);
-		$query_string  =   http_build_query($complete_string);
-		$results->appends($inputGet)->render();
-		$resultcount = $results->count();
+		$offset = !empty($request->input('offset')) ? $request->input('offset') : 0 ;
+        $limit =  !empty($request->input('limit')) ? $request->input('limit') : Config("Reading.records_per_page"); 
+
+		$results = $DB->orderBy($sortBy, $order)->offset($offset)->limit($limit)->get();
+        $totalResults = $DB->count();
 		$parent_list 	= 	Acl::get();
-		return View("admin.$this->model.index", compact('results', 'searchVariable', 'sortBy', 'order', 'query_string', 'parent_list'));
+
+		if($request->ajax()){
+
+            return  View("admin.$this->model.load_more_data", compact('results','totalResults', 'parent_list'));
+        }else{
+            
+            return  View("admin.$this->model.index", compact('results','totalResults', 'parent_list'));
+        }
+		
 	}
 
 	public function create()

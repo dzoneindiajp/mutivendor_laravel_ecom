@@ -61,9 +61,8 @@
                                             </div>
 
                                             <div class="col-xl-6">
-												<lable>Value </lable><span class="text-danger"> * </span>
-												<textarea name="value" class="form-control form-control-solid form-control-lg  @error('value') is-invalid @enderror" cols="50" rows="10">
-												{{old('value')}}</textarea>
+												<lable class="form-label">Value </lable><span class="text-danger"> * </span>
+												<textarea name="value" class="form-control form-control-solid form-control-lg  @error('value') is-invalid @enderror" cols="50" rows="10">{{old('value')}}</textarea>
 												@if ($errors->has('value'))
 												<div class=" invalid-feedback">
 													{{ $errors->first('value') }}
