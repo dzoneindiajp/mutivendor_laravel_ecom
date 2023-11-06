@@ -99,7 +99,7 @@ class CmspagesController extends Controller
                 $lastId = $obj->id;
                 
                 Session()->flash('success',"Cms has been added successfully");
-                return Redirect()->route($this->model . ".index");
+                return Redirect()->route("admin-". $this->model . ".index");
             }
     }
 
@@ -128,7 +128,7 @@ class CmspagesController extends Controller
             return View("admin.$this->model.edit", compact('cmsDetails'));
 
         }else{
-            return Redirect()->route($this->model . ".index");
+            return Redirect()->route("admin-".$this->model . ".index");
         }
     }
 
@@ -163,11 +163,11 @@ class CmspagesController extends Controller
                 $lastId                     =    $obj->id;
                 
                 Session()->flash('success', "Cms has been updated successfully");
-                return Redirect()->route($this->model . ".index");
+                return Redirect()->route("admin-".$this->model . ".index");
             }
         
         }else{
-            return Redirect()->route($this->model . ".index");
+            return Redirect()->route("admin-".$this->model . ".index");
         }
     }
 

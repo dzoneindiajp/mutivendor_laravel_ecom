@@ -70,7 +70,7 @@
                                 @foreach($variantValuesData as $dataKey => $dataVal)
                                 @if(!empty($dataVal['name']))
                                 <div data-repeater-item class="form-group row align-items-center mb-0">
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 mb-3">
                                         <div class="form-group">
                                             <label for="name">Name</label><span class="text-danger">
                                                  </span>
@@ -120,7 +120,7 @@
 
                             <div data-repeater-list="dataArr" class="col-lg-12">
                                 <div data-repeater-item class="form-group row align-items-center mb-0">
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 mb-3">
                                         <div class="form-group">
                                             <label for="name">Name</label><span class="text-danger">
                                                  </span>

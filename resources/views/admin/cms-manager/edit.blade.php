@@ -1,140 +1,115 @@
-<?php $i = 1; ?>
-@extends('admin.layouts.layout')
+@extends('admin.layout.master')
+
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{{ asset('assets/libs/dropzone/dropzone.css') }}">
+<link href="{{ asset('assets/plugin/tagify/tagify.css') }}" rel="stylesheet" type="text/css" />
+
+<script src="{{ asset('assets/js/ckeditor/ckeditor.js') }}"></script>
+@endpush
+
 @section('content')
-<div class="content  d-flex flex-column flex-column-fluid" id="kt_content">
-    <div class="subheader py-2 py-lg-4  subheader-solid " id="kt_subheader">
-        <div class=" container-fluid  d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
-            <div class="d-flex align-items-center flex-wrap mr-1">
-                <div class="d-flex align-items-baseline flex-wrap mr-5">
-                    <h5 class="text-dark font-weight-bold my-1 mr-5">
-                        Edit
-                         {{Config('constants.CMS_MANAGER.CMS_PAGE_TITLE')}} </h5>
-                    <ul class="breadcrumb breadcrumb-transparent breadcrumb-dot font-weight-bold p-0 my-2 font-size-sm">
-                        <li class="breadcrumb-item">
-                            <a href="{{ route(dashboard)}}" class="text-muted">Dashboard</a>
-                        </li>
-                        <li class="breadcrumb-item">
-                            <a href="{{ route($modelName.'.index')}}" class="text-muted"> {{Config('constants.CMS_MANAGER.CMS_PAGES_TITLE')}}</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            @include("admin.elements.quick_links")
-        </div>
+<!-- Page Header -->
+<div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
+    <a class="btn btn-dark" href="{{ url()->previous() }}">Back</a>
+    <div class="ms-md-1 ms-0">
+        <nav>
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ route('admin-dashboard') }}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Edit Cms</li>
+            </ol>
+        </nav>
     </div>
-    <div class="d-flex flex-column-fluid">
-        <div class="container">
-            <form action="{{route($modelName.'.update',base64_encode($cmsDetails->id))}}" method="POST" class="mws-form" autocomplete="off" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-                <div class="card card-custom gutter-b">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-xl-6">
-                                <div class="form-group">
-                                    <lable name="page_name">Page Name</lable><span class="text-danger"> * </span>
-                                    <input type="text" name="page_name" class="form-control form-control-solid form-control-lg  @error('page_name') is-invalid @enderror" value="{{$cmsDetails->page_name ?? old('page_name')}}">
-                                    @if ($errors->has('page_name'))
-                                    <div class="invalid-feedback">
-                                        {{ $errors->first('page_name') }}
-                                    </div>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
+</div>
+<!-- Page Header Close -->
+<div class="row">
+    <div class="col-xl-12">
+        <form action="{{ route('admin-cms-manager.update',base64_encode($cmsDetails->id)) }}" method="post" enctype="multipart/form-data"
+            id="createCmsForm">
+            @csrf
+            <div class="card custom-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        Basic Info
                     </div>
                 </div>
-                <div class="card card-custom gutter-b">
-                    <div class="card-header card-header-tabs-line">
-                        <div class="card-toolbar border-top">
-                            <ul class="nav nav-tabs nav-bold nav-tabs-line">
-                                @if(!empty($languages))
-                                <?php $i = 1; ?>
-                                @foreach($languages as $language)
-                                <li class="nav-item">
-                                    <a class="nav-link {{($i==$language_code)?'active':'' }}" data-toggle="tab" href="#{{$language->title}}">
-                                        <span class="symbol symbol-20 mr-3">
-                                            <img src="{{url (Config::get('constants.LANGUAGE_IMAGE_PATH').$language->image)}}" alt="">
-                                        </span>
-                                        <span class="nav-text">{{$language->title}}</span>
-                                    </a>
-                                </li>
-                                <?php $i++; ?>
-                                @endforeach
-                                @endif
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="tab-content">
-                            @if(!empty($languages))
-                            <?php $i = 1; ?>
-                            @foreach($languages as $language)
-                            <div class="tab-pane fade {{($i==$language_code)?'show active':'' }}" id="{{$language->title}}" role="tabpanel" aria-labelledby="{{$language->title}}">
-                                <div class="row">
-                                    <div class="col-xl-12">
-                                        <div class="row">
+                <div class="card-body add-products p-0">
+                    <div class="p-4">
+                        <div class="row gx-5">
+                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12">
+                                <div class="card custom-card shadow-none mb-0 border-0">
+                                    <div class="card-body p-0">
+                                        <div class="row gy-3">
+
                                             <div class="col-xl-6">
-                                                <div class="form-group">
-                                                    @if($i == 1)
-                                                    <lable for="{{$language->id}}.title">Page Title</lable><span class="text-danger"> * </span>
-                                                    <input type="text" name="data[{{$language->id}}][title]" class="form-control form-control-solid form-control-lg @error('title') is-invalid @enderror" value="{{$multiLanguage[$language->id]['title'] ?? old('title')}}">
-                                                    @if ($errors->has('title'))
-                                                    <div class="invalid-feedback">
+                                                <label for="page_name" class="form-label"><span class="text-danger">* </span>Page Name</label>
+                                                <input type="text" class="form-control @error('page_name') is-invalid @enderror" id="page_name" name="page_name" value="{{isset($cmsDetails->page_name) ? $cmsDetails->page_name: old('page_name')}}" placeholder="Page Name">
+                                                @if ($errors->has('page_name'))
+                                                    <div class=" invalid-feedback">
+                                                        {{ $errors->first('page_name') }}
+                                                    </div>
+                                                @endif
+                                            </div>
+
+                                            <div class="col-xl-6">
+                                                <label for="title" class="form-label"><span class="text-danger">* </span>Page Title</label>
+                                                <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{isset($cmsDetails->title) ? $cmsDetails->title: old('title')}}" placeholder="Page Title">
+                                                @if ($errors->has('title'))
+                                                    <div class=" invalid-feedback">
                                                         {{ $errors->first('title') }}
                                                     </div>
-                                                    @endif
-                                                    @else
-                                                    <lable for="{{$language->id}}.title">Page Title</lable><span class="text-danger"> </span>
-                                                    <input type="text" name="data[{{$language->id}}][title]" class="form-control form-control-solid form-control-lg" value="{{$multiLanguage[$language->id]['title'] ?? old('title')}}">
-                                                    @endif
-                                                </div>
+                                                @endif
                                             </div>
-                                            <div class="col-xl-12">
-                                                <div class="form-group">
-                                                    <div id="kt-ckeditor-1-toolbar{{$language->id}}"></div>
-                                                    @if($i == 1)
-                                                    <lable>Description </lable><span class="text-danger"> * </span>
-                                                    <textarea id="body_{{$language->id}}" name="data[{{$language->id}}][body]" class="form-control form-control-solid form-control-lg  @error('body') is-invalid @enderror" value="{{$multiLanguage[$language->id]['body'] ?? old('body')}}">
-                                                    {{$multiLanguage[$language->id]['body'] ?? old('body')}} </textarea>
-                                                    @if ($errors->has('body'))
-                                                    <div class="alert invalid-feedback admin_login_alert">
+
+                                            <div class="col-xl-12 mt-3">
+                                                <label for="body" class="form-label">Description</label>
+                                                <textarea class="form-control @error('title') is-invalid @enderror" name="body" id="body" cols="30" rows="5">{!! isset($cmsDetails->body) ? $cmsDetails->body: old('body') !!}</textarea>
+                                                @if ($errors->has('body'))
+                                                    <div class=" invalid-feedback">
                                                         {{ $errors->first('body') }}
                                                     </div>
-                                                    @endif
-                                                    @else
-                                                    <lable>Description </lable>
-                                                    <textarea name="data[{{$language->id}}][body]" id="body_{{$language->id}}" class="form-control form-control-solid form-control-lg">{{$multiLanguage[$language->id]['body'] ?? old('body')}}</textarea>
-                                                    @endif
-                                                </div>
-                                                <script src="{{asset('/public/js/ckeditor/ckeditor.js')}}"></script>
-                                                <script>
-                                                    CKEDITOR.replace(<?php echo 'body_' . $language->id; ?>, {
-                                                        filebrowserUploadUrl: '<?php echo URL()->to('base/uploder'); ?>',
-                                                        enterMode: CKEDITOR.ENTER_BR
-                                                    });
-                                                    CKEDITOR.config.allowedContent = true;
-                                                </script>
+                                                @endif
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <?php $i++; ?>
-                            @endforeach
-                            @endif
-                        </div>
-                        <div class="d-flex justify-content-between border-top mt-5 pt-10">
-                            <div>
-                                <button button type="submit" class="btn btn-success adimnBtnStyle1 font-weight-bold text-uppercase px-9 py-4">
-                                    Submit
-                                </button>
+                            <div class="px-4 py-3 border-top border-block-start-dashed d-sm-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary">Submit</button>
                             </div>
                         </div>
                     </div>
                 </div>
-            </form>
-        </div>
+            </div>
+            
+        </form>
     </div>
 </div>
-@stop
+
+@endsection
+
+@push('scripts')
+<!-- Select2 Cdn -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="{{ asset('assets/plugin/tagify/tagify.min.js') }}"></script>
+
+<!-- Internal Select-2.js -->
+<script src="{{ asset('assets/js/select2.js') }}"></script>
+
+<script src="{{ asset('assets/libs/dropzone/dropzone-min.js') }}"></script>
+
+<script src="{{ asset('assets/js/custom/product.js') }}"></script>
+
+{{-- <script src="{{ asset('assets/js/fileupload.js') }}"></script> --}}
+<script src="{{ asset('assets/plugin/jquery-validation/jquery.validate.min.js') }}"></script>
+<!-- <script src="{{ asset('assets/js/form-validation.js') }}"></script> -->
+
+<script>
+    CKEDITOR.replace(<?php echo 'body'; ?>, {
+        filebrowserUploadUrl: '<?php echo URL()->to('base/uploder'); ?>',
+        enterMode: CKEDITOR.ENTER_BR
+    });
+    CKEDITOR.config.allowedContent = true;
+</script>
+@endpush

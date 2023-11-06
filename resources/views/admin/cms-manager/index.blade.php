@@ -54,7 +54,7 @@
                                     value="{{$searchVariable['page_name'] ?? '' }}">
                             </div>
                             <div class="col-lg-3 mb-lg-5 mb-6">
-                                <label>Email</label>
+                                <label>Page Title</label>
                                 <input type="text" class="form-control" name="title" placeholder="Page Title"
                                     value="{{$searchVariable['title'] ?? '' }}">
                             </div>

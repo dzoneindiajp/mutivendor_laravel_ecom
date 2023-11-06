@@ -4,6 +4,8 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 <link rel="stylesheet" href="{{ asset('assets/libs/dropzone/dropzone.css') }}">
 <link href="{{ asset('assets/plugin/tagify/tagify.css') }}" rel="stylesheet" type="text/css" />
+
+<script src="{{ asset('assets/js/ckeditor/ckeditor.js') }}"></script>
 @endpush
 
 @section('content')
@@ -59,7 +61,7 @@
                                                 @endif
                                             </div>
 
-                                            <div class="col-xl-6 mt-3">
+                                            <div class="col-xl-12 mt-3">
                                                 <label for="body" class="form-label">Description</label>
                                                 <textarea class="form-control @error('title') is-invalid @enderror" name="body" id="body" cols="30" rows="5">{!! isset($cmsDetails->body) ? $cmsDetails->body: old('body') !!}</textarea>
                                                 @if ($errors->has('body'))
@@ -102,4 +104,12 @@
 {{-- <script src="{{ asset('assets/js/fileupload.js') }}"></script> --}}
 <script src="{{ asset('assets/plugin/jquery-validation/jquery.validate.min.js') }}"></script>
 <!-- <script src="{{ asset('assets/js/form-validation.js') }}"></script> -->
+
+<script>
+    CKEDITOR.replace(<?php echo 'body'; ?>, {
+        filebrowserUploadUrl: '<?php echo URL()->to('base/uploder'); ?>',
+        enterMode: CKEDITOR.ENTER_BR
+    });
+    CKEDITOR.config.allowedContent = true;
+</script>
 @endpush

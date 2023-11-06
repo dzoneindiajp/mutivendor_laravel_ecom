@@ -41,19 +41,20 @@ class Banner extends Model
     }
 
     function getImageAttribute($value = ""){
-        if($value != "" && File::exists(Config('constants.BANNER_IMAGE_ROOT_PATH').$value)){
-            return  Config('constants.BANNER_IMAGE_URL').$value;
+        if($value != "" && File::exists(Config('constant.BANNER_IMAGE_ROOT_PATH').$value)){
+            return  Config('constant.BANNER_IMAGE_URL').$value;
         }else {
-            return  Config('constants.WEBSITE_IMG_URL')."astro/noimage.png";
+            return  Config('constant.WEBSITE_IMG_URL')."astro/noimage.png";
         }
     }
 
-    function getMobileImageAttribute($value = ""){
-        if($value != "" && File::exists(Config('constants.BANNER_IMAGE_ROOT_PATH').$value)){
-            return  Config('constants.BANNER_IMAGE_URL').$value;
+    function getVideoAttribute($value = ""){
+        if($value != "" && File::exists(Config('constant.BANNER_VIDEO_ROOT_PATH').$value)){
+            return  Config('constant.BANNER_VIDEO_URL').$value;
         }else {
-            return  Config('constants.WEBSITE_IMG_URL')."astro/noimage.png";
+            return  Config('constant.WEBSITE_IMG_URL')."astro/noimage.png";
         }
     }
+
 
 }

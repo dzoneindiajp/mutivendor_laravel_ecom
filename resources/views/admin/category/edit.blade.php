@@ -27,8 +27,7 @@
             Edit Category
         </div>
     </div>
-    <form action="{{route('admin-'.$model.'.update',base64_encode($category->id))}}"
-        method="post" id="categoryForm" enctype="multipart/form-data">
+    <form action="{{route('admin-'.$model.'.update',base64_encode($category->id))}}" method="post" id="categoryForm" enctype="multipart/form-data">
         @csrf
         <div class="card-body">
             <div class="row">
