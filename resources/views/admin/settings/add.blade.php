@@ -41,7 +41,7 @@
 
                                             <div class="col-xl-6">
                                                 <label for="title" class="form-label"><span class="text-danger">* </span>Title</label>
-                                                <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{isset($userDetails->title) ? $userDetails->title: old('title')}}" placeholder="Title">
+                                                <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{isset($setdetails->title) ? $setdetails->title: old('title')}}" placeholder="Title">
                                                 @if ($errors->has('title'))
                                                     <div class=" invalid-feedback">
                                                         {{ $errors->first('title') }}
@@ -51,7 +51,7 @@
 
                                             <div class="col-xl-6">
                                                 <label for="key" class="form-label"><span class="text-danger">* </span>Key</label>
-                                                <input type="text" class="form-control @error('key') is-invalid @enderror" id="key" name="key" value="{{isset($userDetails->key) ? $userDetails->key: old('key')}}" placeholder="Key">
+                                                <input type="text" class="form-control @error('key') is-invalid @enderror" id="key" name="key" value="{{isset($setdetails->key) ? $setdetails->key: old('key')}}" placeholder="Key">
                                                 @if ($errors->has('key'))
                                                     <div class=" invalid-feedback">
                                                         {{ $errors->first('key') }}
@@ -74,7 +74,7 @@
                                            
 											<div class="col-xl-6">
                                                 <label for="input_type" class="form-label"><span class="text-danger">* </span>Input Type</label>
-                                                <input type="text" class="form-control @error('input_type') is-invalid @enderror" id="input_type" name="input_type" value="{{isset($userDetails->input_type) ? $userDetails->input_type: old('input_type')}}" placeholder="Input Type">
+                                                <input type="text" class="form-control @error('input_type') is-invalid @enderror" id="input_type" name="input_type" value="{{isset($setdetails->input_type) ? $setdetails->input_type: old('input_type')}}" placeholder="Input Type">
                                                 @if ($errors->has('input_type'))
                                                     <div class=" invalid-feedback">
                                                         {{ $errors->first('input_type') }}

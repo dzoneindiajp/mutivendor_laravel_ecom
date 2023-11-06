@@ -228,7 +228,13 @@ Route::prefix('admin')->name('admin-')->group(function () {
          Route::any('seo-page-manager/delete-page/{id}', [App\Http\Controllers\Admin\SeoPageController::class, 'deletePage'])->name('SeoPage.delete');
 
           /** settings routing**/
-          Route::resource('settings', App\Http\Controllers\Admin\SettingsController::class);
+        //   Route::resource('settings', App\Http\Controllers\Admin\SettingsController::class);
+          Route::match(['get', 'post'], '/settings', [App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('settings.index');
+          Route::match(['get', 'post'], '/settings/create', [App\Http\Controllers\Admin\SettingsController::class, 'create'])->name('settings.create');
+          Route::match(['get', 'post'], '/settings/save', [App\Http\Controllers\Admin\SettingsController::class, 'store'])->name('settings.store');
+          Route::match(['get', 'post'], '/settings/edit/{enuserid}', [App\Http\Controllers\Admin\SettingsController::class, 'edit'])->name('settings.edit');
+          Route::match(['get', 'post'], '/settings/update/{enuserid}', [App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('settings.update');
+          Route::get('settings/show/{enuserid}', [App\Http\Controllers\Admin\SettingsController::class, 'show'])->name('cms-manager.show');
           Route::match(['get', 'post'], '/settings/prefix/{enslug?}', [App\Http\Controllers\Admin\SettingsController::class, 'prefix'])->name('settings.prefix');
           Route::get('settings/destroy/{ensetid?}', [App\Http\Controllers\Admin\SettingsController::class, 'destroy'])->name('settings.delete');
           /** settings routing**/

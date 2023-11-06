@@ -19,6 +19,15 @@ return [
 	'CATEGORY_IMAGE_ROOT_PATH'                       => 'public/uploads/categories/',
 	'CATEGORY_IMAGE_URL'                       => url('/').'/public/uploads/categories/',
 	
+	'BANNER_IMAGE_PATH'                       => $WEBSITE_URL.'public/uploads/banners/',
+	'BANNER_IMAGE_ROOT_PATH'                       => 'public/uploads/banners/',
+	'BANNER_IMAGE_URL'                       => url('/').'/public/uploads/banners/',
+	
+	'BANNER_VIDEO_PATH'                       => $WEBSITE_URL.'public/uploads/banners-video/',
+	'BANNER_VIDEO_ROOT_PATH'                       => 'public/uploads/banners-video/',
+	'BANNER_VIDEO_URL'                       => url('/').'/public/uploads/banners-video/',
+	
+
     'ACL' => [
 		'ACLS_TITLE' => "Acl",
 		'ACL_TITLE' => "Acl Management",

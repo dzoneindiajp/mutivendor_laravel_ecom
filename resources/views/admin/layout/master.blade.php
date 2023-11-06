@@ -61,6 +61,14 @@
 
 <body>
 
+<script type="text/javascript">
+        $(document).ready(function() {
+            $('.fancybox-buttons').magnificPopup({
+                type: 'image'
+            });
+        });
+    </script>
+
     <!-- Start Switcher -->
     <div class="offcanvas offcanvas-end" tabindex="-1" id="switcher-canvas" aria-labelledby="offcanvasRightLabel">
         <div class="offcanvas-header border-bottom">
