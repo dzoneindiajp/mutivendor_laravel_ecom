@@ -82,4 +82,65 @@ class Controller extends BaseController
 		}
 		
 	}//end getSlug()
+
+	public function arrayStripTags($array)
+    {
+        $result = array();
+        foreach ($array as $key => $value) {
+            // Don't allow tags on key either, maybe useful for dynamic forms.
+            $key = strip_tags($key, config('constants.ALLOWED_TAGS_XSS'));
+
+            // If the value is an array, we will just recurse back into the
+            // function to keep stripping the tags out of the array,
+            // otherwise we will set the stripped value.
+            if (is_array($value)) {
+                $result[$key] = $this->arrayStripTags($value);
+            } else {
+                // I am using strip_tags(), you may use htmlentities(),
+                // also I am doing trim() here, you may remove it, if you wish.
+                $result[$key] = trim(strip_tags($value, config('constants.ALLOWED_TAGS_XSS')));
+            }
+        }
+
+        return $result;
+
+    }
+
+	public function change_error_msg_layout($errors = array())
+    {
+        $response = array();
+        $response["status"] = "error";
+        if (!empty($errors)) {
+            $error_msg = "";
+            foreach ($errors as $errormsg) {
+                $error_msg1 = (!empty($errormsg[0])) ? $errormsg[0] : "";
+                $error_msg .= $error_msg1 . ", ";
+            }
+            $response["msg"] = trim($error_msg, ", ");
+        } else {
+            $response["msg"] = "";
+        }
+        $response["data"] = (object) array();
+        $response["errors"] = $errors;
+        return $response;
+    }
+
+    public function change_error_msg_layout_with_array($errors = array())
+    {
+        $response = array();
+        $response["status"] = "error";
+        if (!empty($errors)) {
+            $error_msg = "";
+            foreach ($errors as $errormsg) {
+                $error_msg1 = (!empty($errormsg[0])) ? $errormsg[0] : "";
+                $error_msg .= $error_msg1 . ", ";
+            }
+            $response["msg"] = trim($error_msg, ", ");
+        } else {
+            $response["msg"] = "";
+        }
+        $response["data"] = array();
+        $response["errors"] = $errors;
+        return $response;
+    }
 }

@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use Exception;
 use App\Models\Category;
+use App\Models\Variant;
+use App\Models\CategoryVariant;
+use App\Models\CategorySpecification;
+use App\Models\Specification;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -101,7 +105,9 @@ class CategoryController extends Controller
     public function create()
     {
         try {
-            return view('admin.category.create');
+            $variants = Variant::select('id', 'name')->get();
+            $specifications = Specification::leftJoin('specification_groups', 'specifications.specification_group_id', '=', 'specification_groups.id')->select('specifications.id', DB::raw("CONCAT(specification_groups.name, ' > ', specifications.name) as name"))->get();
+            return view('admin.category.create',compact('variants','specifications'));
         } catch (Exception $e) {
             Log::error($e);
             return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);
@@ -112,7 +118,6 @@ class CategoryController extends Controller
     {
         try {
             $formData = $request->all();
-        
             if (!empty($formData)) {
                 $validator = Validator::make(
                     $request->all(),
@@ -131,38 +136,108 @@ class CategoryController extends Controller
                     $originalString = $request->name ?? "";
                     $lowercaseString = Str::lower($originalString);
                     $slug = Str::slug($lowercaseString, '-');
-
+                    
 
                     $alreadyAddedName = Category::where('name', $originalString)->first();
-
+                    
                     if (!is_null($alreadyAddedName)) {
                         return redirect()->back()->with(['error' => 'Slug is already added']);
                     }
                     $totalCategoryCount = Category::whereNull('parent_id')->count();
-                    $imagePath = "";
+                    
+                    DB::beginTransaction();
+                    $obj                                = new Category;
+                    $obj->name                          = $request->input('name');
+                    $obj->slug                          = $slug;
+                    $obj->meta_title                    = !empty($request->input('meta_title')) ? $request->input('meta_title') : NULL;
+                    $obj->meta_description              = !empty($request->input('meta_description')) ? $request->input('meta_description') : NULL;
+                    $obj->meta_keywords                 = !empty($request->input('meta_keywords')) ? $request->input('meta_keywords') : NULL;
                     if ($request->hasFile('image')) {
                         $extension = $request->file('image')->getClientOriginalExtension();
                         $originalName = $request->file('image')->getClientOriginalName();
                         $fileName = time() . '-image.' . $extension;
-
+                        
                         $folderName = strtoupper(date('M') . date('Y')) . "/";
                         $folderPath = Config('constant.CATEGORY_IMAGE_ROOT_PATH') . $folderName;
                         if (!File::exists($folderPath)) {
                             File::makeDirectory($folderPath, $mode = 0777, true);
                         }
                         if ($request->file('image')->move($folderPath, $fileName)) {
-                            $imagePath = $folderName . $fileName;
+                            $obj->image = $folderName . $fileName;
                         }
                     }
-                    $category = Category::create([
-                        'name' => $request->name,
-                        'slug' => $slug,
-                        'image' => $imagePath,
-                        'category_order' => (!empty($totalCategoryCount) ? $totalCategoryCount + 1 : 1),
-                        'meta_title' => $request->meta_title ?? null,
-                        'meta_description' => $request->meta_description ?? null,
-                        'meta_keywords' => $request->meta_keywords ?? null,
-                    ]);
+                    $obj->save();
+                   
+                    $lastId = $obj->id;
+
+                    if(!empty($lastId)){
+                      
+                        if(!empty($request->variantsData) && is_array($request->variantsData)){
+                            foreach($request->variantsData as $variantKey => $variantVal){
+                                // $checkIfvarientExists = Variant::where('id',$variantVal)->first();
+                                $variantId = $variantVal;
+                                
+                                // if(empty($checkIfvarientExists)){
+                                    
+                                //     $variantObj   = new Variant;
+                                //     $variantObj->name = $variantVal;
+                                //     $variantObj->save();
+                                    
+                                //     $variantId = $variantObj->id;
+                                   
+                                //     if(empty($variantId)){
+                                //         DB::rollback();
+                                //         Session()->flash('flash_notice', 'Something Went Wrong');
+                                //         return Redirect::route('admin-category.index');
+                                //     }
+                                // }
+                                $obj2    =   new CategoryVariant;
+                                $obj2->category_id = $lastId;
+                                $obj2->variant_id = $variantId;
+                                $obj2->save();
+                                if(empty($obj2->id)){
+                                    DB::rollback();
+                                    Session()->flash('flash_notice', 'Something Went Wrong');
+                                    return Redirect::route('admin-category.index');
+                                }
+
+                            }
+                        }
+
+                        if(!empty($request->specificationsData) && is_array($request->specificationsData)){
+                            foreach($request->specificationsData as $specificationVal){
+                                // $checkIfspecificationExists = Specification::where('id',$specificationVal)->first();
+                                $specificationId = $specificationVal;
+                                // if(empty($checkIfspecificationExists)){
+                                //     $specificationObj   = new Specification;
+                                //     $specificationObj->name = $specificationVal;
+                                //     $specificationObj->name = $specificationVal;
+                                //     $specificationObj->save();
+                                //     $specificationId = $specificationObj->id;
+                                //     if(empty($specificationId)){
+                                //         DB::rollback();
+                                //         Session()->flash('flash_notice', 'Something Went Wrong');
+                                //         return Redirect::route('admin-category.index');
+                                //     }
+                                // }
+                                $obj2    =   new CategorySpecification;
+                                $obj2->category_id = $lastId;
+                                $obj2->specification_id = $specificationId;
+                                $obj2->save();
+                                if(empty($obj2->id)){
+                                    DB::rollback();
+                                    Session()->flash('flash_notice', 'Something Went Wrong');
+                                    return Redirect::route('admin-category.index');
+                                }
+
+                            }
+                        }
+                        DB::commit();
+                    }else{
+                        DB::rollback();
+                        Session()->flash('flash_notice', 'Something Went Wrong');
+                        return Redirect::route('admin-category.index');
+                    }
 
                     return redirect()->route('admin-category.index')->with('success', 'Category created successfully');
                 }
@@ -186,8 +261,11 @@ class CategoryController extends Controller
                 if(!empty($category->image)){
                     $category->image = Config('constant.CATEGORY_IMAGE_URL').$category->image;
                 }
-
-                return View("admin.$this->model.edit", compact('category'));
+                $variants = Variant::select('id', 'name')->get();
+                $specifications = Specification::leftJoin('specification_groups', 'specifications.specification_group_id', '=', 'specification_groups.id')->select('specifications.id', DB::raw("CONCAT(specification_groups.name, ' > ', specifications.name) as name"))->get();
+                $categoryVariants = CategoryVariant::where('category_id',$categoryId)->pluck('variant_id')->toArray();
+                $categorySpecifications = CategorySpecification::where('category_id',$categoryId)->pluck('specification_id')->toArray();
+                return View("admin.$this->model.edit", compact('category','categoryVariants','categorySpecifications','variants','specifications'));
             }
         } catch (Exception $e) {
             Log::error($e);
@@ -264,6 +342,43 @@ class CategoryController extends Controller
                         $obj->save();
                         $lastId = $obj->id;
                         if(!empty($lastId)){
+                            CategoryVariant::where('category_id',$lastId)->delete();
+                            CategorySpecification::where('category_id',$lastId)->delete();
+                            if(!empty($request->variantsData) && is_array($request->variantsData)){
+                                foreach($request->variantsData as $variantKey => $variantVal){
+                                    // $checkIfvarientExists = Variant::where('id',$variantVal)->first();
+                                    $variantId = $variantVal;
+                                    
+                                    $obj2    =   new CategoryVariant;
+                                    $obj2->category_id = $lastId;
+                                    $obj2->variant_id = $variantId;
+                                    $obj2->save();
+                                    if(empty($obj2->id)){
+                                        DB::rollback();
+                                        Session()->flash('flash_notice', 'Something Went Wrong');
+                                        return Redirect::route('admin-category.index');
+                                    }
+    
+                                }
+                            }
+    
+                            if(!empty($request->specificationsData) && is_array($request->specificationsData)){
+                                foreach($request->specificationsData as $specificationVal){
+                                    // $checkIfspecificationExists = Specification::where('id',$specificationVal)->first();
+                                    $specificationId = $specificationVal;
+                                    
+                                    $obj2    =   new CategorySpecification;
+                                    $obj2->category_id = $lastId;
+                                    $obj2->specification_id = $specificationId;
+                                    $obj2->save();
+                                    if(empty($obj2->id)){
+                                        DB::rollback();
+                                        Session()->flash('flash_notice', 'Something Went Wrong');
+                                        return Redirect::route('admin-category.index');
+                                    }
+    
+                                }
+                            }
                             DB::commit();
                         }else{
                             DB::rollback();
@@ -296,6 +411,8 @@ class CategoryController extends Controller
                 Category::where('id', $categoryId)->update(array(
                     'is_deleted' => 1
                 ));
+                CategoryVariant::where('category_id',$categoryId)->delete();
+                CategorySpecification::where('category_id',$categoryId)->delete();
     
                 Session()->flash('flash_notice', trans("Category has been removed successfully."));
             }

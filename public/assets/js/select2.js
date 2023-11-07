@@ -162,4 +162,29 @@
         
     })
 
+    $('#variantsSelect').select2({
+        // tags: true,
+        placeholder: 'Select Variants',
+        tokenSeparators: [',', ' '], // Separate tags by comma or space
+        createTag: function(params) {
+            return {
+                id: params.term,
+                text: params.term,
+                newTag: true
+            };
+        }
+    });
+    $('#specificationsSelect').select2({
+        // tags: true,
+        placeholder: 'Select Specifications',
+        tokenSeparators: [',', ' '], // Separate tags by comma or space
+        createTag: function(params) {
+            return {
+                id: params.term,
+                text: params.term,
+                newTag: true
+            };
+        }
+    });
+
 })();

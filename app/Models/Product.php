@@ -39,18 +39,5 @@ class Product extends Model
         return $backImageUrl;
     }
 
-    public function category()
-    {
-        return $this->belongsTo(Category::class,'category_id','id');
-    }
 
-    public function subCategory()
-    {
-        return $this->belongsTo(SubCategory::class,'sub_category_id','id');
-    }
-
-    public function childCategory()
-    {
-        return $this->belongsTo(ChildCategory::class,'child_category_id','id');
-    }
 }
