@@ -176,7 +176,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 <script src="{{ asset('assets/plugins/jquery-validation/jquery.validate.min.js') }}"></script>
-
+<script>
+var routeName = '{{route($listRouteName,base64_encode($dep_id))}}';
+// Your DataTables initialization or other JavaScript logic here
+</script>
 <!-- Internal Datatables JS -->
 <script src="{{ asset('assets/js/datatables.js') }}"></script>
 

@@ -11,13 +11,17 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
 use Redirect,DB,Response;
+use App\Models\Variant;
+use App\Models\CategoryVariant;
+use App\Models\CategorySpecification;
+use App\Models\Specification;
 
 class ChildCategoryController extends Controller
 {
     public $model =    'child-category';
     public function __construct(Request $request)
     {   
-        $this->listRouteName = 'admin-child-category.index/{id}';
+        $this->listRouteName = 'admin-child-category.index';
         View()->share('model', $this->model);
         View()->share('listRouteName', $this->listRouteName);
         $this->request = $request;
@@ -162,11 +166,68 @@ class ChildCategoryController extends Controller
                         'meta_keywords' => $request->meta_keywords ?? null,
                     ]);
 
+                    $lastId = $category->id;
+                    if(!empty($lastId)){
+                        if(!empty($request->variantsData) && is_array($request->variantsData)){
+                            foreach($request->variantsData as $variantKey => $variantVal){
+                                // $checkIfvarientExists = Variant::where('id',$variantVal)->first();
+                                $variantId = $variantVal;
+                                
+                                // if(empty($checkIfvarientExists)){
+                                    
+                                //     $variantObj   = new Variant;
+                                //     $variantObj->name = $variantVal;
+                                //     $variantObj->save();
+                                    
+                                //     $variantId = $variantObj->id;
+                                   
+                                //     if(empty($variantId)){
+                                //         DB::rollback();
+                                //         Session()->flash('flash_notice', 'Something Went Wrong');
+                                //         return Redirect::route('admin-category.index');
+                                //     }
+                                // }
+                                $obj2    =   new CategoryVariant;
+                                $obj2->category_id = $lastId;
+                                $obj2->variant_id = $variantId;
+                                $obj2->save();
+                               
+                            }
+                        }
+    
+                        if(!empty($request->specificationsData) && is_array($request->specificationsData)){
+                            foreach($request->specificationsData as $specificationVal){
+                                // $checkIfspecificationExists = Specification::where('id',$specificationVal)->first();
+                                $specificationId = $specificationVal;
+                                // if(empty($checkIfspecificationExists)){
+                                //     $specificationObj   = new Specification;
+                                //     $specificationObj->name = $specificationVal;
+                                //     $specificationObj->name = $specificationVal;
+                                //     $specificationObj->save();
+                                //     $specificationId = $specificationObj->id;
+                                //     if(empty($specificationId)){
+                                //         DB::rollback();
+                                //         Session()->flash('flash_notice', 'Something Went Wrong');
+                                //         return Redirect::route('admin-category.index');
+                                //     }
+                                // }
+                                $obj2    =   new CategorySpecification;
+                                $obj2->category_id = $lastId;
+                                $obj2->specification_id = $specificationId;
+                                $obj2->save();
+                               
+    
+                            }
+                        }
+                    }
+
                     return redirect()->route('admin-child-category.index', $endesid)->with('success', 'Child Category created successfully');
                 }
             }
         }
-        return  View("admin.$this->model.create", compact('dep_id', 'SubcategoryDetails'));
+        $variants = Variant::select('id', 'name')->get();
+        $specifications = Specification::leftJoin('specification_groups', 'specifications.specification_group_id', '=', 'specification_groups.id')->select('specifications.id', DB::raw("CONCAT(specification_groups.name, ' > ', specifications.name) as name"))->get();
+        return  View("admin.$this->model.create", compact('dep_id', 'SubcategoryDetails','variants','specifications'));
     }
 
     public function update(Request $request, $endesid = null)
@@ -239,6 +300,44 @@ class ChildCategoryController extends Controller
                     $obj->save();
                     $lastId = $obj->id;
                     if(!empty($lastId)){
+                        CategoryVariant::where('category_id',$lastId)->delete();
+                        CategorySpecification::where('category_id',$lastId)->delete();
+                        if(!empty($request->variantsData) && is_array($request->variantsData)){
+                            foreach($request->variantsData as $variantKey => $variantVal){
+                                // $checkIfvarientExists = Variant::where('id',$variantVal)->first();
+                                $variantId = $variantVal;
+                                
+                                $obj2    =   new CategoryVariant;
+                                $obj2->category_id = $lastId;
+                                $obj2->variant_id = $variantId;
+                                $obj2->save();
+                                if(empty($obj2->id)){
+                                    DB::rollback();
+                                    Session()->flash('flash_notice', 'Something Went Wrong');
+                                    return Redirect::route('admin-category.index');
+                                }
+
+                            }
+                        }
+
+                        if(!empty($request->specificationsData) && is_array($request->specificationsData)){
+                            foreach($request->specificationsData as $specificationVal){
+                                // $checkIfspecificationExists = Specification::where('id',$specificationVal)->first();
+                                $specificationId = $specificationVal;
+                                
+                                $obj2    =   new CategorySpecification;
+                                $obj2->category_id = $lastId;
+                                $obj2->specification_id = $specificationId;
+                                $obj2->save();
+                                if(empty($obj2->id)){
+                                    DB::rollback();
+                                    Session()->flash('flash_notice', 'Something Went Wrong');
+                                    return Redirect::route('admin-category.index');
+                                }
+
+                            }
+                        }
+                        
                         DB::commit();
                     }else{
                         DB::rollback();
@@ -250,8 +349,12 @@ class ChildCategoryController extends Controller
                 }
             }
         }
+        $variants = Variant::select('id', 'name')->get();
+        $specifications = Specification::leftJoin('specification_groups', 'specifications.specification_group_id', '=', 'specification_groups.id')->select('specifications.id', DB::raw("CONCAT(specification_groups.name, ' > ', specifications.name) as name"))->get();
+        $categoryVariants = CategoryVariant::where('category_id',$des_id)->pluck('variant_id')->toArray();
+        $categorySpecifications = CategorySpecification::where('category_id',$des_id)->pluck('specification_id')->toArray();
         
-        return  View("admin.$this->model.edit", compact('category', 'SubcategoryDetails'));
+        return  View("admin.$this->model.edit", compact('category', 'SubcategoryDetails','variants','specifications','categoryVariants','categorySpecifications'));
     }
 
 
@@ -270,6 +373,9 @@ class ChildCategoryController extends Controller
                 Category::where('id', $categoryId)->update(array(
                     'is_deleted' => 1
                 ));
+                CategoryVariant::where('category_id',$categoryId)->delete();
+                CategorySpecification::where('category_id',$categoryId)->delete();
+    
     
                 Session()->flash('flash_notice', trans("Child category has been removed successfully."));
             }
