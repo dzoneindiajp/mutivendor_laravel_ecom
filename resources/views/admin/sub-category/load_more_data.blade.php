@@ -1,6 +1,6 @@
 @if($results->isNotEmpty())
 @forelse($results as $result)
-<tr class="list-data-row" data-total-count="{{$totalResults}}">
+<tr class="list-data-row items-inner" data-total-count="{{$totalResults}}" data-id = "{{$result->id}}">
     <td>
         @if (!empty($result->image))
         <img height="50" width="50" src="{{isset($result->image)? $result->image:''}}" />
@@ -64,3 +64,33 @@
     <td colspan="7" style="text-align: center;">No results found.</td>
 </tr>
 @endif
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+<script type="text/javascript">
+new Sortable(powerwidgets, {
+		animation: 150,
+		ghostClass: 'sortable-ghost',
+		onEnd: function (evt) {
+			var counter  = 1;
+			var requestData	=	[];
+			$(".items-inner").each(function(){
+				requestData.push({"id":$(this).attr("data-id"),"order":counter});
+				counter++;
+			});
+
+			$.ajax({
+				url:'{{ Route("admin-category.updateCategoryOrder") }}',
+				type:'POST',
+				headers: {
+					'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+				},
+				data:{"requestData":requestData},
+				success:function(response){
+					
+				}
+			});	
+		},
+	});
+</script>

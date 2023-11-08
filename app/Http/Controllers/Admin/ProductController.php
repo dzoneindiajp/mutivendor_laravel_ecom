@@ -34,7 +34,9 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         try {
-            $DB = Product::leftJoin('categories', 'products.category_id', '=', 'categories.id')->leftJoin('sub_categories', 'products.sub_category_id', '=', 'sub_categories.id')->leftJoin('child_categories', 'products.child_category_id', '=', 'child_categories.id');
+            $DB = Product::leftJoin('categories', 'products.category_id', '=', 'categories.id')
+                         ->leftJoin('categories as sub_categories', 'products.sub_category_id', '=', 'sub_categories.id')
+                         ->leftJoin('categories as child_categories', 'products.child_category_id', '=', 'child_categories.id');
             $sortBy = $request->input('sortBy') ? $request->input('sortBy') : 'products.created_at';
             $order = $request->input('order') ? $request->input('order') : 'desc';
             $offset = !empty($request->input('offset')) ? $request->input('offset') : 0 ;
@@ -94,7 +96,7 @@ class ProductController extends Controller
                 return  View("admin.products.load_more_data", compact('results','totalResults'));
             }else{
                 
-                $categories = Category::get();
+                $categories = Category::whereNull('parent_id')->where('is_deleted', 0)->get();
                 return view('admin.products.list', compact('results','categories','totalResults'));
             }
             

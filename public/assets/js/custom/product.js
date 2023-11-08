@@ -65,7 +65,9 @@ $('#category_id').on('change', function (e) {
         url: url + "?category_id=" + categoryId,
         method: "GET",
         success: function (response) {
-            $('#sub_category_id').html('<option value="">None</option>')
+            if(response.subCategories && response.subCategories.length > 0) {
+                $('#subcategory-filter').show();
+                $('#sub_category_id').html('<option value="">None</option>')
                 .select2({
                     data: $.map(response.subCategories, function (item) {
                         return {
@@ -74,6 +76,10 @@ $('#category_id').on('change', function (e) {
                         }
                     }),
                 });
+            } else {
+                $('#subcategory-filter').hide();
+            }
+           
         },
         error: function (jqXHR, exception) {
             console.log("error");
@@ -91,7 +97,9 @@ $('#sub_category_id').on('change', function (e) {
         url: url + "?sub_category_id=" + subCategoryId,
         method: "GET",
         success: function (response) {
-            $('#child_category_id').html('<option value="">None</option>')
+            if(response.childCategories && response.childCategories.length > 0) {
+                $('#child-category-filter').show();
+                $('#child_category_id').html('<option value="">None</option>')
                 .select2({
                     data: $.map(response.childCategories, function (item) {
                         return {
@@ -100,6 +108,10 @@ $('#sub_category_id').on('change', function (e) {
                         }
                     }),
                 });
+            } else {
+                $('#child-category-filter').hide();
+            }
+           
         },
         error: function (jqXHR, exception) {
             console.log("error");
