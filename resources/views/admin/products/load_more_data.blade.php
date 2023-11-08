@@ -4,12 +4,12 @@
     <td>{{ $product->name ?? "N/A" }}</td>
     <td>{{ $product->slug ?? "N/A" }}</td>
     <td>
-        {{ $product->category->name ?? "N/A" }}
+        {{ $product->category_name ?? "N/A" }}
     </td>
     <td>
-        {{ $product->subCategory->name ?? "N/A" }}
+        {{ $product->sub_category_name ?? "N/A" }}
     </td>
-    <td>{{ $product->childCategory->name ?? "N/A" }}</td>
+    <td>{{ $product->child_category_name ?? "N/A" }}</td>
     <td><img src="{{ $product->front_image_url }}" height="70px" width="70px" style="border-radius: 10%"></td>
     <td>{{ $product->price }}</td>
     <td>

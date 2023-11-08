@@ -79,8 +79,8 @@ class ChildCategoryController extends Controller
         $DB->where("is_deleted", 0);
         $DB->where("parent_id", $dep_id);
         $DB->select("categories.*");
-        $sortBy = ($request->input('sortBy')) ? $request->input('sortBy') : 'created_at';
-        $order  = ($request->input('order')) ? $request->input('order')   : 'DESC';
+        $sortBy = ($request->input('sortBy')) ? $request->input('sortBy') : 'category_order';
+        $order  = ($request->input('order')) ? $request->input('order')   : 'ASC';
         $offset = !empty($request->input('offset')) ? $request->input('offset') : 0 ;
         $limit =  !empty($request->input('limit')) ? $request->input('limit') : Config("Reading.records_per_page"); 
 

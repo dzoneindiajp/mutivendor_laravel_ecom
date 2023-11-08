@@ -111,7 +111,7 @@
                     </div>
                     <div class="col-md-10">
                         <div class="tab-content">
-                            <div class="tab-pane text-muted" data-next-tab="detailsTab" data-prev-tab=""
+                            <div class="tab-pane text-muted active show" data-next-tab="detailsTab" data-prev-tab=""
                                 id="basicInformationTab" role="tabpanel">
                                 <form id="basicInformationTabForm">
                                     <div class="row gx-5">
@@ -386,7 +386,7 @@
 
                                 </form>
                             </div>
-                            <div class="tab-pane text-muted active show" id="mediasTab" data-next-tab="variantsTab"
+                            <div class="tab-pane text-muted" id="mediasTab" data-next-tab="variantsTab"
                                 data-prev-tab="shippingSpecificationsTab" role="tabpanel">
                                 <div class="row gx-5">
                                     <div id="imageDropzone" class="dropzone">Drop files here to upload</div>

@@ -32,8 +32,8 @@ class CategoryController extends Controller
     {
         try {
             $DB = Category::whereNull('parent_id');
-            $sortBy = $request->input('sortBy') ? $request->input('sortBy') : 'categories.created_at';
-            $order = $request->input('order') ? $request->input('order') : 'desc';
+            $sortBy = $request->input('sortBy') ? $request->input('sortBy') : 'categories.category_order';
+            $order = $request->input('order') ? $request->input('order') : 'ASC';
             $offset = !empty($request->input('offset')) ? $request->input('offset') : 0 ;
             $limit =  !empty($request->input('limit')) ? $request->input('limit') : Config("Reading.records_per_page"); 
 
@@ -444,4 +444,15 @@ class CategoryController extends Controller
         Session()->flash('flash_notice', $statusMessage);
         return back();
     }
+
+    function updateCategoryOrder(Request $request){
+    $requestOrder	=	$request->input("requestData");
+   
+    if(!empty($requestOrder)){
+        foreach($requestOrder as $category_order){
+            Category::where("id",$category_order["id"])->update(array("category_order"=>$category_order["order"]));
+        }
+    }
+    die;
+	}
 }

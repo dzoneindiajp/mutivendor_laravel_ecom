@@ -109,6 +109,7 @@ Route::prefix('admin')->name('admin-')->group(function () {
         //  Route::resource('category', App\Http\Controllers\Admin\CategoryController::class);
          Route::get('category/update-status/{id}/{status}', [App\Http\Controllers\Admin\CategoryController::class, 'changeStatus'])->name('category.status');
          Route::get('category/destroy/{endepid?}', [App\Http\Controllers\Admin\CategoryController::class, 'destroy'])->name('category.delete');
+         Route::post('category/update-order', [App\Http\Controllers\Admin\CategoryController::class, 'updateCategoryOrder'])->name('category.updateCategoryOrder');
          // /* category routes */
 
         /** brand routes **/

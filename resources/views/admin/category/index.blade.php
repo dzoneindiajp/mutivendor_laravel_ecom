@@ -118,7 +118,7 @@
                         <th>Action </th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="powerwidgets">
                     <tr id="loader-row" style="display: none;">
                         <td colspan="7" style="text-align: center;">
                             <button class="btn btn-light" type="button" disabled="">

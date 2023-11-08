@@ -66,7 +66,7 @@
                                         @endforelse
                                     </select>
                                 </div>
-                                <div class="col-lg-3">
+                                <div class="col-lg-3" id="subcategory-filter" style="display: none;">
                                     {{-- <div id="sub_categegory_select"></div> --}}
                                     <label for="sub_category_id" class="form-label">Sab Category</label>
                                     <select class="js-example-placeholder-single js-states form-control"
@@ -75,7 +75,7 @@
                                         <option value="" selected>None</option>
                                     </select>
                                 </div>
-                                <div class="col-lg-3">
+                                <div class="col-lg-3" id="child-category-filter" style="display: none;">
                                     <label for="product-size-add" class="form-label">Child Category</label>
                                     <select class="js-example-placeholder-single js-states form-control"
                                         name="child_category_id" id="child_category_id">
