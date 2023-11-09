@@ -221,8 +221,8 @@ class UsersController extends Controller
                         'image' => 'nullable|mimes:jpg,jpeg,png',
                         'gender' => 'required',
                         'date_of_birth' => 'required',
-                        'password'      =>         [Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
-                         'confirm_password' =>      'same:password',
+                        'password'      =>  !empty(!empty($request->password)) ? [Password::min(8)->letters()->mixedCase()->numbers()->symbols()] : 'nullable',
+                        'confirm_password' =>    !empty(!empty($request->password)) ?  'same:password' : 'nullable',
 
                     ),
                     array(

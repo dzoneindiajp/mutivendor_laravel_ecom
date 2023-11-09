@@ -85,6 +85,16 @@
                                         </div>
                                     </div>
 
+                                    <div class="col-md-3 mb-3" id="colorPickerIn" style="display: {{ (!empty($dataVal['name']) && (strtolower($dataVal['name']) == 'color')) ? 'block' : 'none' }}">
+                                        <div class="form-group">
+                                            <label for="color">Color</label><span class="text-danger">
+                                                 </span>
+                                            <input type="color" name="color_code" id="color_code"
+                                                class="form-control form-control-color border-0 @error('color_code') is-invalid @enderror" value="{{!empty($dataVal['color_code']) ? $dataVal['color_code'] : ''}}">
+
+                                        </div>
+                                    </div>
+
                                     <div class="col-md-2">
                                         @if($iterationCount == 0)
                                         <a href="javascript:;" data-repeater-create=""
@@ -134,6 +144,16 @@
                                         </div>
                                     </div>
 
+                                    <div class="col-md-3 mb-3" id="colorPickerIn" style="display: none;">
+                                        <div class="form-group">
+                                            <label for="color">Color</label><span class="text-danger">
+                                                 </span>
+                                            <input type="color" name="color_code" id="color_code"
+                                                class="form-control form-control-color border-0 @error('color_code') is-invalid @enderror" value="#136ad0">
+
+                                        </div>
+                                    </div>
+
 
 
                                     <div class="col-md-2">
@@ -179,4 +199,35 @@
 <script src="{{ asset('assets/plugin/tagify/tagify.min.js') }}"></script>
 <script src="{{ asset('assets/js/repeater.js')}}"></script>
 <script src="{{ asset('assets/js/custom/variants.js')}}"></script>
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#name').on('input', function() {
+            var name = $(this).val().toLowerCase();
+
+            // Check if the name contains "color" or "Color"
+            if (name.includes('color')) {
+                $('#colorPickerIn').show();
+            } else {
+                $('#colorPickerIn').hide();
+            }
+        });
+
+        // Event listener for the color picker
+        $(document).on('change', 'input[name="color_code"]', function() {
+            var selectedColor = $(this).val();
+            
+            // Find the corresponding "Name" input field within the same block
+            var nameInput = $(this).closest('.form-group').find('.variant-value');
+
+            // Set the value of the "Name" field to the selected color
+            nameInput.val(selectedColor);
+
+            // Check if the value was updated
+            alert(nameInput.val());
+        });
+        
+    });
+</script>
 @endpush

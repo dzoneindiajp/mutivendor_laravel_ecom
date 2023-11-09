@@ -292,8 +292,8 @@ class StaffController extends Controller
                 'phone_number'      =>        'required|numeric',
                 'department_id'     =>        'required',
                 'designation_id'    =>        'required',
-                'password'          =>         ['nullable',Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
-                'confirm_password' =>      'same:password',
+                'password'          =>  !empty(!empty($request->password)) ? [Password::min(8)->letters()->mixedCase()->numbers()->symbols()] : 'nullable',
+                'confirm_password'  =>    !empty(!empty($request->password)) ?  'same:password' : 'nullable',
             ]);
             $obj                        =  User::find($stf_id);
             $obj->user_role_id          =  Config('constant.ROLE_ID.STAFF_ROLE_ID');
