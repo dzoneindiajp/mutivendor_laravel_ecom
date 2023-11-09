@@ -53,8 +53,11 @@ Route::prefix('admin')->name('admin-')->group(function () {
             Route::post('update/{token}', [ProductController::class, 'update'])->name('update');
             Route::delete('delete/{token}', [ProductController::class, 'destory'])->name('delete');
             Route::get('sub-category-list', [ProductController::class, 'getSubCategories'])->name('sub-category-list');
+            Route::get('variant-values-list', [ProductController::class, 'getVariantValues'])->name('variant-values-list');
             Route::get('child-category-list', [ProductController::class, 'getChildCategories'])->name('child-category-list');
-
+            Route::match(['get', 'post'], 'upload-images', [ProductController::class, 'uploadImages'])->name('upload-images');
+            Route::get('delete-image', [ProductController::class, 'deleteImage'])->name('delete-image');
+            Route::get('update-image-meta-values', [ProductController::class, 'updateImageMetaValues'])->name('update-image-meta-values');
             Route::prefix('options')->name('options-')->group(function () {
                 Route::get('list', [ProductOptionsController::class, 'index'])->name('list');
                 Route::get('create', [ProductOptionsController::class, 'create'])->name('create');
