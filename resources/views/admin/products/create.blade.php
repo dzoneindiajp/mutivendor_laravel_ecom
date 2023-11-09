@@ -7,47 +7,74 @@
 <script src="{{ asset('assets/js/ckeditor/ckeditor.js') }}"></script>
 @endpush
 <style>
-.uploaded-images-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.uploaded-image {
-    position: relative;
-}
-
-.uploaded-image img {
-    max-width: 100px;
-    /* Adjust image width */
-    max-height: 100px;
-    /* Adjust image height */
-}
-
-.remove-icon {
-    position: absolute;
-    top: 0;
-    right: 0;
-    cursor: pointer;
-    color: red;
-    /* Adjust icon color */
-}
-
 .portfolioPicContainer {
-  height: 100px;
-  width: 100px;
-  background-color: #404040;
+    height: 100px;
+    width: 100px;
+    background-color: #404040;
+    position: relative;
+    display: inline-block;
 }
 
-  .portfolioPicContainerImg {
+.bi-x-circle:hover {
+    cursor: pointer;
+    opacity: 0.7;
+    /* Decrease opacity on hover for a visual effect */
+}
+
+.bi-x-circle {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color: white;
+    /* Change color to white */
+    font-size: 20px;
+    /* Adjust the font size as desired */
+    z-index: 1;
+    /* Ensure it appears above the image */
+}
+
+.portfolioPicContainerImg {
     height: 100%;
     width: 100%;
     object-fit: contain;
     object-position: center;
-  }
-  .closePortImgBtn{padding:0 !important;height:15px;width:15px;font-size:15px}
-  .portfolioImgAciveInput{width:2em !important;height:1.2em !important}.portfolioImgAciveLabel{font-size:12px !important}
+}
 
+.closePortImgBtn {
+    padding: 0 !important;
+    height: 15px;
+    width: 15px;
+    font-size: 15px
+}
+
+.portfolioImgAciveInput {
+    width: 2em !important;
+    height: 1.2em !important
+}
+
+.portfolioImgAciveLabel {
+    font-size: 12px !important
+}
+
+.image-checkbox {
+    display: inline-block;
+    margin: 10px;
+}
+
+.image-checkbox input[type="checkbox"] {
+    display: none;
+    /* Hide the default checkbox */
+}
+
+.image-checkbox input[type="checkbox"]+img {
+    cursor: pointer;
+    /* Change cursor to pointer on hover */
+}
+
+.image-bordered {
+    border: 2px solid black;
+    /* Add a black border when the checkbox is checked */
+}
 </style>
 
 @section('content')
@@ -87,26 +114,27 @@
                                     <p class="mb-1"><i class="ri-customer-service-line"></i></p>
                                     <p class="mb-0 text-break">Prices</p>
                                 </a> </li>
-                            <li class="nav-item" role="presentation"> <a class="nav-link " href="javascript:void(0);">
+                            <li class="nav-item" role="presentation"> <a class="nav-link " href="#specificationsTab">
                                     <p class="mb-1"><i class="ri-customer-service-line"></i></p>
                                     <p class="mb-0 text-break">Specifications</p>
                                 </a> </li>
-                            <li class="nav-item" role="presentation"> <a class="nav-link " href="javascript:void(0);">
+                            <li class="nav-item" role="presentation"> <a class="nav-link "
+                                    href="#shippingSpecificationsTab">
                                     <p class="mb-1"><i class="ri-customer-service-line"></i></p>
                                     <p class="mb-0 text-break">Shipping Specifications</p>
                                 </a> </li>
-                            <li class="nav-item" role="presentation"> <a class="nav-link " href="javascript:void(0);">
+                            <li class="nav-item" role="presentation"> <a class="nav-link " href="#mediasTab">
                                     <p class="mb-1"><i class="ri-customer-service-line"></i></p>
                                     <p class="mb-0 text-break">Medias</p>
                                 </a> </li>
-                            <li class="nav-item" role="presentation"> <a class="nav-link " href="javascript:void(0);">
+                            <li class="nav-item" role="presentation"> <a class="nav-link " href="#variantsTab">
                                     <p class="mb-1"><i class="ri-customer-service-line"></i></p>
                                     <p class="mb-0 text-break">Variants</p>
                                 </a> </li>
-                            <!-- <li class="nav-item" role="presentation"> <a class="nav-link " href="javascript:void(0);">
+                            <li class="nav-item" role="presentation"> <a class="nav-link " href="#advanceSeoTab">
                                     <p class="mb-1"><i class="ri-customer-service-line"></i></p>
                                     <p class="mb-0 text-break">Advance SEO </p>
-                                </a> </li> -->
+                                </a> </li>
                         </ul>
                     </div>
                     <div class="col-md-10">
@@ -125,7 +153,7 @@
                                                             <input type="text" class="form-control" id="name"
                                                                 name="name" placeholder="Enter Name"
                                                                 onkeyup="displaySlug($(this))">
-                                                                <div class="invalid-feedback fw-bold"></div>
+                                                            <div class="invalid-feedback fw-bold"></div>
                                                             <h6 class="product-slug mt-2"></h6>
                                                         </div>
                                                         <div class="col-xl-12 select2-error">
@@ -147,7 +175,8 @@
                                                             </select>
                                                             <div class="invalid-feedback fw-bold"></div>
                                                         </div>
-                                                        <div class="col-xl-12">
+                                                        <div class="col-xl-12" style="display:none"
+                                                            id="child-category-filter">
                                                             <label for="product-size-add" class="form-label">Child
                                                                 Category</label>
                                                             <select
@@ -173,10 +202,11 @@
                                                                     class="text-danger">* </span>Bar Code</label>
                                                             <input type="text" class="form-control" id="bar_code"
                                                                 name="bar_code" placeholder="Enter Bar Code">
-                                                                <div class="invalid-feedback fw-bold"></div>
+                                                            <div class="invalid-feedback fw-bold"></div>
 
                                                         </div>
-                                                        <div class="col-xl-12">
+                                                        <div class="col-xl-12" style="display:none"
+                                                            id="subcategory-filter">
                                                             {{-- <div id="sub_categegory_select"></div> --}}
                                                             <label for="sub_category_id" class="form-label">Sub
                                                                 Category</label>
@@ -215,6 +245,7 @@
                                     </div>
                                     <div
                                         class="py-3 border-top border-block-start-dashed d-sm-flex justify-content-end">
+
                                         <button type="button" class="btn btn-primary" id="actionBtn" data-action="next"
                                             data-current-tab="basicInformationTab">Next</button>
                                     </div>
@@ -229,31 +260,34 @@
                                             </span>Short Description</label>
                                         <textarea class="form-control" name="short_description" id="short_description"
                                             cols="20" rows="5"></textarea>
-                                            <div class="invalid-feedback fw-bold"></div>
+                                        <div class="invalid-feedback fw-bold"></div>
                                     </div>
                                     <div class="col-xl-12">
                                         <label for="long_description" class="form-label"><span class="text-danger">*
                                             </span>Long Description</label>
                                         <textarea class="form-control" name="long_description" id="long_description"
                                             cols="30" rows="5"></textarea>
-                                            <div class="invalid-feedback fw-bold"></div>
+                                        <div class="invalid-feedback fw-bold"></div>
                                     </div>
                                     <div class="col-xl-12">
                                         <label for="return_policy" class="form-label"><span class="text-danger">
                                             </span>Return Policy</label>
                                         <textarea class="form-control" name="return_policy" id="return_policy" cols="20"
                                             rows="5"></textarea>
-                                            <div class="invalid-feedback fw-bold"></div>
+                                        <div class="invalid-feedback fw-bold"></div>
                                     </div>
                                     <div class="col-xl-12">
                                         <label for="seller_information" class="form-label"><span class="text-danger">
                                             </span>Seller Information</label>
                                         <textarea class="form-control" name="seller_information" id="seller_information"
                                             cols="20" rows="5"></textarea>
-                                            <div class="invalid-feedback fw-bold"></div>
+                                        <div class="invalid-feedback fw-bold"></div>
                                     </div>
                                     <div
-                                        class="py-3 border-top border-block-start-dashed d-sm-flex justify-content-end">
+                                        class="py-3 border-top border-block-start-dashed d-sm-flex justify-content-between">
+                                        <button type="button" class="btn btn-dark" id="actionBtn" data-action="back"
+                                            data-current-tab="detailsTab"
+                                            data-target-tab="basicInformationTab">Back</button>
                                         <button type="submit" class="btn btn-primary" id="actionBtn" data-action="next"
                                             data-current-tab="detailsTab">Next</button>
                                     </div>
@@ -273,7 +307,7 @@
                                                         <input type="text" class="form-control" id="buying_price"
                                                             name="buying_price" placeholder="Enter Buying Price">
 
-                                                            <div class="invalid-feedback fw-bold"></div>
+                                                        <div class="invalid-feedback fw-bold"></div>
                                                     </div>
 
 
@@ -290,7 +324,7 @@
                                                                 class="text-danger">* </span>Selling Price</label>
                                                         <input type="text" class="form-control" id="selling_price"
                                                             name="selling_price" placeholder="Enter Selling Price">
-                                                            <div class="invalid-feedback fw-bold"></div>
+                                                        <div class="invalid-feedback fw-bold"></div>
 
                                                     </div>
 
@@ -299,7 +333,9 @@
                                         </div>
                                     </div>
                                     <div
-                                        class="py-3 border-top border-block-start-dashed d-sm-flex justify-content-end">
+                                        class="py-3 border-top border-block-start-dashed d-sm-flex justify-content-between">
+                                        <button type="button" class="btn btn-dark" id="actionBtn" data-action="back"
+                                            data-current-tab="pricesTab" data-target-tab="detailsTab">Back</button>
                                         <button type="submit" class="btn btn-primary" id="actionBtn" data-action="next"
                                             data-current-tab="pricesTab">Next</button>
                                     </div>
@@ -309,8 +345,12 @@
                             <div class="tab-pane text-muted" id="specificationsTab"
                                 data-next-tab="shippingSpecificationsTab" data-prev-tab="pricesTab" role="tabpanel">
                                 <form id="specificationsTabForm" class="row gx-5">
+                                    <div class="invalid-feedback fw-bold specificationsTabErrorDiv"></div>
                                     <div
-                                        class="py-3 border-top border-block-start-dashed d-sm-flex justify-content-end">
+                                        class="py-3 border-top border-block-start-dashed d-sm-flex justify-content-between">
+                                        <button type="button" class="btn btn-dark" id="actionBtn" data-action="back"
+                                            data-current-tab="specificationsTab"
+                                            data-target-tab="pricesTab">Back</button>
                                         <button type="submit" class="btn btn-primary" id="actionBtn" data-action="next"
                                             data-current-tab="specificationsTab">Next</button>
                                     </div>
@@ -329,6 +369,7 @@
                                                             </span>Height</label>
                                                         <input type="text" class="form-control" id="height"
                                                             name="height" placeholder="Height">
+                                                        <div class="invalid-feedback fw-bold"></div>
 
                                                     </div>
                                                     <div class="col-xl-12">
@@ -337,6 +378,7 @@
                                                             </span>Width</label>
                                                         <input type="text" class="form-control" id="width" name="width"
                                                             placeholder="Width">
+                                                        <div class="invalid-feedback fw-bold"></div>
 
                                                     </div>
                                                     <div class="col-xl-12">
@@ -344,6 +386,7 @@
                                                             </span>DC</label>
                                                         <input type="text" class="form-control" id="dc" name="dc"
                                                             placeholder="DC">
+                                                        <div class="invalid-feedback fw-bold"></div>
 
                                                     </div>
 
@@ -362,6 +405,7 @@
                                                             </span>Weight</label>
                                                         <input type="text" class="form-control" id="weight"
                                                             name="weight" placeholder="Weight">
+                                                        <div class="invalid-feedback fw-bold"></div>
 
                                                     </div>
                                                     <div class="col-xl-12">
@@ -370,6 +414,7 @@
                                                             </span>Length</label>
                                                         <input type="text" class="form-control" id="length"
                                                             name="length" placeholder="Length">
+                                                        <div class="invalid-feedback fw-bold"></div>
 
                                                     </div>
 
@@ -379,7 +424,10 @@
                                         </div>
                                     </div>
                                     <div
-                                        class="py-3 border-top border-block-start-dashed d-sm-flex justify-content-end">
+                                        class="py-3 border-top border-block-start-dashed d-sm-flex justify-content-between">
+                                        <button type="button" class="btn btn-dark" id="actionBtn" data-action="back"
+                                            data-current-tab="shippingSpecificationsTab"
+                                            data-target-tab="specificationsTab">Back</button>
                                         <button type="submit" class="btn btn-primary" id="actionBtn" data-action="next"
                                             data-current-tab="shippingSpecificationsTab">Next</button>
                                     </div>
@@ -389,24 +437,71 @@
                             <div class="tab-pane text-muted" id="mediasTab" data-next-tab="variantsTab"
                                 data-prev-tab="shippingSpecificationsTab" role="tabpanel">
                                 <div class="row gx-5">
-                                    <div id="imageDropzone" class="dropzone">Drop files here to upload</div>
-                                    <div id="uploadedImagesContainer" class="uploaded-images-container row p-3 text-center"></div>
-
-                                    <div
-                                        class="py-3 border-top border-block-start-dashed d-sm-flex justify-content-end">
-                                        <button type="submit" class="btn btn-primary" id="actionBtn" data-action="next"
-                                            data-current-tab="mediasTab">Next</button>
+                                    <div id="imageDropzone" class="dropzone">
+                                        <!-- <div class="text-center">Drop images here to upload</div> -->
                                     </div>
 
+
+
                                 </div>
+                                <div class="card border bg-transparent mt-3 loadImagesData">
+                                    <div class="row p-3 text-center"><small>Product Images will be shown here.</small>
+                                    </div>
+                                </div>
+
+
+                                <div
+                                    class="py-3 border-top border-block-start-dashed d-sm-flex justify-content-between">
+                                    <button type="button" class="btn btn-dark" id="actionBtn" data-action="back"
+                                        data-current-tab="mediasTab"
+                                        data-target-tab="shippingSpecificationsTab">Back</button>
+                                    <button type="submit" class="btn btn-primary" id="actionBtn" data-action="next"
+                                        data-current-tab="mediasTab">Next</button>
+                                </div>
+
+
                             </div>
-                            <div class="tab-pane text-muted" id="variantsTab" data-next-tab="" data-prev-tab="mediasTab"
-                                role="tabpanel">
+                            <div class="tab-pane text-muted" id="variantsTab" data-next-tab="advanceSeoTab"
+                                data-prev-tab="mediasTab" role="tabpanel">
                                 <form id="variantsTabForm" class="row gx-5">
+                                    <div class="invalid-feedback fw-bold variantsTabErrorDiv"></div>
                                     <div
-                                        class="py-3 border-top border-block-start-dashed d-sm-flex justify-content-end">
+                                        class="py-3 border-top border-block-start-dashed d-sm-flex justify-content-between">
+                                        <button type="button" class="btn btn-dark" id="actionBtn" data-action="back"
+                                            data-current-tab="variantsTab" data-target-tab="mediasTab">Back</button>
                                         <button type="submit" class="btn btn-primary" id="actionBtn" data-action="next"
-                                            data-current-tab="variantsTab">Next</button>
+                                            data-current-tab="variantsTab" data-current-action="second_step"
+                                            >Next</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="tab-pane text-muted" id="advanceSeoTab" data-next-tab=""
+                                data-prev-tab="variantsTab" role="tabpanel">
+                                <form id="advanceSeoTabForm" class="row gx-5 gy-5">
+                                    <div class="col-xl-12">
+                                        <label for="meta_title" class="form-label">Meta Title</label>
+                                        <input type="text" class="form-control" id="meta_title" name="meta_title"
+                                            placeholder="Meta TItle">
+                                        <div class="invalid-feedback fw-bold"></div>
+                                    </div>
+                                    <div class="col-xl-12">
+                                        <label for="meta_description" class="form-label">Meta Description</label>
+                                        <textarea class="form-control" name="meta_description" id="meta_description"
+                                            cols="30" rows="5"></textarea>
+                                        <div class="invalid-feedback fw-bold"></div>
+                                    </div>
+                                    <div class="col-xl-12">
+                                        <label for="meta_keywords" class="form-label">Meta Keywords</label>
+                                        <input type="text" class="form-control" id="meta_keywords" name="meta_keywords"
+                                            placeholder="Meta Keywords">
+                                        <div class="invalid-feedback fw-bold"></div>
+                                    </div>
+                                    <div
+                                        class="py-3 border-top border-block-start-dashed d-sm-flex justify-content-between">
+                                        <button type="button" class="btn btn-dark" id="actionBtn" data-action="back"
+                                            data-current-tab="advanceSeoTab" data-target-tab="variantsTab">Back</button>
+                                        <button type="submit" class="btn btn-primary" id="actionBtn" data-action="next"
+                                            data-current-tab="advanceSeoTab">Finish</button>
                                     </div>
                                 </form>
                             </div>
@@ -454,90 +549,269 @@ CKEDITOR.replace(<?php echo 'seller_information'; ?>, {
     filebrowserUploadUrl: '<?php echo URL()->to('base/uploder'); ?>',
     enterMode: CKEDITOR.ENTER_BR
 });
+CKEDITOR.replace(<?php echo 'meta_description'; ?>, {
+    filebrowserUploadUrl: '<?php echo URL()->to('base/uploder'); ?>',
+    enterMode: CKEDITOR.ENTER_BR
+});
 CKEDITOR.config.allowedContent = true;
 
+function show_message(message, message_type) {
+    if (message_type) {
+
+        Swal.fire({
+            icon: message_type,
+            title: message,
+            showConfirmButton: true,
+        })
+    }
+
+}
 
 Dropzone.autoDiscover = false;
+
 const myDropzone = new Dropzone("#imageDropzone", {
-    url: "/your-upload-endpoint",
-    autoProcessQueue: false,
-    maxFiles: 10, // Adjust the maximum number of files allowed
+    url: "{{route('admin-product-upload-images')}}",
+    acceptedFiles: ".png,.jpg,.jpeg",
+    uploadMultiple: true,
+    maxFilesize: 20,
+    createImageThumbnails: true,
+    maxThumbnailFilesize: 10,
+    thumbnailMethod: 'crop',
+    parallelUploads: 10,
+    autoProcessQueue: true,
+
 
     init: function() {
-        this.on("addedfile", function(file) {
-            file.previewElement.remove();
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const imageUrl = e.target.result; // Get the image URL
-                const imageElement = document.createElement('div');
-                imageElement.classList.add('uploaded-image');
-                imageElement.classList.add('col-auto');
-                imageElement.innerHTML = `
-               
-<div class="img-wrap rounded-2 mb-3 portfolioPicContainer"><span class="close removePortfolioImage closePortImgBtn d-flex align-items-center justify-content-center remove-icon" data-image-url="${imageUrl}">&times;</span><img src="${imageUrl}" alt="${file.name}" class="card-img rounded-2 portfolioPicContainerImg"  /></div>
-<div class="form-check form-switch ">
-  <input class="form-check-input  "  type="radio" id="frontImage" name="frontImage" value="${imageUrl}" checked}}>
-  <label class="form-check-label " for="frontImage">Front Image</label>
-</div>
-<div class="form-check form-switch ">
-  <input class="form-check-input  "  type="radio" id="backImage" name="backImage" value="${imageUrl}" checked}}>
-  <label class="form-check-label " for="backImage" >Back Image</label>
-</div>
 
+        // this.on("addedfile", function(file) {
+        //     // Remove the file from Dropzone
 
-                
-                
-                `;
-                document.getElementById('uploadedImagesContainer').appendChild(imageElement);
+        // });
+        // this.on("addedfile", file => {
+        //     $('#uploadPictures').prop('disabled', false);
+        // });
 
-                const radioButtons = imageElement.querySelectorAll('.image-radio');
-                radioButtons.forEach(radio => {
-                    radio.addEventListener('change', function(e) {
-                        const name = e.target.name;
-                        const value = e.target.value;
-                        if (name === 'frontImage') {
-                            document.querySelectorAll('[name="frontImage"]')
-                                .forEach(item => {
-                                    if (item.value !== value) {
-                                        item.checked = false;
-                                    }
-                                });
-                        } else if (name === 'backImage') {
-                            document.querySelectorAll('[name="backImage"]')
-                                .forEach(item => {
-                                    if (item.value !== value) {
-                                        item.checked = false;
-                                    }
-                                });
-                        }
-                    });
-                });
+        // submitButton.addEventListener('click', function() {
+        //     $btnName = 'Upload Pictures';
+        //     $loadingText = 'Uploading...';
+        //     $(this).prop('disabled', true);
+        //     $(this).html(
+        //         '<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span> ' +
+        //         $loadingText);
+        //     myDropzone.processQueue();
 
-                const removeIcons = imageElement.querySelectorAll('.remove-icon');
-                removeIcons.forEach(icon => {
-                    icon.addEventListener('click', function(e) {
-                        const imageUrl = e.target.getAttribute(
-                            'data-image-url'
-                        ); // Get the image URL from the data attribute
-                        const file = urlToFileMap.get(
-                            imageUrl); // Find the file by URL from the map
-                        if (file) {
-                            myDropzone.removeFile(file);
-                            urlToFileMap.delete(
-                                imageUrl); // Remove the file URL from the map
-                        }
-                        e.target.parentElement.remove();
-                    });
-                });
-
-                urlToFileMap.set(imageUrl, file); // Store the file in the map with its URL
-            };
-            reader.readAsDataURL(file);
+        // });
+        const that = this;
+        // this.on("complete", function() {
+        that.on("success", function(file, responseText) {
+            this.removeAllFiles();
+            if (responseText.status == 'success') {
+                $('.loadImagesData').html('')
+                $('.loadImagesData').html(responseText.data);
+                show_message(responseText.msg, 'success');
+            } else {
+                show_message(responseText, 'error');
+            }
         });
+        that.on("error", function(xhr, status, errorThrown) {
+            this.removeAllFiles();
+            if (xhr.responseJSON && xhr.responseJSON.status) {
+                if (xhr.responseJSON.status == 'error') {
+
+                    show_message(xhr.responseJSON.msg, 'error');
+                } else {
+                    show_message(xhr.responseJSON, 'error');
+                }
+            } else {
+                show_message(xhr.responseText, 'error');
+            }
+        });
+
+
+
+        // });
+
+
     }
+
 });
 
-const urlToFileMap = new Map();
+$(document).on('click', '.removeProductImage', function(e) {
+    e.preventDefault();
+
+    const that = this;
+    let url = $(this).attr('data-url');
+
+    Swal.fire({
+        title: "Are you sure?",
+        text: "Want to remove this image ?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, remove it",
+        cancelButtonText: "No, cancel",
+        reverseButtons: true
+    }).then(function(result) {
+        if (result.value) {
+            $.ajax({
+                url: url,
+                method: 'get',
+                // data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    $("#loader_img").hide();
+                    $('.invalid-feedback').html("");
+                    $('.invalid-feedback').removeClass("error");
+                    $('.is-invalid').removeClass("is-invalid");
+
+                    error_array = JSON.stringify(response);
+                    datas = JSON.parse(error_array);
+                    if (datas['status'] == 'success') {
+                        $(that).parents('.productPicMainContainer').remove();
+                        show_message(datas['msg'], 'success');
+                    } else {
+                        if (datas['status'] == 'error' && datas['errors']) {
+                            $.each(datas['errors'], function(index, html) {
+                                $("input[name = " + index + "]").addClass(
+                                    'is-invalid');
+                                $("input[name = " + index + "]").next().addClass(
+                                    'error');
+                                $("input[name = " + index + "]").next().html(html);
+                                $("input[name = " + index + "]").show();
+
+                            });
+                        } else if (datas['status'] == 'error') {
+                            show_message(datas['msg'], 'error');
+                        } else {
+                            show_message(datas, 'error');
+                        }
+
+
+                    }
+
+                },
+                error: function(xhr, status, errorThrown) {
+                    if (xhr.responseJSON && xhr.responseJSON.status) {
+                        if (xhr.responseJSON.status == 'error') {
+
+                            show_message(xhr.responseJSON.msg, 'error');
+                        } else {
+                            show_message(xhr.responseJSON, 'error');
+                        }
+                    } else {
+                        show_message(xhr.responseText, 'error');
+                    }
+                    $(that).prop('disabled', false);
+                    $(that).text($btnName);
+
+                }
+            });
+        } else if (result.dismiss === "cancel") {
+            Swal.fire(
+                "Cancelled",
+                "Your imaginary file is safe :)",
+                "error"
+            )
+        }
+    });
+
+
+
+
+});
+
+$(document).on('click', '.statusCheckboxProductPicture', function(e) {
+    e.preventDefault();
+
+    const that = this;
+    let url = $(this).attr('data-url');
+    var imageType = ($(this).attr('name') == 'frontImage') ? 'Front Image' : 'Back Image';
+    Swal.fire({
+        title: "Are you sure?",
+        text: "Want to make this image as " + imageType + " ?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, make it",
+        cancelButtonText: "No, cancel",
+        reverseButtons: true
+    }).then(function(result) {
+        if (result.value) {
+            $.ajax({
+                url: url,
+                method: 'get',
+                // data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    $("#loader_img").hide();
+                    $('.invalid-feedback').html("");
+                    $('.invalid-feedback').removeClass("error");
+                    $('.is-invalid').removeClass("is-invalid");
+
+                    error_array = JSON.stringify(response);
+                    datas = JSON.parse(error_array);
+                    if (datas['status'] == 'success') {
+                        if ($(that).prop('checked')) {
+                            $(that).prop('checked', false)
+                        } else {
+                            $(that).prop('checked', true)
+                        }
+                        show_message(datas['msg'], 'success');
+                    } else {
+                        if (datas['status'] == 'error' && datas['errors']) {
+                            $.each(datas['errors'], function(index, html) {
+                                $("input[name = " + index + "]").addClass(
+                                    'is-invalid');
+                                $("input[name = " + index + "]").next().addClass(
+                                    'error');
+                                $("input[name = " + index + "]").next().html(html);
+                                $("input[name = " + index + "]").show();
+
+                            });
+                        } else if (datas['status'] == 'error') {
+                            show_message(datas['msg'], 'error');
+                        } else {
+                            show_message(datas, 'error');
+                        }
+
+
+                    }
+
+                },
+                error: function(xhr, status, errorThrown) {
+                    if (xhr.responseJSON && xhr.responseJSON.status) {
+                        if (xhr.responseJSON.status == 'error') {
+
+                            show_message(xhr.responseJSON.msg, 'error');
+                        } else {
+                            show_message(xhr.responseJSON, 'error');
+                        }
+                    } else {
+                        show_message(xhr.responseText, 'error');
+                    }
+                    $(that).prop('disabled', false);
+                    $(that).text($btnName);
+
+                }
+            });
+        }
+    });
+
+
+
+
+});
+
+
+
 
 // document.getElementById('submitBtnImages').addEventListener('click', function(event) {
 //     event.preventDefault();
@@ -588,7 +862,7 @@ $(document).on('click', '#actionBtn', function(e) {
             $loadingText);
         const that = this;
         var formData = new FormData($('#' + $(this).attr('data-current-tab') + 'Form')[0]);
-        formData.append('current_tab' , $(this).attr('data-current-tab'));
+        formData.append('current_tab', $(this).attr('data-current-tab'));
         if ($(this).attr('data-current-tab') == 'basicInformationTab') {
             $.ajax({
                 url: "{{ route('admin-product-store') }}",
@@ -612,8 +886,10 @@ $(document).on('click', '#actionBtn', function(e) {
                         $nextTab = $(that).parents('.tab-pane').attr('data-next-tab');
                         $('.nav-link').removeClass('active');
                         $('.tab-pane').removeClass('active show');
-                        $('.tab-pane[id='+$nextTab+']').addClass('active show');
-                        $('.nav-link[href="#'+$nextTab+'"]').addClass('active');
+                        $('.tab-pane[id=' + $nextTab + ']').addClass('active show');
+                        $('.nav-link[href="#' + $nextTab + '"]').addClass('active');
+                        // $('.tab-pane[id=mediasTab]').addClass('active show');
+                        // $('.nav-link[href="#mediasTab"]').addClass('active');
                     } else {
                         if (datas['status'] == 'error' && datas['errors']) {
                             $.each(datas['errors'], function(index, html) {
@@ -625,10 +901,11 @@ $(document).on('click', '#actionBtn', function(e) {
                                     $("textarea[name = " + index + "]").next().html(html);
                                     $("textarea[name = " + index + "]").show();
                                 } else if (index == 'category_id' || index ==
-                                    'sub_category_id' || index == 'child_category_id' || index ==
+                                    'sub_category_id' || index == 'child_category_id' ||
+                                    index ==
                                     'brand_id') {
                                     $("select[name = " + index + "]").addClass(
-                                    'is-invalid');
+                                        'is-invalid');
                                     $("select[name = " + index + "]").next()
                                         .next().addClass('error');
                                     $("select[name = " + index + "]").next()
@@ -647,7 +924,7 @@ $(document).on('click', '#actionBtn', function(e) {
                                     $("input[name = " + index + "]").show();
                                 } else if (index == 'gender') {
                                     $("select[name = " + index + "]").addClass(
-                                    'is-invalid');
+                                        'is-invalid');
                                     $("select[name = " + index + "]").parents('.choices')
                                         .next().addClass('error');
                                     $("select[name = " + index + "]").parents('.choices')
@@ -710,17 +987,17 @@ $(document).on('click', '#actionBtn', function(e) {
                 }
             });
 
-        }else if ($(this).attr('data-current-tab') == 'detailsTab') {
+        } else if ($(this).attr('data-current-tab') == 'detailsTab') {
             var long_description = CKEDITOR.instances.long_description.getData();
             var return_policy = CKEDITOR.instances.return_policy.getData();
             var seller_information = CKEDITOR.instances.seller_information.getData();
             var short_description = CKEDITOR.instances.short_description.getData();
 
-            formData.append('long_description',long_description);
-            formData.append('return_policy',return_policy);
-            formData.append('seller_information',seller_information);
-            formData.append('short_description',short_description);
-            
+            formData.append('long_description', long_description);
+            formData.append('return_policy', return_policy);
+            formData.append('seller_information', seller_information);
+            formData.append('short_description', short_description);
+
             $.ajax({
                 url: "{{ route('admin-product-store') }}",
                 method: 'post',
@@ -743,23 +1020,29 @@ $(document).on('click', '#actionBtn', function(e) {
                         $nextTab = $(that).parents('.tab-pane').attr('data-next-tab');
                         $('.nav-link').removeClass('active');
                         $('.tab-pane').removeClass('active show');
-                        $('.tab-pane[id='+$nextTab+']').addClass('active show');
-                        $('.nav-link[href="#'+$nextTab+'"]').addClass('active');
+                        $('.tab-pane[id=' + $nextTab + ']').addClass('active show');
+                        $('.nav-link[href="#' + $nextTab + '"]').addClass('active');
                     } else {
                         if (datas['status'] == 'error' && datas['errors']) {
                             $.each(datas['errors'], function(index, html) {
-                                if (index == 'long_description' || index == 'short_description' || index == 'return_policy' || index == 'seller_information') {
+                                if (index == 'long_description' || index ==
+                                    'short_description' || index == 'return_policy' ||
+                                    index == 'seller_information') {
                                     $("textarea[name = " + index + "]").addClass(
                                         'is-invalid');
-                                    $("textarea[name = " + index + "]").next().next().addClass(
-                                        'error');
-                                    $("textarea[name = " + index + "]").next().next().html(html);
-                                    $("textarea[name = " + index + "]").next().next().show();
+                                    $("textarea[name = " + index + "]").next().next()
+                                        .addClass(
+                                            'error');
+                                    $("textarea[name = " + index + "]").next().next().html(
+                                        html);
+                                    $("textarea[name = " + index + "]").next().next()
+                                        .show();
                                 } else if (index == 'category_id' || index ==
-                                    'sub_category_id' || index == 'child_category_id' || index ==
+                                    'sub_category_id' || index == 'child_category_id' ||
+                                    index ==
                                     'brand_id') {
                                     $("select[name = " + index + "]").addClass(
-                                    'is-invalid');
+                                        'is-invalid');
                                     $("select[name = " + index + "]").next()
                                         .next().addClass('error');
                                     $("select[name = " + index + "]").next()
@@ -778,7 +1061,7 @@ $(document).on('click', '#actionBtn', function(e) {
                                     $("input[name = " + index + "]").show();
                                 } else if (index == 'gender') {
                                     $("select[name = " + index + "]").addClass(
-                                    'is-invalid');
+                                        'is-invalid');
                                     $("select[name = " + index + "]").parents('.choices')
                                         .next().addClass('error');
                                     $("select[name = " + index + "]").parents('.choices')
@@ -841,8 +1124,8 @@ $(document).on('click', '#actionBtn', function(e) {
                 }
             });
 
-        }else if ($(this).attr('data-current-tab') == 'pricesTab') {
-            
+        } else if ($(this).attr('data-current-tab') == 'pricesTab') {
+
             $.ajax({
                 url: "{{ route('admin-product-store') }}",
                 method: 'post',
@@ -862,27 +1145,39 @@ $(document).on('click', '#actionBtn', function(e) {
                     error_array = JSON.stringify(response);
                     datas = JSON.parse(error_array);
                     if (datas['status'] == 'success') {
-                        $('#specificationsTabForm').html(datas['data']);
+                        $('#loader-row').nextAll().remove();
+                        $('button[data-current-tab="specificationsTab"]').parent().prev(
+                                '.specificationsTabErrorDiv').prevAll()
+                            .remove();
+                        $('button[data-current-tab="specificationsTab"]').parent().prev(
+                            '.specificationsTabErrorDiv').before(datas[
+                            'data']);
                         $nextTab = $(that).parents('.tab-pane').attr('data-next-tab');
                         $('.nav-link').removeClass('active');
                         $('.tab-pane').removeClass('active show');
-                        $('.tab-pane[id='+$nextTab+']').addClass('active show');
-                        $('.nav-link[href="#'+$nextTab+'"]').addClass('active');
+                        $('.tab-pane[id=' + $nextTab + ']').addClass('active show');
+                        $('.nav-link[href="#' + $nextTab + '"]').addClass('active');
                     } else {
                         if (datas['status'] == 'error' && datas['errors']) {
                             $.each(datas['errors'], function(index, html) {
-                                if (index == 'long_description' || index == 'short_description' || index == 'return_policy' || index == 'seller_information') {
+                                if (index == 'long_description' || index ==
+                                    'short_description' || index == 'return_policy' ||
+                                    index == 'seller_information') {
                                     $("textarea[name = " + index + "]").addClass(
                                         'is-invalid');
-                                    $("textarea[name = " + index + "]").next().next().addClass(
-                                        'error');
-                                    $("textarea[name = " + index + "]").next().next().html(html);
-                                    $("textarea[name = " + index + "]").next().next().show();
+                                    $("textarea[name = " + index + "]").next().next()
+                                        .addClass(
+                                            'error');
+                                    $("textarea[name = " + index + "]").next().next().html(
+                                        html);
+                                    $("textarea[name = " + index + "]").next().next()
+                                        .show();
                                 } else if (index == 'category_id' || index ==
-                                    'sub_category_id' || index == 'child_category_id' || index ==
+                                    'sub_category_id' || index == 'child_category_id' ||
+                                    index ==
                                     'brand_id') {
                                     $("select[name = " + index + "]").addClass(
-                                    'is-invalid');
+                                        'is-invalid');
                                     $("select[name = " + index + "]").next()
                                         .next().addClass('error');
                                     $("select[name = " + index + "]").next()
@@ -901,7 +1196,528 @@ $(document).on('click', '#actionBtn', function(e) {
                                     $("input[name = " + index + "]").show();
                                 } else if (index == 'gender') {
                                     $("select[name = " + index + "]").addClass(
-                                    'is-invalid');
+                                        'is-invalid');
+                                    $("select[name = " + index + "]").parents('.choices')
+                                        .next().addClass('error');
+                                    $("select[name = " + index + "]").parents('.choices')
+                                        .next().html(html);
+                                    $("select[name = " + index + "]").parents('.choices')
+                                        .next().show();
+                                    $("select[name = " + index + "]").show();
+                                } else if (index == 'date_of_birth') {
+                                    $("input[name = " + index + "]").addClass('is-invalid');
+                                    $("input[name = " + index + "]").next().addClass(
+                                        'error');
+                                    $("input[name = " + index + "]").next().html(html);
+                                    $("input[name = " + index + "]").next().show();
+                                    $("input[name = " + index + "]").show();
+                                } else if (index ==
+                                    'are_you_working_on_any_other_online_portal') {
+                                    $("input[name = " + index + "]").addClass('is-invalid');
+                                    $("input[name = " + index + "]").parent().next()
+                                        .addClass('error');
+                                    $("input[name = " + index + "]").parent().next().html(
+                                        html);
+                                    $("input[name = " + index + "]").parent().next().show();
+                                    $("input[name = " + index + "]").show();
+                                } else {
+
+                                    $("input[name = " + index + "]").addClass('is-invalid');
+                                    $("input[name = " + index + "]").next().addClass(
+                                        'error');
+                                    $("input[name = " + index + "]").next().html(html);
+                                    $("input[name = " + index + "]").show();
+                                }
+
+
+                            });
+                        } else if (datas['status'] == 'error') {
+                            show_message(datas['msg'], 'error');
+                        } else {
+                            show_message(datas, 'error');
+                        }
+
+
+                    }
+                    $(that).prop('disabled', false);
+                    $(that).text($btnName);
+                },
+                error: function(xhr, status, errorThrown) {
+                    if (xhr.responseJSON && xhr.responseJSON.status) {
+                        if (xhr.responseJSON.status == 'error') {
+
+                            show_message(xhr.responseJSON.msg, 'error');
+                        } else {
+                            show_message(xhr.responseJSON, 'error');
+                        }
+                    } else {
+                        show_message(xhr.responseText, 'error');
+                    }
+                    $(that).prop('disabled', false);
+                    $(that).text($btnName);
+
+                }
+            });
+
+        } else if ($(this).attr('data-current-tab') == 'specificationsTab') {
+
+            $.ajax({
+                url: "{{ route('admin-product-store') }}",
+                method: 'post',
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    $("#loader_img").hide();
+                    $('.invalid-feedback').html("");
+                    $('.invalid-feedback').removeClass("error");
+                    $('.is-invalid').removeClass("is-invalid");
+
+                    error_array = JSON.stringify(response);
+                    datas = JSON.parse(error_array);
+                    if (datas['status'] == 'success') {
+                        $('#loader-row').nextAll().remove();
+                        $nextTab = $(that).parents('.tab-pane').attr('data-next-tab');
+                        $('.nav-link').removeClass('active');
+                        $('.tab-pane').removeClass('active show');
+                        $('.tab-pane[id=' + $nextTab + ']').addClass('active show');
+                        $('.nav-link[href="#' + $nextTab + '"]').addClass('active');
+                    } else {
+                        if (datas['status'] == 'error' && datas['errors']) {
+                            $.each(datas['errors'], function(index, html) {
+                                if (index == 'long_description' || index ==
+                                    'short_description' || index == 'return_policy' ||
+                                    index == 'seller_information') {
+                                    $("textarea[name = " + index + "]").addClass(
+                                        'is-invalid');
+                                    $("textarea[name = " + index + "]").next().next()
+                                        .addClass(
+                                            'error');
+                                    $("textarea[name = " + index + "]").next().next().html(
+                                        html);
+                                    $("textarea[name = " + index + "]").next().next()
+                                        .show();
+                                } else if (index == 'category_id' || index ==
+                                    'sub_category_id' || index == 'child_category_id' ||
+                                    index ==
+                                    'brand_id') {
+                                    $("select[name = " + index + "]").addClass(
+                                        'is-invalid');
+                                    $("select[name = " + index + "]").next()
+                                        .next().addClass('error');
+                                    $("select[name = " + index + "]").next()
+                                        .next().html(html);
+                                    $("select[name = " + index + "]").next()
+                                        .next().show();
+                                    // $("select[name = " + index + "]").show();
+                                } else if (index ==
+                                    'specificationDataArr') {
+                                    $('.specificationsTabErrorDiv').addClass('error');
+                                    $('.specificationsTabErrorDiv').html(html).show();
+
+                                } else {
+
+                                    $("input[name = " + index + "]").addClass('is-invalid');
+                                    $("input[name = " + index + "]").next().addClass(
+                                        'error');
+                                    $("input[name = " + index + "]").next().html(html);
+                                    $("input[name = " + index + "]").show();
+                                }
+
+
+                            });
+                        } else if (datas['status'] == 'error') {
+                            show_message(datas['msg'], 'error');
+                        } else {
+                            show_message(datas, 'error');
+                        }
+
+
+                    }
+                    $(that).prop('disabled', false);
+                    $(that).text($btnName);
+                },
+                error: function(xhr, status, errorThrown) {
+                    if (xhr.responseJSON && xhr.responseJSON.status) {
+                        if (xhr.responseJSON.status == 'error') {
+
+                            show_message(xhr.responseJSON.msg, 'error');
+                        } else {
+                            show_message(xhr.responseJSON, 'error');
+                        }
+                    } else {
+                        show_message(xhr.responseText, 'error');
+                    }
+                    $(that).prop('disabled', false);
+                    $(that).text($btnName);
+
+                }
+            });
+
+        } else if ($(this).attr('data-current-tab') == 'shippingSpecificationsTab') {
+
+            $.ajax({
+                url: "{{ route('admin-product-store') }}",
+                method: 'post',
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    $("#loader_img").hide();
+                    $('.invalid-feedback').html("");
+                    $('.invalid-feedback').removeClass("error");
+                    $('.is-invalid').removeClass("is-invalid");
+
+                    error_array = JSON.stringify(response);
+                    datas = JSON.parse(error_array);
+                    if (datas['status'] == 'success') {
+                        $('#loader-row').nextAll().remove();
+
+                        $nextTab = $(that).parents('.tab-pane').attr('data-next-tab');
+                        $('.nav-link').removeClass('active');
+                        $('.tab-pane').removeClass('active show');
+                        $('.tab-pane[id=' + $nextTab + ']').addClass('active show');
+                        $('.nav-link[href="#' + $nextTab + '"]').addClass('active');
+                    } else {
+                        if (datas['status'] == 'error' && datas['errors']) {
+                            $.each(datas['errors'], function(index, html) {
+                                if (index == 'long_description' || index ==
+                                    'short_description' || index == 'return_policy' ||
+                                    index == 'seller_information') {
+                                    $("textarea[name = " + index + "]").addClass(
+                                        'is-invalid');
+                                    $("textarea[name = " + index + "]").next().next()
+                                        .addClass(
+                                            'error');
+                                    $("textarea[name = " + index + "]").next().next().html(
+                                        html);
+                                    $("textarea[name = " + index + "]").next().next()
+                                        .show();
+                                } else {
+
+                                    $("input[name = " + index + "]").addClass('is-invalid');
+                                    $("input[name = " + index + "]").next().addClass(
+                                        'error');
+                                    $("input[name = " + index + "]").next().html(html);
+                                    $("input[name = " + index + "]").show();
+                                }
+
+
+                            });
+                        } else if (datas['status'] == 'error') {
+                            show_message(datas['msg'], 'error');
+                        } else {
+                            show_message(datas, 'error');
+                        }
+
+
+                    }
+                    $(that).prop('disabled', false);
+                    $(that).text($btnName);
+                },
+                error: function(xhr, status, errorThrown) {
+                    if (xhr.responseJSON && xhr.responseJSON.status) {
+                        if (xhr.responseJSON.status == 'error') {
+
+                            show_message(xhr.responseJSON.msg, 'error');
+                        } else {
+                            show_message(xhr.responseJSON, 'error');
+                        }
+                    } else {
+                        show_message(xhr.responseText, 'error');
+                    }
+                    $(that).prop('disabled', false);
+                    $(that).text($btnName);
+
+                }
+            });
+
+        } else if ($(this).attr('data-current-tab') == 'mediasTab') {
+
+            $.ajax({
+                url: "{{ route('admin-product-store') }}",
+                method: 'post',
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    $("#loader_img").hide();
+                    $('.invalid-feedback').html("");
+                    $('.invalid-feedback').removeClass("error");
+                    $('.is-invalid').removeClass("is-invalid");
+
+                    error_array = JSON.stringify(response);
+                    datas = JSON.parse(error_array);
+                    if (datas['status'] == 'success') {
+                        $('button[data-current-action="second_step"]').parent().prev(
+                                '.variantsTabErrorDiv').prevAll()
+                            .remove();
+                        $('button[data-current-action="second_step"]').parent().prev(
+                            '.variantsTabErrorDiv').before(datas[
+                            'data']);
+                        $nextTab = $(that).parents('.tab-pane').attr('data-next-tab');
+                        $('.nav-link').removeClass('active');
+                        $('.tab-pane').removeClass('active show');
+                        $('.tab-pane[id=' + $nextTab + ']').addClass('active show');
+                        $('.nav-link[href="#' + $nextTab + '"]').addClass('active');
+                    } else {
+                        if (datas['status'] == 'error' && datas['errors']) {
+                            $.each(datas['errors'], function(index, html) {
+                                if (index == 'long_description' || index ==
+                                    'short_description' || index == 'return_policy' ||
+                                    index == 'seller_information') {
+                                    $("textarea[name = " + index + "]").addClass(
+                                        'is-invalid');
+                                    $("textarea[name = " + index + "]").next().next()
+                                        .addClass(
+                                            'error');
+                                    $("textarea[name = " + index + "]").next().next().html(
+                                        html);
+                                    $("textarea[name = " + index + "]").next().next()
+                                        .show();
+                                } else if (index == 'category_id' || index ==
+                                    'sub_category_id' || index == 'child_category_id' ||
+                                    index ==
+                                    'brand_id') {
+                                    $("select[name = " + index + "]").addClass(
+                                        'is-invalid');
+                                    $("select[name = " + index + "]").next()
+                                        .next().addClass('error');
+                                    $("select[name = " + index + "]").next()
+                                        .next().html(html);
+                                    $("select[name = " + index + "]").next()
+                                        .next().show();
+                                    // $("select[name = " + index + "]").show();
+                                } else if (index ==
+                                    'specificationDataArr') {
+                                    $('.specificationsTabErrorDiv').addClass('error');
+                                    $('.specificationsTabErrorDiv').html(html).show();
+
+                                } else {
+
+                                    $("input[name = " + index + "]").addClass('is-invalid');
+                                    $("input[name = " + index + "]").next().addClass(
+                                        'error');
+                                    $("input[name = " + index + "]").next().html(html);
+                                    $("input[name = " + index + "]").show();
+                                }
+
+
+                            });
+                        } else if (datas['status'] == 'error') {
+                            show_message(datas['msg'], 'error');
+                        } else {
+                            show_message(datas, 'error');
+                        }
+
+
+                    }
+                    $(that).prop('disabled', false);
+                    $(that).text($btnName);
+                },
+                error: function(xhr, status, errorThrown) {
+                    if (xhr.responseJSON && xhr.responseJSON.status) {
+                        if (xhr.responseJSON.status == 'error') {
+
+                            show_message(xhr.responseJSON.msg, 'error');
+                        } else {
+                            show_message(xhr.responseJSON, 'error');
+                        }
+                    } else {
+                        show_message(xhr.responseText, 'error');
+                    }
+                    $(that).prop('disabled', false);
+                    $(that).text($btnName);
+
+                }
+            });
+
+        } else if ($(this).attr('data-current-tab') == 'variantsTab' && $(this).attr('data-current-action') ==
+            'second_step') {
+            $('.variantsTabErrorDiv').html("").hide();
+            formData.append('current_action', 'second_step');
+            $.ajax({
+                url: "{{ route('admin-product-store') }}",
+                method: 'post',
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    $("#loader_img").hide();
+                    $('.invalid-feedback').html("");
+                    $('.invalid-feedback').removeClass("error");
+                    $('.is-invalid').removeClass("is-invalid");
+
+                    error_array = JSON.stringify(response);
+                    datas = JSON.parse(error_array);
+                    if (datas['status'] == 'success') {
+                        $nextTab = $(that).parents('.tab-pane').attr('data-next-tab');
+                        $('.nav-link').removeClass('active');
+                        $('.tab-pane').removeClass('active show');
+                        $('.tab-pane[id=' + $nextTab + ']').addClass('active show');
+                        $('.nav-link[href="#' + $nextTab + '"]').addClass('active');
+
+                    } else {
+                        if (datas['status'] == 'error' && datas['errors']) {
+                            $('#actionBtn[data-current-action=second_step]').hide();
+                            $.each(datas['errors'], function(index, html) {
+                                if (index == 'long_description' || index ==
+                                    'short_description' || index == 'return_policy' ||
+                                    index == 'seller_information') {
+                                    $("textarea[name = " + index + "]").addClass(
+                                        'is-invalid');
+                                    $("textarea[name = " + index + "]").next().next()
+                                        .addClass(
+                                            'error');
+                                    $("textarea[name = " + index + "]").next().next().html(
+                                        html);
+                                    $("textarea[name = " + index + "]").next().next()
+                                        .show();
+                                } else if (index == 'category_id' || index ==
+                                    'sub_category_id' || index == 'child_category_id' ||
+                                    index ==
+                                    'brand_id') {
+                                    $("select[name = " + index + "]").addClass(
+                                        'is-invalid');
+                                    $("select[name = " + index + "]").next()
+                                        .next().addClass('error');
+                                    $("select[name = " + index + "]").next()
+                                        .next().html(html);
+                                    $("select[name = " + index + "]").next()
+                                        .next().show();
+                                    // $("select[name = " + index + "]").show();
+                                } else if (index ==
+                                    'variantsDataArr') {
+                                    $('.variantsTabErrorDiv').addClass('error');
+                                    $('.variantsTabErrorDiv').html(html).show();
+
+                                } else {
+
+                                    $("input[name = " + index + "]").addClass('is-invalid');
+                                    $("input[name = " + index + "]").next().addClass(
+                                        'error');
+                                    $("input[name = " + index + "]").next().html(html);
+                                    $("input[name = " + index + "]").show();
+                                }
+
+
+                            });
+                        } else if (datas['status'] == 'error') {
+                            show_message(datas['msg'], 'error');
+
+                        } else {
+                            show_message(datas, 'error');
+
+                        }
+
+
+                    }
+                    $(that).prop('disabled', false);
+                    $(that).text($btnName);
+                },
+                error: function(xhr, status, errorThrown) {
+                    if (xhr.responseJSON && xhr.responseJSON.status) {
+                        if (xhr.responseJSON.status == 'error') {
+
+                            show_message(xhr.responseJSON.msg, 'error');
+                        } else {
+                            show_message(xhr.responseJSON, 'error');
+                        }
+                    } else {
+                        show_message(xhr.responseText, 'error');
+                    }
+                    $(that).prop('disabled', false);
+                    $(that).text($btnName);
+
+                }
+            });
+
+        } else if ($(this).attr('data-current-tab') == 'advanceSeoTab') {
+            var meta_description = CKEDITOR.instances.meta_description.getData();
+
+            formData.append('meta_description', meta_description);
+
+
+            $.ajax({
+                url: "{{ route('admin-product-store') }}",
+                method: 'post',
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    $("#loader_img").hide();
+                    $('.invalid-feedback').html("");
+                    $('.invalid-feedback').removeClass("error");
+                    $('.is-invalid').removeClass("is-invalid");
+
+                    error_array = JSON.stringify(response);
+                    datas = JSON.parse(error_array);
+                    if (datas['status'] == 'success') {
+                        show_message(datas['msg'], 'success');
+                        setTimeout(() => {
+
+                            window.location.href = "{{route('admin-product-list')}}";
+                        }, 1000);
+                    } else {
+                        if (datas['status'] == 'error' && datas['errors']) {
+                            $.each(datas['errors'], function(index, html) {
+                                if (index == 'long_description' || index ==
+                                    'short_description' || index == 'return_policy' ||
+                                    index == 'seller_information') {
+                                    $("textarea[name = " + index + "]").addClass(
+                                        'is-invalid');
+                                    $("textarea[name = " + index + "]").next().next()
+                                        .addClass(
+                                            'error');
+                                    $("textarea[name = " + index + "]").next().next().html(
+                                        html);
+                                    $("textarea[name = " + index + "]").next().next()
+                                        .show();
+                                } else if (index == 'category_id' || index ==
+                                    'sub_category_id' || index == 'child_category_id' ||
+                                    index ==
+                                    'brand_id') {
+                                    $("select[name = " + index + "]").addClass(
+                                        'is-invalid');
+                                    $("select[name = " + index + "]").next()
+                                        .next().addClass('error');
+                                    $("select[name = " + index + "]").next()
+                                        .next().html(html);
+                                    $("select[name = " + index + "]").next()
+                                        .next().show();
+                                    // $("select[name = " + index + "]").show();
+                                } else if (index == 'profile_pic') {
+                                    $("input[name = " + index + "]").addClass('is-invalid');
+                                    $("input[name = " + index + "]").parent().next().next()
+                                        .addClass('error');
+                                    $("input[name = " + index + "]").parent().next().next()
+                                        .html(html);
+                                    $("input[name = " + index + "]").parent().next().next()
+                                        .show();
+                                    $("input[name = " + index + "]").show();
+                                } else if (index == 'gender') {
+                                    $("select[name = " + index + "]").addClass(
+                                        'is-invalid');
                                     $("select[name = " + index + "]").parents('.choices')
                                         .next().addClass('error');
                                     $("select[name = " + index + "]").parents('.choices')
@@ -965,13 +1781,133 @@ $(document).on('click', '#actionBtn', function(e) {
             });
 
         }
-    } else if ($(this).attr('data-action') && $(this).attr('data-action') == 'prev') {
-
+    } else if ($(this).attr('data-action') && $(this).attr('data-action') == 'back') {
+        $targetTab = $(this).attr('data-target-tab');
+        $('.nav-link').removeClass('active');
+        $('.tab-pane').removeClass('active show');
+        $('.tab-pane[id=' + $targetTab + ']').addClass('active show');
+        $('.nav-link[href="#' + $targetTab + '"]').addClass('active');
     }
 
 
 
 });
+
+$(document).on('click', '.createVariantBtn', function() {
+    $btnName = 'Create Variant';
+        $loadingText = 'Processing...';
+        $(this).prop('disabled', true);
+        $(this).html('<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span> ' +
+            $loadingText);
+        const that = this;
+        var formData = new FormData($('#' + $(this).attr('data-current-tab') + 'Form')[0]);
+        formData.append('current_tab', $(this).attr('data-current-tab'));
+    $('.variantsTabErrorDiv').html("");
+    formData.append('current_action', 'first_step');
+    $.ajax({
+        url: "{{ route('admin-product-store') }}",
+        method: 'post',
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            
+            $('.invalid-feedback').html("");
+            $('.invalid-feedback').removeClass("error");
+            $('.is-invalid').removeClass("is-invalid");
+
+            error_array = JSON.stringify(response);
+            datas = JSON.parse(error_array);
+            if (datas['status'] == 'success') {
+                $('button[data-current-action="second_step"]').parent().prev('.variantsTabErrorDiv')
+                    .prevAll().not('#kt_repeater_2').remove();
+
+                $('button[data-current-action="second_step"]').parent().prev('.variantsTabErrorDiv')
+                    .before(
+                        datas[
+                            'data']);
+
+            } else {
+                if (datas['status'] == 'error' && datas['errors']) {
+
+                    $.each(datas['errors'], function(index, html) {
+                        if (index == 'long_description' || index ==
+                            'short_description' || index == 'return_policy' ||
+                            index == 'seller_information') {
+                            $("textarea[name = " + index + "]").addClass(
+                                'is-invalid');
+                            $("textarea[name = " + index + "]").next().next()
+                                .addClass(
+                                    'error');
+                            $("textarea[name = " + index + "]").next().next().html(
+                                html);
+                            $("textarea[name = " + index + "]").next().next()
+                                .show();
+                        } else if (index == 'category_id' || index ==
+                            'sub_category_id' || index == 'child_category_id' ||
+                            index ==
+                            'brand_id') {
+                            $("select[name = " + index + "]").addClass(
+                                'is-invalid');
+                            $("select[name = " + index + "]").next()
+                                .next().addClass('error');
+                            $("select[name = " + index + "]").next()
+                                .next().html(html);
+                            $("select[name = " + index + "]").next()
+                                .next().show();
+                            // $("select[name = " + index + "]").show();
+                        } else if (index ==
+                            'variantsDataArr') {
+                            $('.variantsTabErrorDiv').addClass('error');
+                            $('.variantsTabErrorDiv').html(html).show();
+
+                        } else {
+
+                            $("input[name = " + index + "]").addClass('is-invalid');
+                            $("input[name = " + index + "]").next().addClass(
+                                'error');
+                            $("input[name = " + index + "]").next().html(html);
+                            $("input[name = " + index + "]").show();
+                        }
+
+
+                    });
+                } else if (datas['status'] == 'error') {
+                    show_message(datas['msg'], 'error');
+
+                } else {
+                    show_message(datas, 'error');
+
+                }
+
+
+            }
+            $(that).prop('disabled', false);
+            $(that).text($btnName);
+        },
+        error: function(xhr, status, errorThrown) {
+            if (xhr.responseJSON && xhr.responseJSON.status) {
+                if (xhr.responseJSON.status == 'error') {
+
+                    show_message(xhr.responseJSON.msg, 'error');
+                } else {
+                    show_message(xhr.responseJSON, 'error');
+                }
+            } else {
+                show_message(xhr.responseText, 'error');
+            }
+            $(that).prop('disabled', false);
+            $(that).text($btnName);
+
+        }
+    });
+})
+
+
 
 $('#specificationValuesSelect').select2({
     // tags: true,

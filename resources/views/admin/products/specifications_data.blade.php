@@ -4,10 +4,10 @@
         <div data-repeater-list="specificationDataArr" class="col-lg-12">
             @foreach($specificationsData as $dataKey => $dataVal)
             @if(!empty($dataVal['name']) && !empty($dataVal['id']) )
-            <div data-repeater-item class="form-group row align-items-center mb-0">
+            <div data-repeater-item class="form-group row align-items-center mb-3">
                 <div class="col-md-5">
                     <div class="form-group">
-                        <label for="name">Specification</label><span class="text-danger">
+                        <label for="name" class="form-label">Specification</label><span class="text-danger">
                         </span>
                         <input type="text" name="name"
                             class="form-control form-control-solid form-control-lg  @error('name') is-invalid @enderror"
@@ -20,8 +20,8 @@
                 <div class="col-md-5 select2-error">
                     <label for="specification_values" class="form-label"><span class="text-danger">
                         </span>Values</label>
-                    <select class="js-example-placeholder-single js-states form-control" multiple="multiple"
-                        name="specification_values[]" id="specificationValuesSelect">
+                    <select class="js-example-placeholder-single js-states form-control specificationValuesSelect" multiple="multiple"
+                        name="specification_values" >
                         <!-- <option value="" selected>None</option> -->
                         @forelse ($dataVal['specification_values'] as $value)
                         <option value="{{ $value['id'] }}">{{ $value['name'] }}</option>
@@ -34,7 +34,7 @@
 
                 <div class="col-md-2">
                     <a href="javascript:;" data-repeater-delete=""
-                        class="btn btn-sm font-weight-bolder btn-light-danger">
+                        class="btn btn-sm font-weight-bolder btn-danger-light">
                         <i class="la la-trash-o"></i>
                     </a>
                 </div>
@@ -85,9 +85,7 @@ var KTFormRepeater = function() {
     };
 }();
 
-jQuery(document).ready(function() {
-    KTFormRepeater.init();
-    $('#specificationValuesSelect').select2({
+$('.specificationValuesSelect').select2({
         // tags: true,
         placeholder: 'Select Values',
         tokenSeparators: [',', ' '], // Separate tags by comma or space
@@ -99,5 +97,9 @@ jQuery(document).ready(function() {
             };
         }
     });
+
+jQuery(document).ready(function() {
+    KTFormRepeater.init();
+    
 });
 </script>
