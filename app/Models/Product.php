@@ -17,27 +17,9 @@ class Product extends Model
         'front_image_url','back_image_url',
     ];
 
-    public function getFrontImageUrlAttribute()
-    {
-        $frontImage = $this->front_image ?? null;
-        $frontImageUrl = null;
-        if (! empty($frontImage) && Storage::exists($frontImage)) {
-            $frontImageUrl = url(Storage::url($frontImage));
-        }
 
-        return $frontImageUrl;
-    }
 
-    public function getBackImageUrlAttribute()
-    {
-        $backImage = $this->back_image ?? null;
-        $backImageUrl = null;
-        if (! empty($backImage) && Storage::exists($backImage)) {
-            $backImageUrl = url(Storage::url($backImage));
-        }
 
-        return $backImageUrl;
-    }
 
 
 }

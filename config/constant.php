@@ -31,6 +31,10 @@ return [
 	'SETTINGS_IMAGE_ROOT_PATH'                       => 'public/uploads/settings/',
 	'SETTINGS_IMAGE_URL'                       => url('/').'/public/uploads/settings/',
 	
+	'PRODUCT_IMAGE_PATH'                       => $WEBSITE_URL.'public/uploads/products/',
+	'PRODUCT_IMAGE_ROOT_PATH'                       => 'public/uploads/products/',
+	'PRODUCT_IMAGE_URL'                       => url('/').'/public/uploads/products/',
+	
 
     'ACL' => [
 		'ACLS_TITLE' => "Acl",
