@@ -92,10 +92,10 @@
                                         @endif
                                         
                                     @endif
-                                    @if($viewPermission == 1)
+                                    <!-- @if($viewPermission == 1)
                                         <a href="{{route('admin-staff.show',base64_encode($result->id))}}"
                                             class="btn btn-info"><i class="ri-eye-line"></i></a>
-                                    @endif
+                                    @endif -->
                                     @if($editPermission == 1)
                                         <a href="{{route('admin-staff.edit',base64_encode($result->id))}}"
                                         class="btn btn-info"><i class="ri-edit-line"></i></a>

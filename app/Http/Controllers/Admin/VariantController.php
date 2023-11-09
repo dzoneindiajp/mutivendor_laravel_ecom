@@ -84,7 +84,6 @@ class VariantController extends Controller
 
     public function store(Request $request){
         $formData = $request->all();
-        
         if (!empty($formData)) {
             $validator = Validator::make(
                 $request->all(),
@@ -111,6 +110,7 @@ class VariantController extends Controller
                                $obj2   =  new VariantValue;
                                $obj2->variant_id = $lastId;
                                $obj2->name = $variantValue['name'];
+                               $obj2->color_code = !empty($variantValue['name']) ? $variantValue['name'] : null;
                                $obj2->save();
                                if(empty($obj2->id)){
                                     DB::rollback();
