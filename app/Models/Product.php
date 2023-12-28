@@ -6,6 +6,7 @@ use App\Models\ChildCategory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\ProductImage;
 
 class Product extends Model
 {
@@ -24,6 +25,11 @@ class Product extends Model
             return  Config('constant.WEBSITE_IMG_URL')."astro/noimage.png";
         }
     }
+    public function frontProductImage() {
+        return $this->hasOne(ProductImage::class)->where('is_front', 1);
+    }
+
+
 
 
 

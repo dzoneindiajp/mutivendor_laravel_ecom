@@ -39,6 +39,10 @@ return [
 	'PRODUCT_IMAGE_ROOT_PATH'                       => 'public/uploads/products/',
 	'PRODUCT_IMAGE_URL'                       => url('/').'/public/uploads/products/',
 
+	'IMAGE_PATH'                       => $WEBSITE_URL.'img/',
+	'IMAGE_ROOT_PATH'                       => 'img/',
+	'IMAGE_URL'                       => url('/').'/img/',
+
 
     'ACL' => [
 		'ACLS_TITLE' => "Acl",

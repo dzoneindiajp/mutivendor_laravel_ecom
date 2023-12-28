@@ -24,7 +24,7 @@
                         name="specification_values" >
                         <!-- <option value="" selected>None</option> -->
                         @forelse ($dataVal['specification_values'] as $value)
-                        <option value="{{ $value['id'] }}">{{ $value['name'] }}</option>
+                        <option value="{{ $value['id'] }}" {{!empty($productSpecifications) && in_array($value['id'],$productSpecifications) ? 'selected' : ''}}>{{ $value['name'] }}</option>
                         @empty
                         <option value="" selected>No Data found</option>
                         @endforelse

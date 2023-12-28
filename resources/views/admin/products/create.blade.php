@@ -72,7 +72,7 @@
 }
 
 .image-bordered {
-    border: 2px solid black;
+    border: 2px solid #6610f2;
     /* Add a black border when the checkbox is checked */
 }
 </style>
@@ -85,7 +85,7 @@
         <nav>
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('admin-dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Create Product</li>
+                <li class="breadcrumb-item active" aria-current="page">{{(!empty($type) && $type == 'create' ) ? 'Create' : ((!empty($type) && $type == 'edit') ? 'Edit' : 'View')}} Product</li>
             </ol>
         </nav>
     </div>
@@ -94,7 +94,7 @@
     <div class="col-xl-12">
         <div class="card custom-card">
             <div class="card-header">
-                <div class="card-title"> Create Product </div>
+                <div class="card-title"> {{(!empty($type) && $type == 'create' ) ? 'Create' : ((!empty($type) && $type == 'edit') ? 'Edit' : 'View')}} Product </div>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -152,7 +152,7 @@
                                                                     class="text-danger">* </span>Product Name</label>
                                                             <input type="text" class="form-control" id="name"
                                                                 name="name" placeholder="Enter Name"
-                                                                onkeyup="displaySlug($(this))">
+                                                                onkeyup="displaySlug($(this))" value="{{!empty($productDetails->name)  ? $productDetails->name : ''}}">
                                                             <div class="invalid-feedback fw-bold"></div>
                                                             <h6 class="product-slug mt-2"></h6>
                                                         </div>
@@ -166,7 +166,7 @@
                                                                 data-action="{{ route('admin-product-sub-category-list') }}">
                                                                 <option value="" selected>None</option>
                                                                 @forelse ($categories as $category)
-                                                                <option value="{{ $category->id }}">
+                                                                <option value="{{ $category->id }}" {{(!empty($productDetails->category_id) && $productDetails->category_id == $category->id) ? 'selected' : ''}}>
                                                                     {{ $category->name }}
                                                                 </option>
                                                                 @empty
@@ -201,7 +201,7 @@
                                                             <label for="bar_code" class="form-label"><span
                                                                     class="text-danger">* </span>Bar Code</label>
                                                             <input type="text" class="form-control" id="bar_code"
-                                                                name="bar_code" placeholder="Enter Bar Code">
+                                                                name="bar_code" placeholder="Enter Bar Code" value="{{!empty($productDetails->bar_code)  ? $productDetails->bar_code : ''}}">
                                                             <div class="invalid-feedback fw-bold"></div>
 
                                                         </div>
@@ -227,7 +227,7 @@
                                                                 name="brand_id" id="brand_id">
                                                                 <option value="" selected>None</option>
                                                                 @forelse ($brands as $brand)
-                                                                <option value="{{ $brand->id }}">{{ $brand->name }}
+                                                                <option value="{{ $brand->id }}" {{(!empty($productDetails->brand_id) && $productDetails->brand_id == $brand->id) ? 'selected' : ''}}>{{ $brand->name }}
                                                                 </option>
                                                                 @empty
                                                                 <option value="" selected>No Data found</option>
@@ -259,28 +259,28 @@
                                         <label for="description" class="form-label"><span class="text-danger">
                                             </span>Short Description</label>
                                         <textarea class="form-control" name="short_description" id="short_description"
-                                            cols="20" rows="5"></textarea>
+                                            cols="20" rows="5">{{!empty($productDetails->short_description)  ? $productDetails->short_description : ''}}</textarea>
                                         <div class="invalid-feedback fw-bold"></div>
                                     </div>
                                     <div class="col-xl-12">
                                         <label for="long_description" class="form-label"><span class="text-danger">*
                                             </span>Long Description</label>
                                         <textarea class="form-control" name="long_description" id="long_description"
-                                            cols="30" rows="5"></textarea>
+                                            cols="30" rows="5">{{!empty($productDetails->long_description)  ? $productDetails->long_description : ''}}</textarea>
                                         <div class="invalid-feedback fw-bold"></div>
                                     </div>
                                     <div class="col-xl-12">
                                         <label for="return_policy" class="form-label"><span class="text-danger">
                                             </span>Return Policy</label>
                                         <textarea class="form-control" name="return_policy" id="return_policy" cols="20"
-                                            rows="5"></textarea>
+                                            rows="5">{{!empty($productDetails->return_policy)  ? $productDetails->return_policy : ''}}</textarea>
                                         <div class="invalid-feedback fw-bold"></div>
                                     </div>
                                     <div class="col-xl-12">
                                         <label for="seller_information" class="form-label"><span class="text-danger">
                                             </span>Seller Information</label>
                                         <textarea class="form-control" name="seller_information" id="seller_information"
-                                            cols="20" rows="5"></textarea>
+                                            cols="20" rows="5">{{!empty($productDetails->seller_information)  ? $productDetails->seller_information : ''}}</textarea>
                                         <div class="invalid-feedback fw-bold"></div>
                                     </div>
                                     <div
@@ -305,7 +305,7 @@
                                                         <label for="buying_price" class="form-label"><span
                                                                 class="text-danger">* </span>Buying Price</label>
                                                         <input type="text" class="form-control" id="buying_price"
-                                                            name="buying_price" placeholder="Enter Buying Price">
+                                                            name="buying_price" value="{{!empty($productDetails->buying_price)  ? $productDetails->buying_price : ''}}" placeholder="Enter Buying Price">
 
                                                         <div class="invalid-feedback fw-bold"></div>
                                                     </div>
@@ -323,7 +323,7 @@
                                                         <label for="selling_price" class="form-label"><span
                                                                 class="text-danger">* </span>Selling Price</label>
                                                         <input type="text" class="form-control" id="selling_price"
-                                                            name="selling_price" placeholder="Enter Selling Price">
+                                                            name="selling_price" value="{{!empty($productDetails->selling_price)  ? $productDetails->selling_price : ''}}" placeholder="Enter Selling Price">
                                                         <div class="invalid-feedback fw-bold"></div>
 
                                                     </div>
@@ -368,7 +368,7 @@
                                                                 class="text-danger">*
                                                             </span>Height</label>
                                                         <input type="text" class="form-control" id="height"
-                                                            name="height" placeholder="Height">
+                                                            name="height" value="{{!empty($productDetails->height)  ? $productDetails->height : ''}}" placeholder="Height">
                                                         <div class="invalid-feedback fw-bold"></div>
 
                                                     </div>
@@ -376,7 +376,7 @@
                                                         <label for="width" class="form-label"><span
                                                                 class="text-danger">*
                                                             </span>Width</label>
-                                                        <input type="text" class="form-control" id="width" name="width"
+                                                        <input type="text" class="form-control" id="width" name="width" value="{{!empty($productDetails->width)  ? $productDetails->width : ''}}"
                                                             placeholder="Width">
                                                         <div class="invalid-feedback fw-bold"></div>
 
@@ -385,7 +385,7 @@
                                                         <label for="dc" class="form-label"><span class="text-danger">*
                                                             </span>DC</label>
                                                         <input type="text" class="form-control" id="dc" name="dc"
-                                                            placeholder="DC">
+                                                            placeholder="DC" value="{{!empty($productDetails->dc)  ? $productDetails->dc : ''}}">
                                                         <div class="invalid-feedback fw-bold"></div>
 
                                                     </div>
@@ -404,7 +404,7 @@
                                                                 class="text-danger">*
                                                             </span>Weight</label>
                                                         <input type="text" class="form-control" id="weight"
-                                                            name="weight" placeholder="Weight">
+                                                            name="weight" placeholder="Weight" value="{{!empty($productDetails->weight)  ? $productDetails->weight : ''}}">
                                                         <div class="invalid-feedback fw-bold"></div>
 
                                                     </div>
@@ -413,7 +413,7 @@
                                                                 class="text-danger">*
                                                             </span>Length</label>
                                                         <input type="text" class="form-control" id="length"
-                                                            name="length" placeholder="Length">
+                                                            name="length" placeholder="Length" value="{{!empty($productDetails->length)  ? $productDetails->length : ''}}">
                                                         <div class="invalid-feedback fw-bold"></div>
 
                                                     </div>
@@ -445,8 +445,12 @@
 
                                 </div>
                                 <div class="card border bg-transparent mt-3 loadImagesData">
+                                    @if(!empty($productDetails) && $productDetails->product_images->isNotEmpty())
+                                    @include('admin.products.load_images',['getData' =>$productDetails->product_images ])
+                                    @else
                                     <div class="row p-3 text-center"><small>Product Images will be shown here.</small>
                                     </div>
+                                    @endif
                                 </div>
 
 
@@ -481,19 +485,19 @@
                                     <div class="col-xl-12">
                                         <label for="meta_title" class="form-label">Meta Title</label>
                                         <input type="text" class="form-control" id="meta_title" name="meta_title"
-                                            placeholder="Meta TItle">
+                                            placeholder="Meta TItle" value="{{!empty($productDetails->meta_title)  ? $productDetails->meta_title : ''}}">
                                         <div class="invalid-feedback fw-bold"></div>
                                     </div>
                                     <div class="col-xl-12">
                                         <label for="meta_description" class="form-label">Meta Description</label>
                                         <textarea class="form-control" name="meta_description" id="meta_description"
-                                            cols="30" rows="5"></textarea>
+                                            cols="30" rows="5">{{!empty($productDetails->meta_description)  ? $productDetails->meta_description : ''}}</textarea>
                                         <div class="invalid-feedback fw-bold"></div>
                                     </div>
                                     <div class="col-xl-12">
                                         <label for="meta_keywords" class="form-label">Meta Keywords</label>
                                         <input type="text" class="form-control" id="meta_keywords" name="meta_keywords"
-                                            placeholder="Meta Keywords">
+                                            placeholder="Meta Keywords" value="{{!empty($productDetails->meta_keywords)  ? $productDetails->meta_keywords : ''}}">
                                         <div class="invalid-feedback fw-bold"></div>
                                     </div>
                                     <div
@@ -525,6 +529,10 @@
 <script src="{{ asset('assets/js/select2.js') }}"></script>
 
 <script src="{{ asset('assets/libs/dropzone/dropzone-min.js') }}"></script>
+<script>
+    let selectedSubcategory = parseInt("<?php echo !empty($productDetails->sub_category_id) ? $productDetails->sub_category_id : ''; ?>");
+    let selectedChildcategory = parseInt("<?php echo !empty($productDetails->child_category_id) ? $productDetails->child_category_id : ''; ?>");
+</script>
 
 <script src="{{ asset('assets/js/custom/product.js') }}"></script>
 <script src="{{ asset('assets/js/repeater.js')}}"></script>
@@ -532,6 +540,19 @@
 {{-- <script src="{{ asset('assets/js/fileupload.js') }}"></script> --}}
 <script src="{{ asset('assets/plugin/jquery-validation/jquery.validate.min.js') }}"></script>
 <script src="{{ asset('assets/js/form-validation.js') }}"></script>
+@if(!empty($productDetails->category_id))
+<script>
+    jQuery(document).ready(function() {
+        setTimeout(() => {
+            
+            $('#category_id').trigger('change');
+
+        }, 200); 
+    
+    });
+    
+</script>
+@endif
 <script>
 CKEDITOR.replace(<?php echo 'long_description'; ?>, {
     filebrowserUploadUrl: '<?php echo URL()->to('base/uploder'); ?>',
@@ -1575,7 +1596,7 @@ $(document).on('click', '#actionBtn', function(e) {
 
                     } else {
                         if (datas['status'] == 'error' && datas['errors']) {
-                            $('#actionBtn[data-current-action=second_step]').hide();
+                            
                             $.each(datas['errors'], function(index, html) {
                                 if (index == 'long_description' || index ==
                                     'short_description' || index == 'return_policy' ||
