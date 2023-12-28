@@ -120,10 +120,14 @@ class ChildCategoryController extends Controller
                     array(
                         'name' => 'required',
                         'image' => 'nullable|mimes:jpg,jpeg,png,webp',
+                        'thumbnail_image' => 'nullable|mimes:jpg,jpeg,png,webp',
+                        'video' => 'nullable|mimetypes:video/mp4,video/quicktime',
                     ),
                     array(
                         "name.required" => trans("The name field is required."),
-                        "image.mimes" => trans("The profile image should be of type jpeg,jpg,png."),
+                        "image.mimes" => trans("The banner image should be of type jpeg,jpg,png."),
+                        "thumbnail_image.mimes" => trans("The thumbnail image should be of type jpeg,jpg,png."),
+                        "video.mimes" => trans("The video should be of type mp4,mov."),
                     )
                 );
                 if ($validator->fails()) {
@@ -155,11 +159,44 @@ class ChildCategoryController extends Controller
                             $imagePath = $folderName . $fileName;
                         }
                     }
+
+                    $thumbnail_imagePath = "";
+                    if ($request->hasFile('thumbnail_image')) {
+                        $extension = $request->file('thumbnail_image')->getClientOriginalExtension();
+                        $originalName = $request->file('thumbnail_image')->getClientOriginalName();
+                        $fileName = time() . '-thumbnail_image.' . $extension;
+                        
+                        $folderName = strtoupper(date('M') . date('Y')) . "/";
+                        $folderPath = Config('constant.CATEGORY_IMAGE_ROOT_PATH') . $folderName;
+                        if (!File::exists($folderPath)) {
+                            File::makeDirectory($folderPath, $mode = 0777, true);
+                        }
+                        if ($request->file('thumbnail_image')->move($folderPath, $fileName)) {
+                            $thumbnail_imagePath = $folderName . $fileName;
+                        }
+                    }
+                    $videoPath = "";
+                    if ($request->hasFile('video')) {
+                        $extension = $request->file('video')->getClientOriginalExtension();
+                        $originalName = $request->file('video')->getClientOriginalName();
+                        $fileName = time() . '-video.' . $extension;
+    
+                        $folderName = strtoupper(date('M') . date('Y')) . "/";
+                        $folderPath = Config('constant.CATEGORY_VIDEO_ROOT_PATH') . $folderName;
+                        if (!File::exists($folderPath)) {
+                            File::makeDirectory($folderPath, $mode = 0777, true);
+                        }
+                        if ($request->file('video')->move($folderPath, $fileName)) {
+                            $videoPath = $folderName . $fileName;
+                        }
+                    }
                     $category = Category::create([
                         'name' => $request->name,
                         'parent_id' => $dep_id,
                         'slug' => $slug,
                         'image' => $imagePath,
+                        'thumbnail_image' => $thumbnail_imagePath,
+                        'video' => $videoPath,
                         'category_order' => (!empty($totalChildCategoryCount) ? $totalChildCategoryCount + 1 : 1),
                         'meta_title' => $request->meta_title ?? null,
                         'meta_description' => $request->meta_description ?? null,
@@ -252,10 +289,14 @@ class ChildCategoryController extends Controller
                     array(
                         'name' => 'required',
                         'image' => 'nullable|mimes:jpg,jpeg,png,webp',
+                        'thumbnail_image' => 'nullable|mimes:jpg,jpeg,png,webp',
+                        'video' => 'nullable|mimetypes:video/mp4,video/quicktime',
                     ),
                     array(
                         "name.required" => trans("The name field is required."),
-                        "image.mimes" => trans("The profile image should be of type jpeg,jpg,png."),
+                        "image.mimes" => trans("The banner image should be of type jpeg,jpg,png."),
+                        "thumbnail_image.mimes" => trans("The thumbnail image should be of type jpeg,jpg,png."),
+                        "video.mimes" => trans("The video should be of type mp4,mov."),
                     )
                 );
                 if ($validator->fails()) {
@@ -297,6 +338,37 @@ class ChildCategoryController extends Controller
                             $obj->image = $folderName . $fileName;
                         }
                     }
+
+                    if ($request->hasFile('thumbnail_image')) {
+                        $extension = $request->file('thumbnail_image')->getClientOriginalExtension();
+                        $originalName = $request->file('thumbnail_image')->getClientOriginalName();
+                        $fileName = time() . '-thumbnail_image.' . $extension;
+                        
+                        $folderName = strtoupper(date('M') . date('Y')) . "/";
+                        $folderPath = Config('constant.CATEGORY_IMAGE_ROOT_PATH') . $folderName;
+                        if (!File::exists($folderPath)) {
+                            File::makeDirectory($folderPath, $mode = 0777, true);
+                        }
+                        if ($request->file('thumbnail_image')->move($folderPath, $fileName)) {
+                            $obj->thumbnail_image = $folderName . $fileName;
+                        }
+                    }
+
+                    if ($request->hasFile('video')) {
+                        $extension = $request->file('video')->getClientOriginalExtension();
+                        $originalName = $request->file('video')->getClientOriginalName();
+                        $fileName = time() . '-video.' . $extension;
+    
+                        $folderName = strtoupper(date('M') . date('Y')) . "/";
+                        $folderPath = Config('constant.CATEGORY_VIDEO_ROOT_PATH') . $folderName;
+                        if (!File::exists($folderPath)) {
+                            File::makeDirectory($folderPath, $mode = 0777, true);
+                        }
+                        if ($request->file('video')->move($folderPath, $fileName)) {
+                            $obj->video = $folderName . $fileName;
+                        }
+                    }
+                    
                     $obj->save();
                     $lastId = $obj->id;
                     if(!empty($lastId)){

@@ -186,5 +186,17 @@
             };
         }
     });
+    $('#taxesSelect').select2({
+        // tags: true,
+        placeholder: 'Select Taxes',
+        tokenSeparators: [',', ' '], // Separate tags by comma or space
+        createTag: function(params) {
+            return {
+                id: params.term,
+                text: params.term,
+                newTag: true
+            };
+        }
+    });
 
 })();

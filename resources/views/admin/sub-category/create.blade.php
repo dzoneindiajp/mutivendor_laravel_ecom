@@ -60,6 +60,34 @@
                             </div>
                             @endif
                         </div>
+                        <div class="col-xl-6 mb-3">
+                            <label for="thumbnail_image" class="form-label"><span class="text-danger">
+                                </span>Thumbnail Image</label>
+                            <input type="file" class="form-control @error('thumbnail_image') is-invalid @enderror" id="thumbnail_image"
+                                name="thumbnail_image">
+                            @if (!empty($category->thumbnail_image))
+                            <img height="50" width="50" src="{{isset($category->thumbnail_image)? $category->thumbnail_image:''}}" />
+                            @endif
+                            @if ($errors->has('thumbnail_image'))
+                            <div class="invalid-feedback">
+                                {{ $errors->first('thumbnail_image') }}
+                            </div>
+                            @endif
+                        </div>
+                        <div class="col-xl-6 mb-3">
+                            <label for="video" class="form-label"><span class="text-danger">  </span>Video</label>
+                            <input type="file" class="form-control @error('video') is-invalid @enderror" id="video" name="video">
+                            @if (!empty($category->video))
+                                <video height="70" controls>
+                                    <source src="{{isset($category->video)? $category->video:''}}" type="video/mp4">
+                                </video>
+                            @endif
+                            @if ($errors->has('video'))
+                            <div class="invalid-feedback">
+                                {{ $errors->first('video') }}
+                            </div>
+                            @endif
+                        </div>
                         <div class="col-xl-6">
                             <label for="meta_title" class="form-label">Meta Title</label>
                             <input type="text" class="form-control" id="meta_title" name="meta_title"

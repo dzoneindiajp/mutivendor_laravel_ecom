@@ -11,7 +11,7 @@
     </td>
     <td>{{ $product->child_category_name ?? "N/A" }}</td>
     <td><img src="{{ $product->front_image_url }}" height="70px" width="70px" style="border-radius: 10%"></td>
-    <td>{{ $product->price }}</td>
+    <td>{{ $product->selling_price }}</td>
     <td>
         <div class="hstack gap-2 flex-wrap">
             <a href="{{ route('admin-product-view',['token' => encrypt($product->id)]) }}" class="btn btn-info"><i

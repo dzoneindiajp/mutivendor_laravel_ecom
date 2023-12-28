@@ -50,9 +50,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-6">
+                        <div class="col-xl-6 mb-3">
                             <label for="image" class="form-label"><span class="text-danger">
-                                </span>Image</label>
+                                </span>Banner Image</label>
                             <input type="file" class="form-control @error('image') is-invalid @enderror" id="image"
                                 name="image">
                             @if ($errors->has('image'))
@@ -61,17 +61,42 @@
                             </div>
                             @endif
                         </div>
-                        <div class="col-xl-6">
+                        <div class="col-xl-6 mb-3">
+                            <label for="thumbnail_image" class="form-label"><span class="text-danger">
+                                </span>Thumbnail Image</label>
+                            <input type="file" class="form-control @error('thumbnail_image') is-invalid @enderror" id="thumbnail_image"
+                                name="thumbnail_image">
+                            @if ($errors->has('thumbnail_image'))
+                            <div class="invalid-feedback">
+                                {{ $errors->first('thumbnail_image') }}
+                            </div>
+                            @endif
+                        </div>
+                        <div class="col-xl-6 mb-3">
+                            <label for="video" class="form-label"><span class="text-danger">  </span>Video</label>
+                            <input type="file" class="form-control @error('video') is-invalid @enderror" id="video" name="video">
+                            @if (!empty($category->video))
+                                <video height="70" controls>
+                                    <source src="{{isset($category->video)? $category->video:''}}" type="video/mp4">
+                                </video>
+                            @endif
+                            @if ($errors->has('video'))
+                            <div class="invalid-feedback">
+                                {{ $errors->first('video') }}
+                            </div>
+                            @endif
+                        </div>
+                        <div class="col-xl-6 mb-3">
                             <label for="meta_title" class="form-label">Meta Title</label>
                             <input type="text" class="form-control" id="meta_title" name="meta_title"
                                 placeholder="Meta TItle">
                         </div>
-                        <div class="col-xl-6">
+                        <div class="col-xl-6 mb-3">
                             <label for="meta_keywords" class="form-label">Meta Keywords</label>
                             <input type="text" class="form-control" id="meta_keywords" name="meta_keywords"
                                 placeholder="Meta Keywords">
                         </div>
-                        <div class="col-xl-6 mt-3">
+                        <div class="col-xl-6 mb-3">
                             <label for="meta_description" class="form-label">Meta Description</label>
                             <textarea class="form-control" name="meta_description" id="meta_description" cols="30"
                                 rows="5"></textarea>
@@ -133,6 +158,35 @@
                 </div>
             </div>
 
+            <div class="card custom-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        Taxes
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-xl-12 select2-error">
+                            <label for="category_id" class="form-label"><span class="text-danger">
+                                </span>Taxes</label>
+                            <select class="js-example-placeholder-single js-states form-control" multiple="multiple"
+                                name="taxesData[]" id="taxesSelect">
+                                @forelse ($taxes as $tax)
+                                <option value="{{ $tax->id }}">{{ $tax->name }}</option>
+                                @empty
+                                <option value="" selected>No Data found</option>
+                                @endforelse
+                            </select>
+
+                        </div>
+
+                        <div id="taxCountFields" style="display: none;">
+                            <!-- Text fields for tax counts will be appended here dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="px-4 py-3 border-top border-block-start-dashed d-sm-flex justify-content-end">
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
@@ -158,7 +212,41 @@
 <script src="{{ asset('assets/js/form-validation.js') }}"></script>
 <script src="{{ asset('assets/js/custom/category.js') }}"></script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
 
+        // Add an event listener to the taxesSelect dropdown
+        $('#taxesSelect').on('change', function () {
+            // Clear existing count text fields
+            $('#taxCountFields').empty();
+
+            // Get selected tax values
+            var selectedTaxes = $(this).val();
+
+            // Check if any taxes are selected
+            if (selectedTaxes && selectedTaxes.length > 0) {
+                // Display the tax count fields div
+                $('#taxCountFields').show();
+
+                // Create a text field for each selected tax
+                selectedTaxes.forEach(function (taxId) {
+                    var taxFieldName = 'tax_counts[' + taxId + ']';
+                    var taxName = $('#taxesSelect option[value="' + taxId + '"]').text(); // Get tax name
+                    var label = taxName + ' Value'; // Create label based on tax name
+
+                    // Create the label and input field
+                    var inputField = '<div class="mb-3"><label for="' + taxFieldName + '" class="form-label">' +
+                        label + '</label><input type="text" class="form-control" id="' +
+                        taxFieldName + '" name="' + taxFieldName + '" placeholder="Enter Value"></div>';
+                    $('#taxCountFields').append(inputField);
+                });
+            } else {
+                // Hide the tax count fields div if no taxes are selected
+                $('#taxCountFields').hide();
+            }
+        });
+    });
+</script>
 
 
 

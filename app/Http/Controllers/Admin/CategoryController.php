@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use Exception;
 use App\Models\Category;
 use App\Models\Variant;
+use App\Models\Tax;
+use App\Models\CategoryTax;
 use App\Models\CategoryVariant;
 use App\Models\CategorySpecification;
 use App\Models\Specification;
@@ -25,7 +27,7 @@ class CategoryController extends Controller
         View()->share('model', $this->model);
         View()->share('listRouteName', $this->listRouteName);
         $this->request = $request;
-        
+
     }
 
     public function index(Request $request)
@@ -35,7 +37,7 @@ class CategoryController extends Controller
             $sortBy = $request->input('sortBy') ? $request->input('sortBy') : 'categories.category_order';
             $order = $request->input('order') ? $request->input('order') : 'ASC';
             $offset = !empty($request->input('offset')) ? $request->input('offset') : 0 ;
-            $limit =  !empty($request->input('limit')) ? $request->input('limit') : Config("Reading.records_per_page"); 
+            $limit =  !empty($request->input('limit')) ? $request->input('limit') : Config("Reading.records_per_page");
 
             if ($request->all()) {
                 $searchData            =    $request->all();
@@ -77,7 +79,7 @@ class CategoryController extends Controller
             }
 
             $DB->where("categories.is_deleted", 0);
-        
+
             $results = $DB->orderBy($sortBy, $order)->offset($offset)->limit($limit)->get();
             $totalResults = $DB->count();
 
@@ -99,15 +101,16 @@ class CategoryController extends Controller
             Log::error($e);
             return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);
         }
-        
+
     }
 
     public function create()
     {
         try {
             $variants = Variant::select('id', 'name')->get();
+            $taxes = Tax::select('id', 'name')->get();
             $specifications = Specification::leftJoin('specification_groups', 'specifications.specification_group_id', '=', 'specification_groups.id')->select('specifications.id', DB::raw("CONCAT(specification_groups.name, ' > ', specifications.name) as name"))->get();
-            return view('admin.category.create',compact('variants','specifications'));
+            return view('admin.category.create',compact('variants','specifications', 'taxes'));
         } catch (Exception $e) {
             Log::error($e);
             return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);
@@ -124,10 +127,14 @@ class CategoryController extends Controller
                     array(
                         'name' => 'required',
                         'image' => 'nullable|mimes:jpg,jpeg,png,webp',
+                        'thumbnail_image' => 'nullable|mimes:jpg,jpeg,png,webp',
+                        'video' => 'nullable|mimetypes:video/mp4,video/quicktime',
                     ),
                     array(
                         "name.required" => trans("The name field is required."),
-                        "image.mimes" => trans("The profile image should be of type jpeg,jpg,png."),
+                        "image.mimes" => trans("The banner image should be of type jpeg,jpg,png."),
+                        "thumbnail_image.mimes" => trans("The thumbnail image should be of type jpeg,jpg,png."),
+                        "video.mimes" => trans("The video should be of type mp4,mov."),
                     )
                 );
                 if ($validator->fails()) {
@@ -136,15 +143,15 @@ class CategoryController extends Controller
                     $originalString = $request->name ?? "";
                     $lowercaseString = Str::lower($originalString);
                     $slug = Str::slug($lowercaseString, '-');
-                    
+
 
                     $alreadyAddedName = Category::where('name', $originalString)->first();
-                    
+
                     if (!is_null($alreadyAddedName)) {
                         return redirect()->back()->with(['error' => 'Slug is already added']);
                     }
                     $totalCategoryCount = Category::whereNull('parent_id')->count();
-                    
+
                     DB::beginTransaction();
                     $obj                                = new Category;
                     $obj->name                          = $request->input('name');
@@ -156,7 +163,7 @@ class CategoryController extends Controller
                         $extension = $request->file('image')->getClientOriginalExtension();
                         $originalName = $request->file('image')->getClientOriginalName();
                         $fileName = time() . '-image.' . $extension;
-                        
+
                         $folderName = strtoupper(date('M') . date('Y')) . "/";
                         $folderPath = Config('constant.CATEGORY_IMAGE_ROOT_PATH') . $folderName;
                         if (!File::exists($folderPath)) {
@@ -166,25 +173,54 @@ class CategoryController extends Controller
                             $obj->image = $folderName . $fileName;
                         }
                     }
+                    if ($request->hasFile('thumbnail_image')) {
+                        $extension = $request->file('thumbnail_image')->getClientOriginalExtension();
+                        $originalName = $request->file('thumbnail_image')->getClientOriginalName();
+                        $fileName = time() . '-thumbnail_image.' . $extension;
+
+                        $folderName = strtoupper(date('M') . date('Y')) . "/";
+                        $folderPath = Config('constant.CATEGORY_IMAGE_ROOT_PATH') . $folderName;
+                        if (!File::exists($folderPath)) {
+                            File::makeDirectory($folderPath, $mode = 0777, true);
+                        }
+                        if ($request->file('thumbnail_image')->move($folderPath, $fileName)) {
+                            $obj->thumbnail_image = $folderName . $fileName;
+                        }
+                    }
+
+                    if ($request->hasFile('video')) {
+                        $extension = $request->file('video')->getClientOriginalExtension();
+                        $originalName = $request->file('video')->getClientOriginalName();
+                        $fileName = time() . '-video.' . $extension;
+
+                        $folderName = strtoupper(date('M') . date('Y')) . "/";
+                        $folderPath = Config('constant.CATEGORY_VIDEO_ROOT_PATH') . $folderName;
+                        if (!File::exists($folderPath)) {
+                            File::makeDirectory($folderPath, $mode = 0777, true);
+                        }
+                        if ($request->file('video')->move($folderPath, $fileName)) {
+                            $obj->video = $folderName . $fileName;
+                        }
+                    }
                     $obj->save();
-                   
+
                     $lastId = $obj->id;
 
                     if(!empty($lastId)){
-                      
+
                         if(!empty($request->variantsData) && is_array($request->variantsData)){
                             foreach($request->variantsData as $variantKey => $variantVal){
                                 // $checkIfvarientExists = Variant::where('id',$variantVal)->first();
                                 $variantId = $variantVal;
-                                
+
                                 // if(empty($checkIfvarientExists)){
-                                    
+
                                 //     $variantObj   = new Variant;
                                 //     $variantObj->name = $variantVal;
                                 //     $variantObj->save();
-                                    
+
                                 //     $variantId = $variantObj->id;
-                                   
+
                                 //     if(empty($variantId)){
                                 //         DB::rollback();
                                 //         Session()->flash('flash_notice', 'Something Went Wrong');
@@ -232,6 +268,21 @@ class CategoryController extends Controller
 
                             }
                         }
+
+                        if(!empty($request->tax_counts) && is_array($request->tax_counts)) {
+                            foreach($request->tax_counts as $taxKey => $taxVal){
+                                $obj3    =   new CategoryTax;
+                                $obj3->category_id = $lastId;
+                                $obj3->tax_id = $taxKey;
+                                $obj3->tax_value = $taxVal;
+                                $obj3->save();
+                                if(empty($obj3->id)){
+                                    DB::rollback();
+                                    Session()->flash('flash_notice', 'Something Went Wrong');
+                                    return Redirect::route('admin-category.index');
+                                }
+                            }
+                        }
                         DB::commit();
                     }else{
                         DB::rollback();
@@ -255,7 +306,7 @@ class CategoryController extends Controller
             if (!empty($token)) {
 
                 $categoryId = base64_decode($token);
-                
+
                 $category = Category::find($categoryId);
 
                 if(!empty($category->image)){
@@ -295,10 +346,14 @@ class CategoryController extends Controller
                         array(
                             'name' => 'required',
                             'image' => 'nullable|mimes:jpg,jpeg,png,webp',
+                            'thumbnail_image' => 'nullable|mimes:jpg,jpeg,png,webp',
+                            'video' => 'nullable|mimetypes:video/mp4,video/quicktime',
                         ),
                         array(
                             "name.required" => trans("The name field is required."),
-                            "image.mimes" => trans("The profile image should be of type jpeg,jpg,png."),
+                            "image.mimes" => trans("The banner image should be of type jpeg,jpg,png."),
+                            "thumbnail_image.mimes" => trans("The thumbnail image should be of type jpeg,jpg,png."),
+                            "video.mimes" => trans("The video should be of type mp4,mov."),
                         )
                     );
                     if ($validator->fails()) {
@@ -339,16 +394,48 @@ class CategoryController extends Controller
                                 $obj->image = $folderName . $fileName;
                             }
                         }
+
+                        if ($request->hasFile('thumbnail_image')) {
+                            $extension = $request->file('thumbnail_image')->getClientOriginalExtension();
+                            $originalName = $request->file('thumbnail_image')->getClientOriginalName();
+                            $fileName = time() . '-thumbnail_image.' . $extension;
+
+                            $folderName = strtoupper(date('M') . date('Y')) . "/";
+                            $folderPath = Config('constant.CATEGORY_IMAGE_ROOT_PATH') . $folderName;
+                            if (!File::exists($folderPath)) {
+                                File::makeDirectory($folderPath, $mode = 0777, true);
+                            }
+                            if ($request->file('thumbnail_image')->move($folderPath, $fileName)) {
+                                $obj->thumbnail_image = $folderName . $fileName;
+                            }
+                        }
+
+                        if ($request->hasFile('video')) {
+                            $extension = $request->file('video')->getClientOriginalExtension();
+                            $originalName = $request->file('video')->getClientOriginalName();
+                            $fileName = time() . '-video.' . $extension;
+
+                            $folderName = strtoupper(date('M') . date('Y')) . "/";
+                            $folderPath = Config('constant.CATEGORY_VIDEO_ROOT_PATH') . $folderName;
+                            if (!File::exists($folderPath)) {
+                                File::makeDirectory($folderPath, $mode = 0777, true);
+                            }
+                            if ($request->file('video')->move($folderPath, $fileName)) {
+                                $obj->video = $folderName . $fileName;
+                            }
+                        }
+
                         $obj->save();
                         $lastId = $obj->id;
                         if(!empty($lastId)){
                             CategoryVariant::where('category_id',$lastId)->delete();
                             CategorySpecification::where('category_id',$lastId)->delete();
+                            CategoryTax::where('category_id',$lastId)->delete();
                             if(!empty($request->variantsData) && is_array($request->variantsData)){
                                 foreach($request->variantsData as $variantKey => $variantVal){
                                     // $checkIfvarientExists = Variant::where('id',$variantVal)->first();
                                     $variantId = $variantVal;
-                                    
+
                                     $obj2    =   new CategoryVariant;
                                     $obj2->category_id = $lastId;
                                     $obj2->variant_id = $variantId;
@@ -358,15 +445,15 @@ class CategoryController extends Controller
                                         Session()->flash('flash_notice', 'Something Went Wrong');
                                         return Redirect::route('admin-category.index');
                                     }
-    
+
                                 }
                             }
-    
+
                             if(!empty($request->specificationsData) && is_array($request->specificationsData)){
                                 foreach($request->specificationsData as $specificationVal){
                                     // $checkIfspecificationExists = Specification::where('id',$specificationVal)->first();
                                     $specificationId = $specificationVal;
-                                    
+
                                     $obj2    =   new CategorySpecification;
                                     $obj2->category_id = $lastId;
                                     $obj2->specification_id = $specificationId;
@@ -376,7 +463,22 @@ class CategoryController extends Controller
                                         Session()->flash('flash_notice', 'Something Went Wrong');
                                         return Redirect::route('admin-category.index');
                                     }
-    
+
+                                }
+                            }
+
+                            if(!empty($request->tax_counts) && is_array($request->tax_counts)) {
+                                foreach($request->tax_counts as $taxKey => $taxVal){
+                                    $obj3    =   new CategoryTax;
+                                    $obj3->category_id = $lastId;
+                                    $obj3->tax_id = $taxKey;
+                                    $obj3->tax_value = $taxVal;
+                                    $obj3->save();
+                                    if(empty($obj3->id)){
+                                        DB::rollback();
+                                        Session()->flash('flash_notice', 'Something Went Wrong');
+                                        return Redirect::route('admin-category.index');
+                                    }
                                 }
                             }
                             DB::commit();
@@ -413,7 +515,7 @@ class CategoryController extends Controller
                 ));
                 CategoryVariant::where('category_id',$categoryId)->delete();
                 CategorySpecification::where('category_id',$categoryId)->delete();
-    
+
                 Session()->flash('flash_notice', trans("Category has been removed successfully."));
             }
             return back();
@@ -447,7 +549,7 @@ class CategoryController extends Controller
 
     function updateCategoryOrder(Request $request){
     $requestOrder	=	$request->input("requestData");
-   
+
     if(!empty($requestOrder)){
         foreach($requestOrder as $category_order){
             Category::where("id",$category_order["id"])->update(array("category_order"=>$category_order["order"]));
