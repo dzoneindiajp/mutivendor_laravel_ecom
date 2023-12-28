@@ -99,7 +99,8 @@ class ProductController extends Controller
             }
 
 
-            $results = $DB->select('products.*', 'categories.name as category_name', 'sub_categories.name as sub_category_name', 'child_categories.name as child_category_name')->orderBy($sortBy, $order)->offset($offset)->limit($limit)->get();
+            $results = $DB->with('frontProductImage')->select('products.*', 'categories.name as category_name', 'sub_categories.name as sub_category_name', 'child_categories.name as child_category_name')->orderBy($sortBy, $order)->offset($offset)->limit($limit)->get();
+          
             $totalResults = $DB->count();
             if ($request->ajax()) {
 
@@ -127,7 +128,8 @@ class ProductController extends Controller
             if ($request->session()->has('currentProductId')) {
                 $request->session()->forget('currentProductId');
             }
-            return view('admin.products.create', compact('categories', 'brands'));
+            $type = 'create';
+            return view('admin.products.create', compact('categories', 'brands','type'));
         } catch (Exception $e) {
             Log::error($e);
             return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);
@@ -147,6 +149,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $formData = $request->all();
+        // print_r($formData);die;
         $response = array();
         if (!empty($formData)) {
             $basicInformationValidationArray = [
@@ -203,7 +206,7 @@ class ProductController extends Controller
 
             $validator = Validator::make(
                 $request->all(),
-                (!empty($request->current_tab) && $request->current_tab == 'basicInformationTab') ? $basicInformationValidationArray : ((!empty($request->current_tab) && $request->current_tab == 'detailsTab') ? $detailsValidationArray : ((!empty($request->current_tab) && $request->current_tab == 'pricesTab') ? $pricesValidationArray : ((!empty($request->current_tab) && $request->current_tab == 'specificationsTab') ? $specificationsValidationArray : ((!empty($request->current_tab) && $request->current_tab == 'shippingSpecificationsTab') ? $shippingSpecificationsValidationArray : ((!empty($request->current_tab) && $request->current_tab == 'mediasTab') ? $mediasValidationArray : ((!empty($request->current_tab) && $request->current_tab == 'variantsTab' && !empty($request->current_action) && $request->current_action == 'first_step') ? $variantsTabFirstStepArray : ((!empty($request->current_tab) && $request->current_tab == 'mediasTab' && !empty($request->current_action) && $request->current_action == 'second_step') ? $variantsTabSecondStepArray : ((!empty($request->current_tab) && $request->current_tab == 'advanceSeoTab') ? $advanceSeoValidationArray : [])))))))),
+                (!empty($request->current_tab) && $request->current_tab == 'basicInformationTab') ? $basicInformationValidationArray : ((!empty($request->current_tab) && $request->current_tab == 'detailsTab') ? $detailsValidationArray : ((!empty($request->current_tab) && $request->current_tab == 'pricesTab') ? $pricesValidationArray : ((!empty($request->current_tab) && $request->current_tab == 'specificationsTab') ? $specificationsValidationArray : ((!empty($request->current_tab) && $request->current_tab == 'shippingSpecificationsTab') ? $shippingSpecificationsValidationArray : ((!empty($request->current_tab) && $request->current_tab == 'mediasTab') ? $mediasValidationArray : ((!empty($request->current_tab) && $request->current_tab == 'variantsTab' && !empty($request->current_action) && $request->current_action == 'first_step') ? $variantsTabFirstStepArray : ((!empty($request->current_tab) && $request->current_tab == 'variantsTab' && !empty($request->current_action) && $request->current_action == 'second_step') ? $variantsTabSecondStepArray : ((!empty($request->current_tab) && $request->current_tab == 'advanceSeoTab') ? $advanceSeoValidationArray : [])))))))),
 
                 array(
                     "specificationDataArr.required" => trans("The specifications fields are required."),
@@ -224,11 +227,12 @@ class ProductController extends Controller
                         $obj = Product::find($request->session()->get('currentProductId'));
                     } else {
                         $obj = new Product;
-                        $originalString = $request->name ?? "";
-                        $lowercaseString = Str::lower($originalString);
-                        $slug = Str::slug($lowercaseString, '-');
+                    }
+                    $originalString = $request->name ?? "";
+                    $lowercaseString = Str::lower($originalString);
+                    $slug = Str::slug($lowercaseString, '-');
 
-
+                    if((!empty($request->session()->has('currentProductId')) && ($obj->name != $request->name)) || ( empty($request->session()->has('currentProductId')))){
                         $alreadyAddedName = Product::where('name', $originalString)->first();
 
                         if (!is_null($alreadyAddedName)) {
@@ -240,8 +244,11 @@ class ProductController extends Controller
                             return Response::json($response, 500);
                         }
 
-                        $obj->slug = $slug;
+
                     }
+                    
+                    $obj->slug = $slug;
+                    
                     $obj->name = !empty($request->name) ? $request->name : NULL;
                     ;
                     $obj->product_number = '00';
@@ -342,8 +349,8 @@ class ProductController extends Controller
                                     $dataVal['specification_values'] = SpecificationValue::where('specification_id', $dataVal['id'])->get()->toArray();
                                 }
                             }
-
-                            $htmlData = View::make("admin.products.specifications_data", compact('specificationsData'))->render();
+                            $productSpecifications = ProductSpecification::where('product_id',$request->session()->get('currentProductId'))->pluck('specification_value_id')->toArray();
+                            $htmlData = View::make("admin.products.specifications_data", compact('specificationsData','productSpecifications'))->render();
 
                             $response = array();
                             $response["status"] = "success";
@@ -411,7 +418,7 @@ class ProductController extends Controller
                             $obj = new ProductShippingSpecification;
                         }
 
-                        $obj->product_id = $request->session()->has('currentProductId');
+                        $obj->product_id = $request->session()->get('currentProductId');
                         $obj->height = !empty($request->height) ? $request->height : NULL;
                         $obj->weight = !empty($request->weight) ? $request->weight : NULL;
                         $obj->width = !empty($request->width) ? $request->width : NULL;
@@ -469,8 +476,10 @@ class ProductController extends Controller
                                 ->distinct()
                                 ->get()->toArray();
 
+                            $productVariants = ProductVariant::where('product_id',$request->session()->get('currentProductId'))->pluck('variant_id')->toArray();
+                            // print_r($productVariants);die;
 
-                            $htmlData = View::make("admin.products.variants_data", compact('variantsData'))->render();
+                            $htmlData = View::make("admin.products.variants_data", compact('variantsData','productVariants'))->render();
                             $response = array();
                             $response["status"] = "success";
                             $response["msg"] = "";
@@ -503,7 +512,7 @@ class ProductController extends Controller
                             ProductVariant::where('product_id', $request->session()->get('currentProductId'))->delete();
 
                             foreach ($variantsDataArr as $variantValue) {
-                                if (!empty($variantValue['name']) && !empty($variantValue['variant_id']) && !empty($variantValue['variant_values'][0])) {
+                                if ( !empty($variantValue['variant_id']) && !empty($variantValue['variant_values'][0])) {
                                     $obj2 = new ProductVariant;
                                     $obj2->product_id = $request->session()->get('currentProductId');
                                     $obj2->variant_id = $variantValue['variant_id'];
@@ -520,24 +529,38 @@ class ProductController extends Controller
                                     foreach ($variantValue['variant_values'] as $dataVal) {
                                         $obj3 = new ProductVariantValue;
                                         $obj3->product_veriant_id = $pVariantId;
-                                        $obj3->variant_value_id = $dataVal;
+                                        $obj3->veriant_value_id = $dataVal;
                                         $obj3->save();
                                     }
 
                                 }
                             }
-
+                            
                             foreach ($variantsDataArr as $key => $variantData) {
                                 if (!empty($variantData['variant_id']) && !empty($variantData['variant_values'][0])) {
                                     $variantName = $this->getVariantName($variantData['variant_id']);
                                     $variantsDataArr[$key]['variant_name'] = $variantName;
 
                                     $variantValuesNames = $this->getVariantValuesNames($variantData['variant_values']);
+                                    $variantValuesStoredData = $this->getVariantValuesStoredData($variantData['variant_values']);
+                                    if(!empty($variantValuesStoredData)){
+                                        $selectedImages = ProductVariantCombinationImage::where('product_variant_combination_id',$variantValuesStoredData->id)->pluck('product_image_id')->toArray();
+                                        $variantsDataArr[$key]['selected_images'] = $selectedImages;
+                                    }
                                     $variantsDataArr[$key]['variant_values_names'] = $variantValuesNames;
+                                    $variantsDataArr[$key]['variant_values_data'] = $variantValuesStoredData;
+                                }else{
+                                    unset($variantsDataArr[$key]);
                                 }
 
                             }
+                           
                             $productImages = ProductImage::where('product_id', $request->session()->get('currentProductId'))->get();
+                            // if($productImages->isNotEmpty()){
+                            //     foreach ($productImages as $key => $productImage) {
+                            //         $checkIfItIsSelected = ProductVariantCombinationImage::where('product_variant_combination_id')
+                            //     }
+                            // }
                             $htmlData = View::make("admin.products.variants_combinations", compact('variantsDataArr', 'productImages'))->render();
 
                             $response = array();
@@ -634,7 +657,7 @@ class ProductController extends Controller
                                             DB::rollback();
                                             $response = array();
                                             $response["status"] = "error";
-                                            $response["msg"] = trans("messages.Please fill all the details before submitting the form.");
+                                            $response["msg"] = trans("Please fill all the details before submitting the combinations.");
                                             $response["data"] = (object) array();
                                             $response["http_code"] = 500;
                                             return Response::json($response, 500);
@@ -646,7 +669,7 @@ class ProductController extends Controller
                                     DB::rollback();
                                     $response = array();
                                     $response["status"] = "error";
-                                    $response["msg"] = trans("messages.Please fill all the details before submitting the form.");
+                                    $response["msg"] = trans("Please fill all the details before submitting the combinations.");
                                     $response["data"] = (object) array();
                                     $response["http_code"] = 500;
                                     return Response::json($response, 500);
@@ -745,6 +768,22 @@ class ProductController extends Controller
 
         $variantValuesNames = VariantValue::whereIn('id', $variantValues)->pluck('name')->toArray();
         return $variantValuesNames; // Return the variant values names
+    }    
+    function getVariantValuesStoredData($variantValues)
+    {
+        $returnData = [];
+        if (!empty(request()->session()->has('currentProductId'))) {
+            foreach($variantValues as $variantValue){
+                $variantValueData = ProductVariantCombination::where('product_id',request()->session()->get('currentProductId'))->where(function ($query) use ($variantValue) {
+                    $query->where('product_variant_combinations.variant1_value_id', $variantValue)
+                        ->orWhere('product_variant_combinations.variant2_value_id', $variantValue);
+                        
+                })->first();
+                $returnData[] = $variantValueData;
+            }
+
+        }
+        return $returnData; 
     }
 
     public function uploadImages(Request $request)
@@ -775,7 +814,7 @@ class ProductController extends Controller
                     } else {
 
 
-                        $successMsg = 'messages.Images_added_successfully';
+                        $successMsg = 'Images added successfully';
 
 
                         if (!empty($request->file)) {
@@ -815,7 +854,7 @@ class ProductController extends Controller
                                         DB::rollback();
                                         $response = array();
                                         $response["status"] = "error";
-                                        $response["msg"] = trans("messages.Something_went_wrong");
+                                        $response["msg"] = trans("Something went wrong");
                                         $response["data"] = (object) array();
                                         $response["http_code"] = 500;
                                         return Response::json($response, 500);
@@ -840,7 +879,7 @@ class ProductController extends Controller
                 } else {
                     $response = array();
                     $response["status"] = "error";
-                    $response["msg"] = trans("messages.Invalid_Request");
+                    $response["msg"] = trans("Invalid Request");
                     $response["data"] = (object) array();
                     $response["http_code"] = 500;
                     return Response::json($response, 500);
@@ -848,7 +887,7 @@ class ProductController extends Controller
             } else {
                 $response = array();
                 $response["status"] = "error";
-                $response["msg"] = trans("messages.Something_went_wrong");
+                $response["msg"] = trans("Something went wrong");
                 $response["data"] = (object) array();
                 $response["http_code"] = 500;
                 return Response::json($response, 500);
@@ -856,7 +895,7 @@ class ProductController extends Controller
         } else {
             $response = array();
             $response["status"] = "error";
-            $response["msg"] = trans("messages.Invalid_Request");
+            $response["msg"] = trans("Invalid Request");
             $response["data"] = (object) array();
             $response["http_code"] = 500;
             return Response::json($response, 500);
@@ -963,85 +1002,6 @@ class ProductController extends Controller
 
     }
 
-    // public function store(Request $request)
-    // {
-    //     print_r($request->all());die;
-    //     try {
-    //         // dd($request->all());
-    //         $frontSelectedFile = $request->front_image ?? "";
-    //         $backSelectedFile = $request->back_image ?? "";
-    //         $productImageFiles = $request->product_images ?? "";
-    //         $productVideosFiles = $request->product_videos ?? "";
-    //         $productOptionValueids = $request->product_option_value_id ?? [];
-
-    //         if ($frontSelectedFile) {
-    //             $frontImage = $request->file('front_image');
-    //             $frontImagePath = "products/variants/front-images";
-    //             $frontUploadedFile = $this->fileUploadService->uploadFile($frontImage, $frontImagePath);
-    //         }
-
-    //         if ($backSelectedFile) {
-    //             $backImage = $request->file('back_image');
-    //             $backImagePath = "products/variants/back-images";
-    //             $backUploadedFile = $this->fileUploadService->uploadFile($backImage, $backImagePath);
-    //         }
-
-    //         if ($productImageFiles) {
-    //             foreach ($request->file('product_images') as $productImage) {
-    //                 $productImagePath = "products/variants/images";
-    //                 $productImagesUploadedFiles[] = $this->fileUploadService->uploadFile($productImage, $productImagePath);
-    //             }
-    //         }
-
-    //         if ($productVideosFiles) {
-    //             foreach ($request->file('product_videos') as $productVideo) {
-    //                 $productVideoPath = "products/variants/videos";
-    //                 $productVideosUploadedFiles[] = $this->fileUploadService->uploadFile($productVideo, $productVideoPath);
-    //             }
-    //         }
-
-    //         DB::beginTransaction();
-
-    //         $product = Product::create([
-    //             'name' => $request->name,
-    //             'category_id' => $request->category_id,
-    //             'sub_category_id' => $request->sub_category_id ?? null,
-    //             'child_category_id' => $request->child_category_id ?? null,
-
-
-    //         ]);
-
-    //         $productVariant = ProductVariants::create([
-    //             'product_id' => $product->id,
-    //             'short_description' => $request->short_description,
-    //             'description' => $request->description ?? null,
-    //             'front_image' => $frontUploadedFile,
-    //             'back_image' => $backUploadedFile,
-    //             'images' => json_encode($productImagesUploadedFiles) ?? null,
-    //             'videos' => json_encode($productVideosUploadedFiles) ?? null,
-    //             'price' => $request->price ?? 100,
-    //             'meta_title' => $request->meta_title ?? null,
-    //             'meta_description' => $request->meta_description ?? null,
-    //             'meta_keywords' => $request->meta_keywords ?? null,
-    //         ]);
-
-    //         foreach ($productOptionValueids as $item) {
-    //             $productOptionValuesVariant = OptionValueProductVariant::create([
-    //                 'value_id' => $item,
-    //                 'variant_id' => $productVariant->id,
-    //             ]);
-    //         }
-
-    //         DB::commit();
-
-    //         return redirect()->route('admin-product-list')->with('success', 'Product created successfully');
-    //     } catch (Exception $e) {
-    //         DB::rollBack();
-    //         Log::error($e);
-    //         return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);
-    //     }
-    // }
-
     public function view($token)
     {
         try {
@@ -1054,21 +1014,24 @@ class ProductController extends Controller
         }
     }
 
-    public function edit($token)
+    public function edit($token,Request $request)
     {
         try {
             $productId = decrypt($token);
+            $productDetails = Product::leftJoin('product_shipping_specifications','product_shipping_specifications.product_id','products.id')->where('products.id',$productId)->select('products.*','product_shipping_specifications.height','product_shipping_specifications.weight','product_shipping_specifications.width','product_shipping_specifications.length','product_shipping_specifications.dc')->first();
+            if(!empty($productDetails)){
+                $categories = Category::where('is_active', 1)->where('is_deleted', 0)->get();
+                $brands = Brand::where('is_active', 1)->where('is_deleted', 0)->get();
+    
+                $request->session()->put('currentProductId',$productId);
 
-            $categories = Category::get();
-            $subCategories = SubCategory::get();
-            $childCategories = ChildCategory::get();
-            $productId = decrypt($token);
-            $product = Product::find($productId);
-            $productOptions = ProductOptions::whereHas('productOptionValues')->get();
-            // dd($productOptions);
-            $productOptionValues = ProductValues::get();
-            $productOptionValuesDatas = $productOptionValues->groupBy('product_option_id');
-            return view('admin.products.edit', compact('categories', 'subCategories', 'childCategories', 'product', 'productOptions', 'productOptionValues', 'productOptionValuesDatas'));
+                $productDetails->product_images = ProductImage::where('product_id',$productId)->get();
+                $type = 'edit';
+                return view('admin.products.create', compact('categories', 'brands', 'productDetails','productId','type'));
+            }else{
+                return redirect()->back()->with(['error' => 'Invalid Request']);
+            }
+            
         } catch (Exception $e) {
             Log::error($e);
             return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);
@@ -1164,7 +1127,7 @@ class ProductController extends Controller
         try {
             $categoryId = $request->category_id ?? "";
             $subCategories = Category::where('parent_id', $categoryId)->where('is_active', 1)->where('is_deleted', 0)->get();
-
+           
             return response()->json(['subCategories' => $subCategories, 'success' => true, 'message' => 'Data fetched'], 200);
         } catch (\Exception $e) {
             \Log::error($e);
@@ -1174,10 +1137,27 @@ class ProductController extends Controller
     public function getVariantValues(Request $request)
     {
         try {
-            $variantId = $request->variant_id ?? "";
-            $variantValues = VariantValue::where('variant_id', $variantId)->where('is_deleted', 0)->get();
+            if (!empty($request->session()->has('currentProductId'))) {
+                $variantId = $request->variant_id ?? "";
+                $variantValues = VariantValue::where('variant_id', $variantId)->where('is_deleted', 0)->get();
+                $productVariant = ProductVariant::where('variant_id', $variantId)->where('product_id',$request->session()->get('currentProductId'))->first();
+                $productVariantValues = [];
+                if(!empty($productVariant)){
 
-            return response()->json(['variantValues' => $variantValues, 'success' => true, 'message' => 'Data fetched'], 200);
+                    $productVariantValues = ProductVariantValue::where('product_veriant_id',$productVariant->id)->pluck('veriant_value_id');
+                }
+             
+                return response()->json(['variantValues' => $variantValues,'productVariantValues' => $productVariantValues, 'success' => true, 'message' => 'Data fetched'], 200);
+            }else{
+                $response = array();
+                $response["status"] = "error";
+                $response["msg"] = trans("messages.Invalid_Request");
+                $response["data"] = (object) array();
+                $response["http_code"] = 500;
+                return Response::json($response, 500);
+            }
+
+            
         } catch (\Exception $e) {
             \Log::error($e);
             return response()->json(['message' => 'Something is wrong', 'success' => false, 'error_msg' => $e->getMessage()], 500);

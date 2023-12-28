@@ -11,7 +11,7 @@
                         name="variant_id" data-action="{{ route('admin-product-variant-values-list') }}">
                         <option value="" selected>Select Variant</option>
                         @forelse ($variantsData as $value)
-                        <option value="{{ $value['id'] }}">{{ $value['name'] }}</option>
+                        <option value="{{ $value['id'] }}" {{(!empty($productVariants[0]) && $productVariants[0] == $value['id']) ? 'selected' : ''}}>{{ $value['name'] }}</option>
                         @empty
                         <option value="" selected>No Data found</option>
                         @endforelse
@@ -45,7 +45,7 @@
                         name="variant_id" data-action="{{ route('admin-product-variant-values-list') }}">
                         <option value="" selected>Select Variant</option>
                         @forelse ($variantsData as $value)
-                        <option value="{{ $value['id'] }}">{{ $value['name'] }}</option>
+                        <option value="{{ $value['id'] }}" {{(!empty($productVariants[1]) && $productVariants[1] == $value['id']) ? 'selected' : ''}}>{{ $value['name'] }}</option>
                         @empty
                         <option value="" selected>No Data found</option>
                         @endforelse
@@ -80,6 +80,22 @@
 </div>
 @endif
 
+@if(!empty($productVariants))
+<script>
+    jQuery(document).ready(function() {
+    setTimeout(() => {
+        
+        $('.variantSelect').trigger('change');
+
+    }, 200); 
+    setTimeout(() => {
+        
+        $('.createVariantBtn').trigger('click');
+        
+    }, 1200);
+});
+</script>
+@endif
 <script>
 var KTFormRepeater = function() {
 
@@ -135,6 +151,10 @@ $('.variantSelect').on('change', function (e) {
                         }
                     }),
                 });
+
+                if (response.productVariantValues && response.productVariantValues.length > 0) {
+                    $this.parent('.col-md-5').parent('.form-group').find('.variantValuesSelect').val(response.productVariantValues).trigger('change');
+                }
                 
             } 
            
@@ -166,6 +186,7 @@ $('.variantValuesSelect').select2({
 
 jQuery(document).ready(function() {
     KTFormRepeater.init();
+
 
 });
 </script>
