@@ -122,7 +122,7 @@ class ProductController extends Controller
     {
 
         try {
-            $categories = Category::where('is_active', 1)->where('is_deleted', 0)->get();
+            $categories = Category::whereNull('parent_id')->where('is_active', 1)->where('is_deleted', 0)->get();
             $brands = Brand::where('is_active', 1)->where('is_deleted', 0)->get();
 
             if ($request->session()->has('currentProductId')) {

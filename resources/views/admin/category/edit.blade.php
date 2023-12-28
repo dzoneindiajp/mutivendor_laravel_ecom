@@ -52,9 +52,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-6">
+                        <div class="col-xl-6 mb-3">
                             <label for="image" class="form-label"><span class="text-danger">
-                                </span>Image</label>
+                                </span>Banner Image</label>
                             <input type="file" class="form-control @error('image') is-invalid @enderror" id="image"
                                 name="image">
                             @if (!empty($category->image))
@@ -66,17 +66,45 @@
                             </div>
                             @endif
                         </div>
-                        <div class="col-xl-6">
+                        <div class="col-xl-6 mb-3">
+                            <label for="thumbnail_image" class="form-label"><span class="text-danger">
+                                </span>Thumbnail Image</label>
+                            <input type="file" class="form-control @error('thumbnail_image') is-invalid @enderror" id="thumbnail_image"
+                                name="thumbnail_image">
+                            @if (!empty($category->thumbnail_image))
+                            <img height="50" width="50" src="{{isset($category->thumbnail_image)? $category->thumbnail_image:''}}" />
+                            @endif
+                            @if ($errors->has('thumbnail_image'))
+                            <div class="invalid-feedback">
+                                {{ $errors->first('thumbnail_image') }}
+                            </div>
+                            @endif
+                        </div>
+                        <div class="col-xl-6 mb-3">
+                            <label for="video" class="form-label"><span class="text-danger">  </span>Video</label>
+                            <input type="file" class="form-control @error('video') is-invalid @enderror" id="video" name="video">
+                            @if (!empty($category->video))
+                                <video height="70" controls>
+                                    <source src="{{isset($category->video)? $category->video:''}}" type="video/mp4">
+                                </video>
+                            @endif
+                            @if ($errors->has('video'))
+                            <div class="invalid-feedback">
+                                {{ $errors->first('video') }}
+                            </div>
+                            @endif
+                        </div>
+                        <div class="col-xl-6 mb-3">
                             <label for="meta_title" class="form-label">Meta Title</label>
                             <input type="text" class="form-control" id="meta_title" name="meta_title"
                                 placeholder="Meta TItle" value="{{ $category->meta_title }}">
                         </div>
-                        <div class="col-xl-6">
+                        <div class="col-xl-6 mb-3">
                             <label for="meta_keywords" class="form-label">Meta Keywords</label>
                             <input type="text" class="form-control" id="meta_keywords" name="meta_keywords"
                                 placeholder="Meta Keywords" value="{{ $category->meta_keywords }}">
                         </div>
-                        <div class="col-xl-6 mt-3">
+                        <div class="col-xl-6 mb-3">
                             <label for="meta_description" class="form-label">Meta Description</label>
                             <textarea class="form-control" name="meta_description" id="meta_description" cols="30"
                                 rows="5">{{ $category->meta_description }}</textarea>
@@ -129,6 +157,32 @@
                                 <!-- <option value="" selected>None</option> -->
                                 @forelse ($specifications as $specification)
                                 <option value="{{ $specification->id }}" {{in_array($specification->id,$categorySpecifications) ? 'selected' : ''}}>{{ $specification->name }}</option>
+                                @empty
+                                <option value="" selected>No Data found</option>
+                                @endforelse
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card custom-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        Taxes
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-xl-12 select2-error">
+                            <label for="category_id" class="form-label"><span class="text-danger">
+                                </span>Taxes</label>
+                            <select class="js-example-placeholder-single js-states form-control" multiple="multiple"
+                                name="taxesData[]" id="taxesSelect">
+                                <!-- <option value="" selected>None</option> -->
+                                @forelse ($taxes as $tax)
+                                <option value="{{ $tax->id }}">{{ $tax->name }}</option>
                                 @empty
                                 <option value="" selected>No Data found</option>
                                 @endforelse

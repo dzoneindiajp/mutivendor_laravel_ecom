@@ -85,7 +85,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-3 mb-3" id="colorPickerIn" style="display: {{ (!empty($dataVal['name']) && (strtolower($dataVal['name']) == 'color')) ? 'block' : 'none' }}">
+                                    <div class="col-md-3 mb-3 colorPickerIn" style="display: {{ (!empty($recordDetails->name) && (strtolower($recordDetails->name) == 'color')) ? 'block' : 'none' }}">
                                         <div class="form-group">
                                             <label for="color">Color</label><span class="text-danger">
                                                  </span>
@@ -144,7 +144,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-3 mb-3" id="colorPickerIn" style="display: none;">
+                                    <div class="col-md-3 mb-3 colorPickerIn"  style="display: none;">
                                         <div class="form-group">
                                             <label for="color">Color</label><span class="text-danger">
                                                  </span>
@@ -207,26 +207,26 @@
             var name = $(this).val().toLowerCase();
 
             // Check if the name contains "color" or "Color"
-            if (name.includes('color')) {
-                $('#colorPickerIn').show();
+            if (name.toString() === 'color') {
+                $('.colorPickerIn').show();
             } else {
-                $('#colorPickerIn').hide();
+                $('.colorPickerIn').hide();
             }
         });
 
-        // Event listener for the color picker
-        $(document).on('change', 'input[name="color_code"]', function() {
-            var selectedColor = $(this).val();
+        // // Event listener for the color picker
+        // $(document).on('change', 'input[name="color_code"]', function() {
+        //     var selectedColor = $(this).val();
             
-            // Find the corresponding "Name" input field within the same block
-            var nameInput = $(this).closest('.form-group').find('.variant-value');
+        //     // Find the corresponding "Name" input field within the same block
+        //     var nameInput = $(this).closest('.form-group').find('.variant-value');
 
-            // Set the value of the "Name" field to the selected color
-            nameInput.val(selectedColor);
+        //     // Set the value of the "Name" field to the selected color
+        //     nameInput.val(selectedColor);
 
-            // Check if the value was updated
-            alert(nameInput.val());
-        });
+        //     // Check if the value was updated
+        //     alert(nameInput.val());
+        // });
         
     });
 </script>

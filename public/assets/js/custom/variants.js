@@ -11,6 +11,11 @@ var KTFormRepeater = function() {
 
             show: function() {
                 $elem = $(this).slideDown();
+                if($("#name").val().toLowerCase() === 'color'){
+                    $elem.find('.colorPickerIn').show();
+                }else{
+                    $elem.find('.colorPickerIn').hide();
+                }
                 $elem.find('.btn-primary-light').remove();
                 $elem.find('.btn-danger-light').show();
 

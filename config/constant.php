@@ -1,5 +1,5 @@
 <?php
-$WEBSITE_URL				=	env("APP_URL");  
+$WEBSITE_URL				=	env("APP_URL");
 return [
     'PRODUCTS_IMAGES' => 'products/images',
     'ROOT'     				=> base_path(),
@@ -18,11 +18,15 @@ return [
 	'CATEGORY_IMAGE_PATH'                       => $WEBSITE_URL.'public/uploads/categories/',
 	'CATEGORY_IMAGE_ROOT_PATH'                       => 'public/uploads/categories/',
 	'CATEGORY_IMAGE_URL'                       => url('/').'/public/uploads/categories/',
-	
+
+	'CATEGORY_VIDEO_PATH'                       => $WEBSITE_URL.'public/uploads/categories-video/',
+	'CATEGORY_VIDEO_ROOT_PATH'                       => 'public/uploads/categories-video/',
+	'CATEGORY_VIDEO_URL'                       => url('/').'/public/uploads/categories-video/',
+
 	'BANNER_IMAGE_PATH'                       => $WEBSITE_URL.'public/uploads/banners/',
 	'BANNER_IMAGE_ROOT_PATH'                       => 'public/uploads/banners/',
 	'BANNER_IMAGE_URL'                       => url('/').'/public/uploads/banners/',
-	
+
 	'BANNER_VIDEO_PATH'                       => $WEBSITE_URL.'public/uploads/banners-video/',
 	'BANNER_VIDEO_ROOT_PATH'                       => 'public/uploads/banners-video/',
 	'BANNER_VIDEO_URL'                       => url('/').'/public/uploads/banners-video/',
@@ -30,7 +34,7 @@ return [
 	'SETTINGS_IMAGE_PATH'                       => $WEBSITE_URL.'public/uploads/settings/',
 	'SETTINGS_IMAGE_ROOT_PATH'                       => 'public/uploads/settings/',
 	'SETTINGS_IMAGE_URL'                       => url('/').'/public/uploads/settings/',
-	
+
 	'PRODUCT_IMAGE_PATH'                       => $WEBSITE_URL.'public/uploads/products/',
 	'PRODUCT_IMAGE_ROOT_PATH'                       => 'public/uploads/products/',
 	'PRODUCT_IMAGE_URL'                       => url('/').'/public/uploads/products/',
@@ -38,7 +42,7 @@ return [
 	'IMAGE_PATH'                       => $WEBSITE_URL.'img/',
 	'IMAGE_ROOT_PATH'                       => 'img/',
 	'IMAGE_URL'                       => url('/').'/img/',
-	
+
 
     'ACL' => [
 		'ACLS_TITLE' => "Acl",
@@ -70,6 +74,6 @@ return [
 		'SPECIFICATION_GROUPS_TITLE' 	=> "Specification Groups",
 		'SPECIFICATION_GROUP_TITLE' 		=> "Specification Group",
 	],
-	
+
 	'SETTING_FILE_PATH'	=> base_path() . "/" .'config'."/". 'settings.php',
 ];

