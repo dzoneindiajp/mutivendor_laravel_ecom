@@ -22,7 +22,7 @@ class ProductImage extends Eloquent
 		if (!empty($value)) {
 			return Config('constant.PRODUCT_IMAGE_URL') . $value;
 		} else {
-			return Config('constant.PRODUCT_IMAGE_URL') . "noimage.png";
+			return Config('constant.IMAGE_URL') . "noimage.png";
 		}
 	}
 

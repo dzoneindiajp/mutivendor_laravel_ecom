@@ -76,6 +76,10 @@ $('#category_id').on('change', function (e) {
                         }
                     }),
                 });
+                
+                if(selectedSubcategory){
+                    $('#sub_category_id').val(selectedSubcategory).trigger('change');
+                }
             } else {
                 $('#subcategory-filter').hide();
             }
@@ -108,6 +112,10 @@ $('#sub_category_id').on('change', function (e) {
                         }
                     }),
                 });
+                if(selectedChildcategory){
+                   
+                    $('#child_category_id').val(selectedChildcategory).trigger('change');
+                }
             } else {
                 $('#child-category-filter').hide();
             }

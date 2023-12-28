@@ -140,7 +140,8 @@
                             <th class="sortable" data-column="child_category_name">Child Category <i class="sort-icon ri-sort-asc"></i>
                             </th>
                             <th>Image</th>
-                            <th class="sortable" data-column="products.name">Price <i class="sort-icon ri-sort-asc"></i></th>
+                            <th class="sortable" data-column="products.buying_price">Buying Price <i class="sort-icon ri-sort-asc"></i></th>
+                            <th class="sortable" data-column="products.selling_price">Selling Price <i class="sort-icon ri-sort-asc"></i></th>
                             <th>Action</th>
                         </tr>
                     </thead>
