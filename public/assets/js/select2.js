@@ -159,12 +159,24 @@
         $(".js-example-disabled").prop("disabled", true);
         $(".js-example-disabled-multi").prop("disabled", true);
     });
-        
+
     })
 
     $('#variantsSelect').select2({
         // tags: true,
         placeholder: 'Select Variants',
+        tokenSeparators: [',', ' '], // Separate tags by comma or space
+        createTag: function(params) {
+            return {
+                id: params.term,
+                text: params.term,
+                newTag: true
+            };
+        }
+    });
+    $('#shippingAreaSelect').select2({
+        // tags: true,
+        placeholder: 'Select City',
         tokenSeparators: [',', ' '], // Separate tags by comma or space
         createTag: function(params) {
             return {

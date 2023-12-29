@@ -15,20 +15,20 @@
     <td>
         <div class="hstack gap-2 flex-wrap">
             @if($result->is_active == 1)
-            <a href='{{route("admin-shipping-companies.status",array($result->id,0))}}' class="btn btn-danger"
+            <a href='{{route("admin-plans.status",array($result->id,0))}}' class="btn btn-danger"
                 id="deactivate-button"><i class="ri-close-line"></i></a>
             @else
-            <a href='{{route("admin-shipping-companies.status",array($result->id,1))}}' class="btn btn-success"
+            <a href='{{route("admin-plans.status",array($result->id,1))}}' class="btn btn-success"
                 id="activate-button"><i class="ri-check-line"></i></a>
             @endif
 
-            <!-- <a href="{{route('admin-shipping-companies.show',base64_encode($result->id))}}" class="btn btn-info"><i
+            <!-- <a href="{{route('admin-plans.show',base64_encode($result->id))}}" class="btn btn-info"><i
                     class="ri-eye-line"></i></a> -->
 
-            <a href="{{route('admin-shipping-companies.edit',base64_encode($result->id))}}" class="btn btn-info"><i
+            <a href="{{route('admin-plans.edit',base64_encode($result->id))}}" class="btn btn-info"><i
                     class="ri-edit-line"></i></a>
 
-            <form method="GET" action="{{route('admin-shipping-companies.delete',base64_encode($result->id))}}">
+            <form method="GET" action="{{route('admin-plans.delete',base64_encode($result->id))}}">
                 @csrf
                 <input name="_method" type="hidden" value="DELETE">
                 <button type="submit" class="btn btn-danger" id="confirm-button"><i
@@ -44,8 +44,8 @@
                     <ul class="nav nav-hoverable flex-column">
                         <li class="nav-item">
                             <a class="nav-link"
-                                href="{{route('admin-shipping-areas.index',base64_encode($result->id))}}">
-                                <span class="nav-text">Shipping Areas</span>
+                                href="">
+                                <span class="nav-text">Plan Details</span>
                             </a>
                         </li>
                     </ul>

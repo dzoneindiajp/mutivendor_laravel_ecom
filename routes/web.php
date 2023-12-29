@@ -132,6 +132,17 @@ Route::prefix('admin')->name('admin-')->group(function () {
          /* ChildCategory routes */
 
          /** shipping companies routes **/
+         Route::match(['get', 'post'], '/plans', [App\Http\Controllers\Admin\PlansController::class, 'index'])->name('plans.index');
+         Route::match(['get', 'post'], '/plans/create', [App\Http\Controllers\Admin\PlansController::class, 'create'])->name('plans.create');
+         Route::match(['get', 'post'], '/plans/save', [App\Http\Controllers\Admin\PlansController::class, 'store'])->name('plans.store');
+         Route::match(['get', 'post'], '/plans/edit/{enuserid}', [App\Http\Controllers\Admin\PlansController::class, 'edit'])->name('plans.edit');
+         Route::match(['get', 'post'], '/plans/update/{enuserid}', [App\Http\Controllers\Admin\PlansController::class, 'update'])->name('plans.update');
+         Route::get('plans/show/{enuserid}', [App\Http\Controllers\Admin\PlansController::class, 'show'])->name('plans.show');
+         Route::get('plans/update-status/{id}/{status}', [App\Http\Controllers\Admin\PlansController::class, 'changeStatus'])->name('plans.status');
+         Route::get('plans/destroy/{endepid?}', [App\Http\Controllers\Admin\PlansController::class, 'destroy'])->name('plans.delete');
+        /* shipping companies routes */
+
+         /** shipping companies routes **/
          Route::match(['get', 'post'], '/shipping-companies', [App\Http\Controllers\Admin\ShippingCompanyController::class, 'index'])->name('shipping-companies.index');
          Route::match(['get', 'post'], '/shipping-companies/create', [App\Http\Controllers\Admin\ShippingCompanyController::class, 'create'])->name('shipping-companies.create');
          Route::match(['get', 'post'], '/shipping-companies/save', [App\Http\Controllers\Admin\ShippingCompanyController::class, 'store'])->name('shipping-companies.store');
@@ -140,8 +151,15 @@ Route::prefix('admin')->name('admin-')->group(function () {
          Route::get('shipping-companies/show/{enuserid}', [App\Http\Controllers\Admin\ShippingCompanyController::class, 'show'])->name('shipping-companies.show');
          Route::get('shipping-companies/update-status/{id}/{status}', [App\Http\Controllers\Admin\ShippingCompanyController::class, 'changeStatus'])->name('shipping-companies.status');
          Route::get('shipping-companies/destroy/{endepid?}', [App\Http\Controllers\Admin\ShippingCompanyController::class, 'destroy'])->name('shipping-companies.delete');
+        /* shipping companies routes */
 
-        // /* shipping companies routes */
+         /**  SubCategory routes **/
+         Route::match(['get', 'post'], '/shipping-areas/{endesid?}', [App\Http\Controllers\Admin\ShippingAreasController::class, 'index'])->name('shipping-areas.index');
+         Route::match(['get', 'post'], 'shipping-areas/add/{endesid?}', [App\Http\Controllers\Admin\ShippingAreasController::class, 'add'])->name('shipping-areas.add');
+         Route::match(['get', 'post'], 'shipping-areas/edit/{endesid?}', [App\Http\Controllers\Admin\ShippingAreasController::class, 'update'])->name('shipping-areas.edit');
+         Route::get('shipping-areas/update-status/{id}/{status}', [App\Http\Controllers\Admin\ShippingAreasController::class, 'changeStatus'])->name('shipping-areas.status');
+         Route::get('shipping-areas/delete/{endesid?}', [App\Http\Controllers\Admin\ShippingAreasController::class, 'delete'])->name('shipping-areas.delete');
+         /* SubCategory routes */
 
         /** brand routes **/
         Route::match(['get', 'post'], '/brand', [App\Http\Controllers\Admin\BrandController::class, 'index'])->name('brand.index');
