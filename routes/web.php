@@ -259,6 +259,20 @@ Route::prefix('admin')->name('admin-')->group(function () {
 
           /* users routes */
 
+
+          /* partners routes */
+          Route::match(['get', 'post'], '/partners', [App\Http\Controllers\Admin\PartnerController::class, 'index'])->name('partners.index');
+          Route::match(['get', 'post'], '/partners/create', [App\Http\Controllers\Admin\PartnerController::class, 'create'])->name('partners.create');
+          Route::match(['get', 'post'], '/partners/save', [App\Http\Controllers\Admin\PartnerController::class, 'save'])->name('partners.save');
+          Route::match(['get', 'post'], '/partners/edit/{enuserid}', [App\Http\Controllers\Admin\PartnerController::class, 'edit'])->name('partners.edit');
+          Route::match(['get', 'post'], '/partners/update/{enuserid}', [App\Http\Controllers\Admin\PartnerController::class, 'update'])->name('partners.update');
+          Route::get('partners/show/{enuserid}', [App\Http\Controllers\Admin\PartnerController::class, 'show'])->name('partners.show');
+          Route::get('partners/destroy/{enuserid?}', [App\Http\Controllers\Admin\PartnerController::class, 'destroy'])->name('partners.delete');
+          Route::get('partners/update-status/{id}/{status}', [App\Http\Controllers\Admin\PartnerController::class, 'changeStatus'])->name('partners.status');
+          Route::match(['get', 'post'], 'partners/changed-password/{enuserid?}', [App\Http\Controllers\Admin\PartnerController::class, 'changedPassword'])->name('partners.changedPassword');
+
+          /* partners routes */
+
           /** FooterCategory routes **/
          Route::resource('footer-category', App\Http\Controllers\Admin\FooterCategoryController::class);
          Route::get('footer-category/update-status/{id}/{status}', [App\Http\Controllers\Admin\FooterCategoryController::class, 'changeStatus'])->name('footer-category.status');
