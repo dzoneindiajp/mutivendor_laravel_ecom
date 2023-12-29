@@ -52,6 +52,7 @@ return [
 		'STAFF_ROLE_ID' 			=> 3,
 		'SUPER_ADMIN_ROLE_ID' 		=> 1,
 		'CUSTOMER_ROLE_ID' 			=> 2,
+		'PARTNER_ROLE_ID' 			=> 4,
 	],
     'DESIGNATION' => [
 		'DESIGNATIONS_TITLE' 	=> "Designations",
