@@ -313,10 +313,14 @@ class CategoryController extends Controller
                     $category->image = Config('constant.CATEGORY_IMAGE_URL').$category->image;
                 }
                 $variants = Variant::select('id', 'name')->get();
+                $taxes = Tax::select('id', 'name')->get();
                 $specifications = Specification::leftJoin('specification_groups', 'specifications.specification_group_id', '=', 'specification_groups.id')->select('specifications.id', DB::raw("CONCAT(specification_groups.name, ' > ', specifications.name) as name"))->get();
                 $categoryVariants = CategoryVariant::where('category_id',$categoryId)->pluck('variant_id')->toArray();
                 $categorySpecifications = CategorySpecification::where('category_id',$categoryId)->pluck('specification_id')->toArray();
-                return View("admin.$this->model.edit", compact('category','categoryVariants','categorySpecifications','variants','specifications'));
+                $categoryTaxes = CategoryTax::where('category_id',$categoryId)->pluck('tax_id' )->toArray();
+                $categoryTaxesValues = CategoryTax::where('category_id',$categoryId)->select('tax_id', 'tax_value' )->get()->toArray();
+                // echo "<pre>"; print_r($categoryTaxes); die;
+                return View("admin.$this->model.edit", compact('category','categoryVariants','categorySpecifications','variants','specifications', 'taxes', 'categoryTaxes', 'categoryTaxesValues'));
             }
         } catch (Exception $e) {
             Log::error($e);

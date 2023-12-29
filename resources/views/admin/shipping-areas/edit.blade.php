@@ -14,7 +14,8 @@
         <nav>
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('admin-dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Edit Category</li>
+                <li class="breadcrumb-item"><a href="{{  route('admin-category.index')}}">Categories</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Edit Sub Category</li>
             </ol>
         </nav>
     </div>
@@ -23,13 +24,13 @@
 
 <div class="row">
     <div class="col-xl-12">
-        <form action="{{route('admin-'.$model.'.update',base64_encode($category->id))}}" method="post" id="categoryForm"
+        <form action="{{route('admin-'.$model.'.edit',base64_encode($category->id))}}" method="post" id="categoryForm"
             enctype="multipart/form-data">
             @csrf
             <div class="card custom-card">
                 <div class="card-header">
                     <div class="card-title">
-                        Edit Category
+                        Edit Sub Category
                     </div>
                 </div>
                 <div class="card-body">
@@ -52,9 +53,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-6 mb-3">
+                        <div class="col-xl-6">
                             <label for="image" class="form-label"><span class="text-danger">
-                                </span>Banner Image</label>
+                                </span>Image</label>
                             <input type="file" class="form-control @error('image') is-invalid @enderror" id="image"
                                 name="image">
                             @if (!empty($category->image))
@@ -94,28 +95,26 @@
                             </div>
                             @endif
                         </div>
-                        <div class="col-xl-6 mb-3">
+                        <div class="col-xl-6">
                             <label for="meta_title" class="form-label">Meta Title</label>
                             <input type="text" class="form-control" id="meta_title" name="meta_title"
                                 placeholder="Meta TItle" value="{{ $category->meta_title }}">
                         </div>
-                        <div class="col-xl-6 mb-3">
+                        <div class="col-xl-6 mt-3">
                             <label for="meta_keywords" class="form-label">Meta Keywords</label>
                             <input type="text" class="form-control" id="meta_keywords" name="meta_keywords"
                                 placeholder="Meta Keywords" value="{{ $category->meta_keywords }}">
                         </div>
-                        <div class="col-xl-6 mb-3">
+                        <div class="col-xl-6">
                             <label for="meta_description" class="form-label">Meta Description</label>
                             <textarea class="form-control" name="meta_description" id="meta_description" cols="30"
                                 rows="5">{{ $category->meta_description }}</textarea>
                         </div>
 
-
                     </div>
                 </div>
 
             </div>
-
             <div class="card custom-card">
                 <div class="card-header">
                     <div class="card-title">
@@ -131,7 +130,9 @@
                                 name="variantsData[]" id="variantsSelect">
                                 <!-- <option value="" selected>None</option> -->
                                 @forelse ($variants as $variant)
-                                <option value="{{ $variant->id }}" {{in_array($variant->id,$categoryVariants) ? 'selected' : ''}}>{{ $variant->name }}</option>
+                                <option value="{{ $variant->id }}"
+                                    {{in_array($variant->id,$categoryVariants) ? 'selected' : ''}}>{{ $variant->name }}
+                                </option>
                                 @empty
                                 <option value="" selected>No Data found</option>
                                 @endforelse
@@ -156,43 +157,14 @@
                                 name="specificationsData[]" id="specificationsSelect">
                                 <!-- <option value="" selected>None</option> -->
                                 @forelse ($specifications as $specification)
-                                <option value="{{ $specification->id }}" {{in_array($specification->id,$categorySpecifications) ? 'selected' : ''}}>{{ $specification->name }}</option>
+                                <option value="{{ $specification->id }}"
+                                    {{in_array($specification->id,$categorySpecifications) ? 'selected' : ''}}>
+                                    {{ $specification->name }}</option>
                                 @empty
                                 <option value="" selected>No Data found</option>
                                 @endforelse
                             </select>
 
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card custom-card">
-                <div class="card-header">
-                    <div class="card-title">
-                        Taxes
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-xl-12 select2-error">
-                            <label for="category_id" class="form-label"><span class="text-danger">
-                                </span>Taxes</label>
-                            <select class="js-example-placeholder-single js-states form-control" multiple="multiple"
-                                name="taxesData[]" id="taxesSelect">
-                                <!-- <option value="" selected>None</option> -->
-                                @forelse ($taxes as $tax)
-                                <option value="{{ $tax->id }}" {{in_array($tax->id, $categoryTaxes) ? 'selected' : ''}}>{{ $tax->name }}</option>
-                                @empty
-                                <option value="" selected>No Data found</option>
-                                @endforelse
-                            </select>
-
-                        </div>
-                        <input type="hidden" id="taxValues" value="{{ json_encode($categoryTaxesValues) }}">
-
-                        <div id="taxCountFields" style="display: none;">
-                            <!-- Text fields for tax counts will be appended here dynamically -->
                         </div>
                     </div>
                 </div>
@@ -218,50 +190,4 @@
 <script src="{{ asset('assets/js/form-validation.js') }}"></script>
 <script src="{{ asset('assets/plugin/tagify/tagify.min.js') }}"></script>
 <script src="{{ asset('assets/js/custom/category.js') }}"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Add an event listener to the taxesSelect dropdown
-        $('#taxesSelect').on('change', function () {
-            // Clear existing count text fields
-            $('#taxCountFields').empty();
-
-            // Get selected tax values
-            var selectedTaxes = $(this).val();
-
-            // Check if any taxes are selected
-            if (selectedTaxes && selectedTaxes.length > 0) {
-                // Display the tax count fields div
-                $('#taxCountFields').show();
-
-                // Create a JavaScript variable with JSON-encoded tax values
-                var taxValues = {!! json_encode($categoryTaxesValues) !!};
-
-                // Create a text field for each selected tax
-                selectedTaxes.forEach(function (taxId) {
-                    var taxFieldName = 'tax_counts[' + taxId + ']';
-                    var taxName = $('#taxesSelect option[value="' + taxId + '"]').text(); // Get tax name
-                    var label = taxName + ' Value'; // Create label based on tax name
-
-                    // Get the default value for the tax field from the JSON-encoded values
-                    var defaultValue = taxValues[taxId] || '';
-
-                    // Create the label and input field with the default value
-                    var inputField = '<div class="mb-3"><label for="' + taxFieldName + '" class="form-label">' +
-                        label + '</label><input type="text" class="form-control" id="' +
-                        taxFieldName + '" name="' + taxFieldName + '" placeholder="Enter Value" value="' +
-                        defaultValue + '"></div>';
-                    $('#taxCountFields').append(inputField);
-                });
-            } else {
-                // Hide the tax count fields div if no taxes are selected
-                $('#taxCountFields').hide();
-            }
-        });
-
-        // Trigger the change event to initialize the tax count fields
-        $('#taxesSelect').trigger('change');
-    });
-</script>
-
-
 @endpush
