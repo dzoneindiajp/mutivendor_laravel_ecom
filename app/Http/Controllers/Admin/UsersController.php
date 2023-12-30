@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
-use Redirect,DB,Response;
+use Redirect,DB,Response,Str;
 use Illuminate\Validation\Rule;
 use Carbon\Carbon;
 
@@ -23,7 +23,7 @@ class UsersController extends Controller
         View()->share('model', $this->model);
         View()->share('listRouteName', $this->listRouteName);
         $this->request = $request;
-        
+
     }
 
     public function index(Request $request)
@@ -32,7 +32,7 @@ class UsersController extends Controller
         $sortBy = $request->input('sortBy') ? $request->input('sortBy') : 'users.created_at';
         $order = $request->input('order') ? $request->input('order') : 'desc';
         $offset = !empty($request->input('offset')) ? $request->input('offset') : 0 ;
-        $limit =  !empty($request->input('limit')) ? $request->input('limit') : Config("Reading.records_per_page"); 
+        $limit =  !empty($request->input('limit')) ? $request->input('limit') : Config("Reading.records_per_page");
 
         if ($request->all()) {
             $searchData            =    $request->all();
@@ -81,7 +81,7 @@ class UsersController extends Controller
 
         $DB->where("users.is_deleted", 0);
         $DB->where("users.user_role_id", 2);
-       
+
         $results = $DB->orderBy($sortBy, $order)->offset($offset)->limit($limit)->get();
         $totalResults = $DB->count();
 
@@ -96,7 +96,7 @@ class UsersController extends Controller
 
             return  View("admin.$this->model.load_more_data", compact('results','totalResults'));
         }else{
-            
+
             return  View("admin.$this->model.index", compact('results','totalResults'));
         }
     }
@@ -105,7 +105,7 @@ class UsersController extends Controller
     {
         return View("admin.$this->model.add");
     }
-    
+
     public function edit(Request $request, $enuserid = null)
     {
         $user_id = '';
@@ -125,7 +125,7 @@ class UsersController extends Controller
     {
 
         $formData = $request->all();
-        
+
         if (!empty($formData)) {
             $validator = Validator::make(
                 $request->all(),
@@ -158,8 +158,30 @@ class UsersController extends Controller
                 return Redirect::back()->withErrors($validator)->withInput();
             } else {
                 DB::beginTransaction();
+
+                $originalString = $request->name ?? "";
+                $lowercaseString = Str::lower($originalString);
+                $baseSlug = Str::slug($lowercaseString, '-');
+
+                // Check if the base slug already exists
+                $alreadyAddedName = User::where('slug', $baseSlug)->first();
+
+                if (!is_null($alreadyAddedName)) {
+                    // If the base slug exists and the name is being changed, add a suffix
+                    $suffix = 1;
+
+                    while (User::where('slug', $baseSlug . '-' . $suffix)->exists()) {
+                        $suffix++;
+                    }
+
+                    $slug = $baseSlug . '-' . $suffix;
+                } else {
+                    $slug = $baseSlug;
+                }
+
                 $obj                                = new User;
                 $obj->user_role_id                  = 2;
+                $obj->slug                          = !empty($slug) ? $slug : "";
                 $obj->name                          = $request->input('name');
                 $obj->email                         = $request->input('email');
                 $obj->phone_number                  = $request->input('phone_number');
@@ -190,6 +212,13 @@ class UsersController extends Controller
                 $obj->save();
                 $lastId = $obj->id;
                 if(!empty($lastId)){
+                    $randomLetters = strtoupper(Str::random(3));
+
+                    $referralCode = $slug . $randomLetters . $lastId;
+
+                    // Save the referral code to the user or do whatever is needed
+                    User::where('id', $lastId)->update(["referral_code"=>$referralCode]);
+
                     DB::commit();
                 }else{
                     DB::rollback();
@@ -204,7 +233,7 @@ class UsersController extends Controller
     }
     public function update(Request $request, $enuserid = null)
     {
-        
+
         $model = User::find($enuserid);
         if (empty($model)) {
             return View("admin.$this->model.edit");
@@ -244,14 +273,39 @@ class UsersController extends Controller
                     return Redirect::back()->withErrors($validator)->withInput();
                 } else {
                     DB::beginTransaction();
+                    $originalString = $request->name ?? "";
+                    $lowercaseString = Str::lower($originalString);
+                    $baseSlug = Str::slug($lowercaseString, '-');
+
+                    // Check if the base slug already exists
+                    $alreadyAddedName = User::where('slug', $baseSlug)->first();
+
+                    if (!is_null($alreadyAddedName)) {
+                        // If the base slug exists and the name is being changed, add a suffix
+                        if ($alreadyAddedName->name !== $originalString) {
+                            $suffix = 1;
+
+                            while (User::where('slug', $baseSlug . '-' . $suffix)->exists()) {
+                                $suffix++;
+                            }
+
+                            $slug = $baseSlug . '-' . $suffix;
+                        } else {
+                            // If the name is not being changed, keep the original base slug
+                            $slug = !empty($model->slug) ? $model->slug : $baseSlug;
+                        }
+                    } else {
+                        $slug = $baseSlug;
+                    }
                     $obj                                = $model;
                     $obj->name                          = $request->input('name');
+                    $obj->slug                          = !empty($slug) ? $slug : "";
                     $obj->email                         = $request->input('email');
                     $obj->phone_number                  = $request->input('phone_number');
-                    
+
                     $obj->date_of_birth =   !empty($request->input('date_of_birth')) ? date('Y-m-d', strtotime($request->input('date_of_birth'))) : NULL;
                     $obj->gender = $request->input('gender');
-                   
+
                     if ($request->hasFile('image')) {
                         $extension = $request->file('image')->getClientOriginalExtension();
                         $originalName = $request->file('image')->getClientOriginalName();
@@ -273,6 +327,15 @@ class UsersController extends Controller
                     $obj->save();
                     $lastId = $obj->id;
                     if(!empty($lastId)){
+                        if (empty($model->referral_code)) {
+                            $randomLetters = strtoupper(Str::random(3));
+
+                            $referralCode = $slug . $randomLetters . $lastId;
+
+                            // Save the referral code to the user or do whatever is needed
+                            User::where('id', $lastId)->update(["referral_code"=>$referralCode]);
+                        }
+
                         DB::commit();
                     }else{
                         DB::rollback();
@@ -305,7 +368,7 @@ class UsersController extends Controller
                 'email' => $email,
                 'is_deleted' => 1,
                 'deleted_at' => $deleted_at
-                
+
             ));
 
             Session()->flash('flash_notice', trans("User has been removed successfully."));
@@ -378,7 +441,7 @@ class UsersController extends Controller
             if(!empty($userDetails->image)){
                 $userDetails->image = Config('constant.USER_IMAGE_URL').$userDetails->image;
             }
-           
+
             $data = compact('user_id', 'userDetails');
 
             return View("admin.$this->model.view", $data);

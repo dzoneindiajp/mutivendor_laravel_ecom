@@ -1,0 +1,7 @@
+ALTER TABLE users ADD slug VARCHAR(255) NULL DEFAULT NULL AFTER name;
+
+
+
+
+
+ALTER TABLE `users` ADD `referral_code` VARCHAR(150) NULL DEFAULT NULL AFTER `is_deleted`;

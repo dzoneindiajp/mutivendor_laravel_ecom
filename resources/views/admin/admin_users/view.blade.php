@@ -57,7 +57,7 @@
                                                             {{ $userDetails->email ?? "N/A" }}
                                                         </td>
                                                     </tr>
-                                                    
+
                                                     <tr>
                                                         <th scope="row" class="fw-semibold">
                                                             Phone Number
@@ -84,6 +84,19 @@
                                                     </tr>
                                                     <tr>
                                                         <th scope="row" class="fw-semibold">
+                                                            Referral Link
+                                                        </th>
+                                                        <td>
+                                                            <div class="input-group">
+                                                                <input type="text" class="form-control" id="referralLink" value="{{ $userDetails->referral_code ?? '' }}" readonly>
+                                                                <button class="btn btn-primary" id="copyReferralLink">
+                                                                    <i class="bi bi-files"></i> Copy
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row" class="fw-semibold">
                                                             Status
                                                         </th>
                                                         <td class="{{ $userDetails->is_active ? 'text-success' : 'text-danger' }}">
@@ -98,7 +111,7 @@
                                                             {{ isset($userDetails->created_at) ? \Carbon\Carbon::parse($userDetails->created_at)->format('M d, Y') : "N/A" }}
                                                         </td>
                                                     </tr>
-                                                    
+
                                                 </tbody>
                                             </table>
                                         </div>
@@ -123,4 +136,21 @@
       <script src="{{ asset('assets/libs/swiper/swiper-bundle.min.js') }}"></script>
 
       <script src="{{ asset('assets/js/product-details.js') }}"></script>
+
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const referralLinkInput = document.getElementById('referralLink');
+            const copyReferralLinkButton = document.getElementById('copyReferralLink');
+
+            copyReferralLinkButton.addEventListener('click', function () {
+                referralLinkInput.select();
+                document.execCommand('copy');
+                // Optionally, you can show a tooltip or alert to indicate the link is copied.
+                // For example, using Bootstrap's Tooltip:
+                // new bootstrap.Tooltip(copyReferralLinkButton, { title: 'Copied!', trigger: 'manual' });
+                // bootstrap.Tooltip.getInstance(copyReferralLinkButton).show();
+                // setTimeout(() => bootstrap.Tooltip.getInstance(copyReferralLinkButton).hide(), 2000);
+            });
+        });
+    </script>
 @endpush
