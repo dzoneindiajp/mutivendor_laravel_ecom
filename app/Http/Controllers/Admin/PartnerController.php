@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
-use Redirect,DB,Response;
+use Redirect,DB,Response,Str;
 use Illuminate\Validation\Rule;
 use Carbon\Carbon;
 
@@ -157,8 +157,30 @@ class PartnerController extends Controller
                 return Redirect::back()->withErrors($validator)->withInput();
             } else {
                 DB::beginTransaction();
+
+                $originalString = $request->name ?? "";
+                $lowercaseString = Str::lower($originalString);
+                $baseSlug = Str::slug($lowercaseString, '-');
+
+                // Check if the base slug already exists
+                $alreadyAddedName = User::where('slug', $baseSlug)->first();
+
+                if (!is_null($alreadyAddedName)) {
+                    // If the base slug exists and the name is being changed, add a suffix
+                    $suffix = 1;
+
+                    while (User::where('slug', $baseSlug . '-' . $suffix)->exists()) {
+                        $suffix++;
+                    }
+
+                    $slug = $baseSlug . '-' . $suffix;
+                } else {
+                    $slug = $baseSlug;
+                }
+
                 $obj                                = new User;
                 $obj->user_role_id                  = config('constant.ROLE_ID.PARTNER_ROLE_ID');
+                $obj->slug                          = !empty($slug) ? $slug : "";
                 $obj->name                          = $request->input('name');
                 $obj->email                         = $request->input('email');
                 $obj->phone_number                  = $request->input('phone_number');
@@ -188,6 +210,12 @@ class PartnerController extends Controller
                 $obj->save();
                 $lastId = $obj->id;
                 if(!empty($lastId)){
+                    $randomLetters = strtoupper(Str::random(3));
+
+                    $referralCode = $slug . $randomLetters . $lastId;
+
+                    // Save the referral code to the user or do whatever is needed
+                    User::where('id', $lastId)->update(["referral_code"=>$referralCode]);
                     DB::commit();
                 }else{
                     DB::rollback();
@@ -241,7 +269,32 @@ class PartnerController extends Controller
                     return Redirect::back()->withErrors($validator)->withInput();
                 } else {
                     DB::beginTransaction();
+                    $originalString = $request->name ?? "";
+                    $lowercaseString = Str::lower($originalString);
+                    $baseSlug = Str::slug($lowercaseString, '-');
+
+                    // Check if the base slug already exists
+                    $alreadyAddedName = User::where('slug', $baseSlug)->first();
+
+                    if (!is_null($alreadyAddedName)) {
+                        // If the base slug exists and the name is being changed, add a suffix
+                        if ($alreadyAddedName->name !== $originalString) {
+                            $suffix = 1;
+
+                            while (User::where('slug', $baseSlug . '-' . $suffix)->exists()) {
+                                $suffix++;
+                            }
+
+                            $slug = $baseSlug . '-' . $suffix;
+                        } else {
+                            // If the name is not being changed, keep the original base slug
+                            $slug = !empty($model->slug) ? $model->slug : $baseSlug;
+                        }
+                    } else {
+                        $slug = $baseSlug;
+                    }
                     $obj                                = $model;
+                    $obj->slug                          = !empty($slug) ? $slug : "";
                     $obj->name                          = $request->input('name');
                     $obj->email                         = $request->input('email');
                     $obj->phone_number                  = $request->input('phone_number');
@@ -268,6 +321,14 @@ class PartnerController extends Controller
                     $obj->save();
                     $lastId = $obj->id;
                     if(!empty($lastId)){
+                        if (empty($model->referral_code)) {
+                            $randomLetters = strtoupper(Str::random(3));
+
+                            $referralCode = $slug . $randomLetters . $lastId;
+
+                            // Save the referral code to the user or do whatever is needed
+                            User::where('id', $lastId)->update(["referral_code"=>$referralCode]);
+                        }
                         DB::commit();
                     }else{
                         DB::rollback();
