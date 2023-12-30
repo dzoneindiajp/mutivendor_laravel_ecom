@@ -191,8 +191,16 @@
                         </div>
                         <input type="hidden" id="taxValues" value="{{ json_encode($categoryTaxesValues) }}">
 
-                        <div id="taxCountFields" style="display: none;">
-                            <!-- Text fields for tax counts will be appended here dynamically -->
+                        <div id="taxCountFields" >
+                           
+                            @forelse($taxes as $tax)
+                            <div class="mb-3 taxDiv{{$tax->id}} taxContainers" style="{{($key = array_search($tax->id,$categoryTaxesValues)) ? '' : 'display:none' }}"><label for="tax_counts[{{ $tax->id }}]" class="form-label">{{$tax->name ?? ''}}</label><input type="text" class="form-control" id="tax_counts[{{ $tax->id }}]" name="tax_counts[{{ $tax->id }}]" placeholder="Enter Value" value="{{($key = array_search($tax->id,$categoryTaxesValues)) ? $key : '' }}" fdprocessedid="fdaby"></div>
+                            @empty
+                                
+                            @endforelse
+                            
+                            
+                           
                         </div>
                     </div>
                 </div>
@@ -222,35 +230,17 @@
     document.addEventListener('DOMContentLoaded', function () {
         // Add an event listener to the taxesSelect dropdown
         $('#taxesSelect').on('change', function () {
-            // Clear existing count text fields
-            $('#taxCountFields').empty();
-
-            // Get selected tax values
+           
             var selectedTaxes = $(this).val();
-
+            $('.taxContainers').hide();
+            $('.taxContainers').find('input').prop('disabled',true);
             // Check if any taxes are selected
             if (selectedTaxes && selectedTaxes.length > 0) {
-                // Display the tax count fields div
-                $('#taxCountFields').show();
-
-                // Create a JavaScript variable with JSON-encoded tax values
-                var taxValues = {!! json_encode($categoryTaxesValues) !!};
 
                 // Create a text field for each selected tax
                 selectedTaxes.forEach(function (taxId) {
-                    var taxFieldName = 'tax_counts[' + taxId + ']';
-                    var taxName = $('#taxesSelect option[value="' + taxId + '"]').text(); // Get tax name
-                    var label = taxName + ' Value'; // Create label based on tax name
-
-                    // Get the default value for the tax field from the JSON-encoded values
-                    var defaultValue = taxValues[taxId] || '';
-
-                    // Create the label and input field with the default value
-                    var inputField = '<div class="mb-3"><label for="' + taxFieldName + '" class="form-label">' +
-                        label + '</label><input type="text" class="form-control" id="' +
-                        taxFieldName + '" name="' + taxFieldName + '" placeholder="Enter Value" value="' +
-                        defaultValue + '"></div>';
-                    $('#taxCountFields').append(inputField);
+                   $('.taxDiv'+taxId).show();
+                   $('.taxDiv'+taxId).find('input').prop('disabled',false);
                 });
             } else {
                 // Hide the tax count fields div if no taxes are selected
@@ -258,8 +248,6 @@
             }
         });
 
-        // Trigger the change event to initialize the tax count fields
-        $('#taxesSelect').trigger('change');
     });
 </script>
 

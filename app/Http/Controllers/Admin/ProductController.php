@@ -29,6 +29,7 @@ use App\Models\ProductVariant;
 use App\Models\ProductVariantValue;
 use App\Models\ProductVariantCombination;
 use App\Models\ProductVariantCombinationImage;
+use App\Models\ProductDescription;
 use Validator, Response, Redirect, Str, View, File;
 
 class ProductController extends Controller
@@ -149,9 +150,9 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $formData = $request->all();
-        // print_r($formData);die;
         $response = array();
         if (!empty($formData)) {
+          
             $basicInformationValidationArray = [
                 'name' => 'required',
                 'bar_code' => 'required',
@@ -160,7 +161,7 @@ class ProductController extends Controller
             ];
 
             $detailsValidationArray = [
-                'long_description' => 'required',
+                // 'long_description' => 'required',
             ];
             $pricesValidationArray = [
                 'buying_price' => 'required|numeric|gt:0',
@@ -284,30 +285,34 @@ class ProductController extends Controller
 
                 } else if ((!empty($request->current_tab) && $request->current_tab == 'detailsTab')) {
                     if (!empty($request->session()->has('currentProductId'))) {
-                        $obj = Product::find($request->session()->get('currentProductId'));
-                        $obj->long_description = !empty($request->long_description) ? $request->long_description : NULL;
-                        $obj->short_description = !empty($request->short_description) ? $request->short_description : NULL;
-                        $obj->return_policy = !empty($request->return_policy) ? $request->return_policy : NULL;
-                        $obj->seller_information = !empty($request->seller_information) ? $request->seller_information : NULL;
-                        $obj->save();
-                        $lastId = $obj->id;
-                        if (empty($lastId)) {
-                            $response = array();
-                            $response["status"] = "error";
-                            $response["msg"] = trans("Something Went Wrong");
-                            $response["data"] = (object) array();
-                            $response["http_code"] = 500;
-                            return Response::json($response, 500);
-                        } else {
-
-                            $response = array();
-                            $response["status"] = "success";
-                            $response["msg"] = "";
-                            $response["data"] = (object) array();
-                            $response["http_code"] = 200;
-                            return Response::json($response, 200);
-
+                        ProductDescription::where('product_id',$request->session()->get('currentProductId'))->delete();
+                        if(!empty($request->productDetailsArr)){
+                            foreach($request->productDetailsArr as $productDetailKey => $productDetail){
+                                if(!empty($productDetail['name']) && !empty($productDetail['value'])){
+                                    
+                                    $obj = new ProductDescription;
+                                    $obj->product_id = $request->session()->get('currentProductId');
+                                    $obj->name = $productDetail['name'];
+                                    $obj->value = $productDetail['value'];
+                                    $obj->save();
+                                    $lastDetailId = $obj->id;
+                                    if (empty($lastDetailId)) {
+                                        $response = array();
+                                        $response["status"] = "error";
+                                        $response["msg"] = trans("Something Went Wrong");
+                                        $response["data"] = (object) array();
+                                        $response["http_code"] = 500;
+                                        return Response::json($response, 500);
+                                    }
+                                }
+                            }
                         }
+                        $response = array();
+                        $response["status"] = "success";
+                        $response["msg"] = "";
+                        $response["data"] = (object) array();
+                        $response["http_code"] = 200;
+                        return Response::json($response, 200);
 
                     } else {
                         $response = array();
@@ -322,6 +327,7 @@ class ProductController extends Controller
                         $obj = Product::find($request->session()->get('currentProductId'));
                         $obj->buying_price = !empty($request->buying_price) ? $request->buying_price : '0.00';
                         $obj->selling_price = !empty($request->selling_price) ? $request->selling_price : '0.00';
+                        $obj->is_including_taxes = !empty($request->is_including_taxes) ? 1 : 0;
 
                         $obj->save();
                         $lastId = $obj->id;
@@ -543,10 +549,11 @@ class ProductController extends Controller
 
                                     $variantValuesNames = $this->getVariantValuesNames($variantData['variant_values']);
                                     $variantValuesStoredData = $this->getVariantValuesStoredData($variantData['variant_values']);
-                                    if(!empty($variantValuesStoredData)){
-                                        $selectedImages = ProductVariantCombinationImage::where('product_variant_combination_id',$variantValuesStoredData->id)->pluck('product_image_id')->toArray();
-                                        $variantsDataArr[$key]['selected_images'] = $selectedImages;
-                                    }
+                                    
+                                    // if(!empty($variantValuesStoredData)){
+                                    //     $selectedImages = ProductVariantCombinationImage::where('product_variant_combination_id',$variantValuesStoredData->id)->pluck('product_image_id')->toArray();
+                                    //     $variantsDataArr[$key]['selected_images'] = $selectedImages;
+                                    // }
                                     $variantsDataArr[$key]['variant_values_names'] = $variantValuesNames;
                                     $variantsDataArr[$key]['variant_values_data'] = $variantValuesStoredData;
                                 }else{
@@ -779,7 +786,10 @@ class ProductController extends Controller
                         ->orWhere('product_variant_combinations.variant2_value_id', $variantValue);
                         
                 })->first();
-                $returnData[] = $variantValueData;
+                if(!empty($variantValueData)){
+
+                    $returnData[] = $variantValueData;
+                }
             }
 
         }
@@ -1027,7 +1037,8 @@ class ProductController extends Controller
 
                 $productDetails->product_images = ProductImage::where('product_id',$productId)->get();
                 $type = 'edit';
-                return view('admin.products.create', compact('categories', 'brands', 'productDetails','productId','type'));
+                $productDescriptionsData = ProductDescription::where('product_id',$productId)->get()->toArray();
+                return view('admin.products.create', compact('categories', 'brands', 'productDetails','productId','type','productDescriptionsData'));
             }else{
                 return redirect()->back()->with(['error' => 'Invalid Request']);
             }

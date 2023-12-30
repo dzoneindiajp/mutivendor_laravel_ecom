@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Config;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Plan;
+use App\Models\PlanDetail;
+use App\Models\PartnerPlanDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
@@ -103,7 +106,8 @@ class PartnerController extends Controller
 
     public function create(Request $request)
     {
-        return View("admin.$this->model.add");
+        $plans = Plan::select('id', 'name')->get();
+        return View("admin.$this->model.add",compact('plans'));
     }
 
     public function edit(Request $request, $enuserid = null)
@@ -117,8 +121,9 @@ class PartnerController extends Controller
             if(!empty($userDetails->image)){
                 $userDetails->image = Config('constant.USER_IMAGE_URL').$userDetails->image;
             }
-
-            return View("admin.$this->model.edit", compact( 'userDetails'));
+            $plans = Plan::select('id', 'name')->get();
+            $partnerPlanDetailsData = PartnerPlanDetail::where('user_id',$user_id)->get()->toArray();
+            return View("admin.$this->model.edit",['userDetails' => $userDetails, 'plans' => $plans , 'planDetailsData' =>$partnerPlanDetailsData ]);
         }
     }
     public function save(Request $request)
@@ -206,6 +211,8 @@ class PartnerController extends Controller
                 $obj->is_verified = 1;
                 $obj->is_active = 1;
                 $obj->is_approved = 1;
+                $obj->plan_id                        = !empty($request->plan_id ) ? $request->input('plan_id') : NULL;
+                $obj->payout_period                        = !empty($request->payout_period ) ? $request->input('payout_period') : NULL;
 
                 $obj->save();
                 $lastId = $obj->id;
@@ -216,6 +223,25 @@ class PartnerController extends Controller
 
                     // Save the referral code to the user or do whatever is needed
                     User::where('id', $lastId)->update(["referral_code"=>$referralCode]);
+
+                    if(!empty($request->planDetailsArr) && !empty($request->plan_id)){
+                        foreach($request->planDetailsArr as $planKey => $planVal){
+                            if(!empty($planVal['sales_from']) && !empty($planVal['sales_to']) && !empty($planVal['type']) && !empty($planVal['amount'])){
+                                $planObj = new PartnerPlanDetail;
+                                $planObj->user_id = $lastId;
+                                $planObj->sales_from = $planVal['sales_from'] ?? 0;
+                                $planObj->sales_to = $planVal['sales_to'] ?? 0;
+                                $planObj->type = $planVal['type'] ?? NULL;
+                                $planObj->amount = $planVal['amount'] ?? 0;
+                                $planObj->save();
+                                if(empty($planObj->id)){
+                                    DB::rollback();
+                                    Session()->flash('flash_notice', 'Something Went Wrong');
+                                    return Redirect::route('admin-plans.index');
+                                }
+                            }
+                        }
+                    }
                     DB::commit();
                 }else{
                     DB::rollback();
@@ -230,7 +256,7 @@ class PartnerController extends Controller
     }
     public function update(Request $request, $enuserid = null)
     {
-
+        
         $model = User::find($enuserid);
         if (empty($model)) {
             return View("admin.$this->model.edit");
@@ -318,6 +344,9 @@ class PartnerController extends Controller
                     if(!empty($request->password)){
                         $obj->password                      = Hash::make($request->password);
                     }
+
+                    $obj->plan_id                        = !empty($request->plan_id ) ? $request->input('plan_id') : NULL;
+                    $obj->payout_period                        = !empty($request->payout_period ) ? $request->input('payout_period') : NULL;
                     $obj->save();
                     $lastId = $obj->id;
                     if(!empty($lastId)){
@@ -328,6 +357,27 @@ class PartnerController extends Controller
 
                             // Save the referral code to the user or do whatever is needed
                             User::where('id', $lastId)->update(["referral_code"=>$referralCode]);
+
+                            
+                        }
+                        PartnerPlanDetail::where('user_id',$lastId)->delete();
+                        if(!empty($request->planDetailsArr) && !empty($request->plan_id)){
+                            foreach($request->planDetailsArr as $planKey => $planVal){
+                                if(!empty($planVal['sales_from']) && !empty($planVal['sales_to']) && !empty($planVal['type']) && !empty($planVal['amount'])){
+                                    $planObj = new PartnerPlanDetail;
+                                    $planObj->user_id = $lastId;
+                                    $planObj->sales_from = $planVal['sales_from'] ?? 0;
+                                    $planObj->sales_to = $planVal['sales_to'] ?? 0;
+                                    $planObj->type = $planVal['type'] ?? NULL;
+                                    $planObj->amount = $planVal['amount'] ?? 0;
+                                    $planObj->save();
+                                    if(empty($planObj->id)){
+                                        DB::rollback();
+                                        Session()->flash('flash_notice', 'Something Went Wrong');
+                                        return Redirect::route('admin-plans.index');
+                                    }
+                                }
+                            }
                         }
                         DB::commit();
                     }else{
@@ -439,6 +489,14 @@ class PartnerController extends Controller
 
             return View("admin.$this->model.view", $data);
         }
+    }    
+    public function fetchPlanDetails(Request $request, $planId = null)
+    {
+        $payout_period = Plan::where('id',$planId)->value('payout_period');
+        $planDetailsData = PlanDetail::where('plan_id',$planId)->get()->toArray();
+        $data = compact('planDetailsData');
+        $htmlData = View("admin.$this->model.plan_details",$data )->render();
+        return response()->json(['htmlData' => $htmlData, 'payout_period' => $payout_period]);
     }
 
 }

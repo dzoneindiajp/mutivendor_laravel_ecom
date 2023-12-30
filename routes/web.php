@@ -270,7 +270,7 @@ Route::prefix('admin')->name('admin-')->group(function () {
           Route::get('partners/destroy/{enuserid?}', [App\Http\Controllers\Admin\PartnerController::class, 'destroy'])->name('partners.delete');
           Route::get('partners/update-status/{id}/{status}', [App\Http\Controllers\Admin\PartnerController::class, 'changeStatus'])->name('partners.status');
           Route::match(['get', 'post'], 'partners/changed-password/{enuserid?}', [App\Http\Controllers\Admin\PartnerController::class, 'changedPassword'])->name('partners.changedPassword');
-
+          Route::get('partners/fetch-plan-details/{planId}', [App\Http\Controllers\Admin\PartnerController::class, 'fetchPlanDetails'])->name('partners.fetchPlanDetails');
           /* partners routes */
 
           /** FooterCategory routes **/
