@@ -255,34 +255,126 @@
                             <div class="tab-pane text-muted" id="detailsTab" data-next-tab="pricesTab"
                                 data-prev-tab="basicInformationTab" role="tabpanel">
                                 <form id="detailsTabForm" class="row gx-5 gy-5">
-                                    <div class="col-xl-12">
-                                        <label for="description" class="form-label"><span class="text-danger">
-                                            </span>Short Description</label>
-                                        <textarea class="form-control" name="short_description" id="short_description"
-                                            cols="20" rows="5">{{!empty($productDetails->short_description)  ? $productDetails->short_description : ''}}</textarea>
-                                        <div class="invalid-feedback fw-bold"></div>
+
+                                    @if(!empty(($productDescriptionsData)))
+                                    <?php $iterationCount = 0; ?>
+                                    <div id="kt_repeater_1" class="ml-7">
+                                        <div class="form-group row" id="kt_repeater_1">
+                                            <div data-repeater-list="productDetailsArr" class="col-lg-12">
+                                                @foreach($productDescriptionsData as $dataKey => $dataVal)
+                                                @if(!empty($dataVal['name']) && !empty($dataVal['value']))
+                                                <div data-repeater-item class="form-group row align-items-center mb-0 mt-3">
+                                                    <div class="col-md-12 d-flex justify-content-end">
+                                                        @if($iterationCount == 0)
+                                                        <a href="javascript:;" data-repeater-create=""
+                                                            class="btn btn-sm font-weight-bolder btn btn-primary-light btn-border-down">
+                                                            <i class="la la-plus"></i>Add More Detail
+                                                        </a>
+                                                        @else
+                                                        <a href="javascript:;" data-repeater-create=""
+                                                            class="btn btn-sm font-weight-bolder btn btn-primary-light btn-border-down"
+                                                            style="display:none;">
+                                                            <i class="la la-plus"></i>Add More Detail
+                                                        </a>
+                                                        @endif
+                                                    </div>
+                                                    <div class="col-md-12 mb-3">
+                                                        <div class="form-group">
+                                                            <label for="name" class="form-label">Name</label><span class="text-danger">
+                                                                </span>
+                                                            <input type="text" name="name"
+                                                                class="form-control form-control-solid form-control-lg  @error('name') is-invalid @enderror"
+                                                                value="{{!empty($dataVal['name']) ? $dataVal['name'] : ''}}">
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12 mb-3">
+                                                        <div class="form-group">
+                                                            <label for="value" class="form-label">Value</label><span class="text-danger">
+                                                                </span>
+                                                            <textarea class="form-control" name="value" 
+                                                                cols="20" rows="5">{!!!empty($dataVal['value']) ? $dataVal['value'] : ''!!}</textarea>
+                                                           
+
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="col-md-12 d-flex justify-content-end">
+                                                        @if($iterationCount == 0)
+                                                        <a href="javascript:;" data-repeater-delete=""
+                                                            class="btn btn-sm font-weight-bolder btn btn-danger-light btn-border-down"
+                                                            style="display:none;">
+                                                            <i class="la la-trash-o"></i>Delete Detail
+                                                        </a>
+                                                        @else
+                                                       
+                                                        <a href="javascript:;" data-repeater-delete=""
+                                                            class="btn btn-sm font-weight-bolder btn btn-danger-light btn-border-down">
+                                                            <i class="la la-trash-o"></i>Delete Detail
+                                                        </a>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                @endif
+
+
+                                                <?php $iterationCount++; ?>
+                                                @endforeach
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="col-xl-12">
-                                        <label for="long_description" class="form-label"><span class="text-danger">*
-                                            </span>Long Description</label>
-                                        <textarea class="form-control" name="long_description" id="long_description"
-                                            cols="30" rows="5">{{!empty($productDetails->long_description)  ? $productDetails->long_description : ''}}</textarea>
-                                        <div class="invalid-feedback fw-bold"></div>
+
+                                    @else
+                                    <div id="kt_repeater_1" class="ml-7">
+                                        <div class="form-group row" id="kt_repeater_1">
+
+                                            <div data-repeater-list="productDetailsArr" class="col-lg-12">
+                                                <div data-repeater-item class="form-group row align-items-center mb-0">
+                                                    <div class="col-md-12 d-flex justify-content-end">
+                                                        <a href="javascript:;" data-repeater-create=""
+                                                            class="btn btn-sm font-weight-bolder btn btn-primary-light btn-border-down">
+                                                            <i class="la la-plus"></i>Add More Detail
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-md-12 mb-3 mt-3">
+                                                        <div class="form-group">
+                                                            <label for="name" class="form-label">Name</label><span class="text-danger">
+                                                                </span>
+                                                            <input type="text" name="name"
+                                                                class="form-control form-control-solid form-control-lg variant-value @error('name') is-invalid @enderror"
+                                                                value="">
+
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-12 mb-3">
+                                                        <div class="form-group">
+                                                            <label for="value" class="form-label">Value</label><span class="text-danger">
+                                                                </span>
+                                                            <textarea class="form-control" name="value" 
+                                                                cols="20" rows="5"></textarea>
+
+                                                        </div>
+                                                    </div>
+
+
+
+                                                    
+                                                    <div class="col-md-12 d-flex justify-content-end">
+                                                        <a href="javascript:;" data-repeater-delete=""
+                                                            class="btn btn-sm font-weight-bolder btn btn-danger-light btn-border-down"
+                                                            style="display:none;">
+                                                            <i class="la la-trash-o"></i>Delete Detail
+                                                        </a>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
                                     </div>
-                                    <div class="col-xl-12">
-                                        <label for="return_policy" class="form-label"><span class="text-danger">
-                                            </span>Return Policy</label>
-                                        <textarea class="form-control" name="return_policy" id="return_policy" cols="20"
-                                            rows="5">{{!empty($productDetails->return_policy)  ? $productDetails->return_policy : ''}}</textarea>
-                                        <div class="invalid-feedback fw-bold"></div>
-                                    </div>
-                                    <div class="col-xl-12">
-                                        <label for="seller_information" class="form-label"><span class="text-danger">
-                                            </span>Seller Information</label>
-                                        <textarea class="form-control" name="seller_information" id="seller_information"
-                                            cols="20" rows="5">{{!empty($productDetails->seller_information)  ? $productDetails->seller_information : ''}}</textarea>
-                                        <div class="invalid-feedback fw-bold"></div>
-                                    </div>
+                                    @endif
+                                    
                                     <div
                                         class="py-3 border-top border-block-start-dashed d-sm-flex justify-content-between">
                                         <button type="button" class="btn btn-dark" id="actionBtn" data-action="back"
@@ -331,6 +423,11 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="col-xxl-6 col-xl-12 col-lg-12 col-md-6 mt-3">
+                                    
+                                        <div class="form-check"> <input class="form-check-input" name="is_including_taxes" type="checkbox" value="1" id="flexCheckDefaultTaxes" {{!empty($productDetails->is_including_taxes)  ? 'checked' : ''}}> <label class="form-label form-check-label" for="flexCheckDefaultTaxes"> Is Including Taxes ? </label> </div>
+                                    
                                     </div>
                                     <div
                                         class="py-3 border-top border-block-start-dashed d-sm-flex justify-content-between">
@@ -554,22 +651,89 @@
 </script>
 @endif
 <script>
-CKEDITOR.replace(<?php echo 'long_description'; ?>, {
-    filebrowserUploadUrl: '<?php echo URL()->to('base/uploder'); ?>',
-    enterMode: CKEDITOR.ENTER_BR
+    
+
+var KTFormRepeater = function() {
+
+var demo1 = function() {
+   
+   
+    $('#kt_repeater_1').repeater({
+        initEmpty: false,
+
+        defaultValues: {
+
+        },
+
+        show: function() {
+            // Triggered when a new item is added
+            var $item = $(this);
+            // Get the counter value (assuming you have a counter element)
+            var counter = $item.parent().find('[data-repeater-item]').index($item);
+            // Iterate over all textareas within the new item
+            $item.find('[name^="productDetailsArr[' + counter + '][value]"]').each(function() {
+                var textarea = this;
+                // Replace each textarea with CKEditor
+                CKEDITOR.replace(this, {
+                filebrowserUploadUrl: '<?php echo URL()->to('base/uploader'); ?>',
+                enterMode: CKEDITOR.ENTER_BR,
+                on: {
+                    instanceReady: function (ev) {
+                        ev.editor.setData(textarea.value);
+                    }
+                }
+                });
+               
+
+            });
+            $elem = $(this).slideDown();
+            $elem.find('.btn-primary-light').remove();
+            $elem.find('.btn-danger-light').show();
+
+        },
+
+        hide: function(deleteElement) {
+            $(this).slideUp(deleteElement);
+        },
+        isFirstItemUndeletable: true
+    });
+
+
+}
+
+return {
+    // public functions
+    init: function() {
+        demo1();
+         // Replace each textarea with CKEditor
+        
+        }
+};
+}();
+
+jQuery(document).ready(function() {
+    KTFormRepeater.init();
+
+    $('#detailsTabForm').find('textarea').each(function() {
+        var textarea= this;
+        // Replace each textarea with CKEditor
+        CKEDITOR.replace(this, {
+        filebrowserUploadUrl: '<?php echo URL()->to('base/uploader'); ?>',
+        enterMode: CKEDITOR.ENTER_BR,
+        on: {
+            instanceReady: function (ev) {
+                ev.editor.setData(textarea.value);
+            }
+        }
+        });
+        
+    });
+
+
 });
-CKEDITOR.replace(<?php echo 'short_description'; ?>, {
-    filebrowserUploadUrl: '<?php echo URL()->to('base/uploder'); ?>',
-    enterMode: CKEDITOR.ENTER_BR
-});
-CKEDITOR.replace(<?php echo 'return_policy'; ?>, {
-    filebrowserUploadUrl: '<?php echo URL()->to('base/uploder'); ?>',
-    enterMode: CKEDITOR.ENTER_BR
-});
-CKEDITOR.replace(<?php echo 'seller_information'; ?>, {
-    filebrowserUploadUrl: '<?php echo URL()->to('base/uploder'); ?>',
-    enterMode: CKEDITOR.ENTER_BR
-});
+</script>
+<script>
+
 CKEDITOR.replace(<?php echo 'meta_description'; ?>, {
     filebrowserUploadUrl: '<?php echo URL()->to('base/uploder'); ?>',
     enterMode: CKEDITOR.ENTER_BR
@@ -1009,15 +1173,10 @@ $(document).on('click', '#actionBtn', function(e) {
             });
 
         } else if ($(this).attr('data-current-tab') == 'detailsTab') {
-            var long_description = CKEDITOR.instances.long_description.getData();
-            var return_policy = CKEDITOR.instances.return_policy.getData();
-            var seller_information = CKEDITOR.instances.seller_information.getData();
-            var short_description = CKEDITOR.instances.short_description.getData();
+            setTextareaValues($(this).attr('data-current-tab') + 'Form');
 
-            formData.append('long_description', long_description);
-            formData.append('return_policy', return_policy);
-            formData.append('seller_information', seller_information);
-            formData.append('short_description', short_description);
+            var formData = new FormData($('#' + $(this).attr('data-current-tab') + 'Form')[0]);
+            formData.append('current_tab', $(this).attr('data-current-tab'));
 
             $.ajax({
                 url: "{{ route('admin-product-store') }}",
@@ -1813,6 +1972,15 @@ $(document).on('click', '#actionBtn', function(e) {
 
 
 });
+
+function setTextareaValues(formId) {
+    $('#'+formId).find('textarea').each(function () {
+        var editor = CKEDITOR.instances[this.name];
+        if (editor) {
+            this.value = editor.getData();
+        }
+    });
+}
 
 $(document).on('click', '.createVariantBtn', function() {
     $btnName = 'Create Variant';

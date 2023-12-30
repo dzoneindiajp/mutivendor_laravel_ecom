@@ -318,7 +318,7 @@ class CategoryController extends Controller
                 $categoryVariants = CategoryVariant::where('category_id',$categoryId)->pluck('variant_id')->toArray();
                 $categorySpecifications = CategorySpecification::where('category_id',$categoryId)->pluck('specification_id')->toArray();
                 $categoryTaxes = CategoryTax::where('category_id',$categoryId)->pluck('tax_id' )->toArray();
-                $categoryTaxesValues = CategoryTax::where('category_id',$categoryId)->select('tax_id', 'tax_value' )->get()->toArray();
+                $categoryTaxesValues = CategoryTax::leftJoin('taxes','taxes.id','category_taxes.tax_id')->where('category_id',$categoryId)->pluck('tax_id', 'tax_value', )->toArray();
                 // echo "<pre>"; print_r($categoryTaxes); die;
                 return View("admin.$this->model.edit", compact('category','categoryVariants','categorySpecifications','variants','specifications', 'taxes', 'categoryTaxes', 'categoryTaxesValues'));
             }
@@ -330,6 +330,7 @@ class CategoryController extends Controller
 
     public function update(Request $request, $token)
     {
+      
         try {
 
             $categoryId = '';
@@ -498,7 +499,7 @@ class CategoryController extends Controller
             }
         } catch (Exception $e) {
             Log::error($e);
-            return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);
+            return redirect()->back()->with(['error' => $e->getMessage(), 'error_msg' => $e->getMessage()]);
         }
     }
 

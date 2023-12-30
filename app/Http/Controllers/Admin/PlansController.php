@@ -124,8 +124,26 @@ class PlansController extends Controller
                     $obj->save();
                     $lastId = $obj->id;
 
-
                     if(!empty($lastId)){
+                        if(!empty($request->planDetailsArr)){
+                            foreach($request->planDetailsArr as $planKey => $planVal){
+                                if(!empty($planVal['sales_from']) && !empty($planVal['sales_to']) && !empty($planVal['type']) && !empty($planVal['amount'])){
+                                    $planObj = new PlanDetail;
+                                    $planObj->plan_id = $lastId;
+                                    $planObj->sales_from = $planVal['sales_from'] ?? 0;
+                                    $planObj->sales_to = $planVal['sales_to'] ?? 0;
+                                    $planObj->type = $planVal['type'] ?? NULL;
+                                    $planObj->amount = $planVal['amount'] ?? 0;
+                                    $planObj->save();
+                                    if(empty($planObj->id)){
+                                        DB::rollback();
+                                        Session()->flash('flash_notice', 'Something Went Wrong');
+                                        return Redirect::route('admin-plans.index');
+                                    }
+                                }
+                            }
+                        }
+    
                         DB::commit();
                     }else{
                         DB::rollback();
@@ -138,7 +156,7 @@ class PlansController extends Controller
             }
         } catch (Exception $e) {
             Log::error($e);
-            return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);
+            return redirect()->back()->with(['error' =>$e->getMessage(), 'error_msg' => $e->getMessage()]);
         }
     }
 
@@ -151,8 +169,8 @@ class PlansController extends Controller
                 $categoryId = base64_decode($token);
 
                 $plans = Plan::find($categoryId);
-
-                return View("admin.$this->model.edit", compact('plans'));
+                $planDetailsData = PlanDetail::where('plan_id',$categoryId)->get()->toArray();
+                return View("admin.$this->model.edit", compact('plans','planDetailsData'));
             }
         } catch (Exception $e) {
             Log::error($e);
@@ -195,6 +213,26 @@ class PlansController extends Controller
                         $obj->save();
                         $lastId = $obj->id;
                         if(!empty($lastId)){
+                            PlanDetail::where('plan_id',$lastId)->delete();
+                            if(!empty($request->planDetailsArr)){
+                                foreach($request->planDetailsArr as $planKey => $planVal){
+                                    if(!empty($planVal['sales_from']) && !empty($planVal['sales_to']) && !empty($planVal['type']) && !empty($planVal['amount'])){
+                                        $planObj = new PlanDetail;
+                                        $planObj->plan_id = $lastId;
+                                        $planObj->sales_from = $planVal['sales_from'] ?? 0;
+                                        $planObj->sales_to = $planVal['sales_to'] ?? 0;
+                                        $planObj->type = $planVal['type'] ?? NULL;
+                                        $planObj->amount = $planVal['amount'] ?? 0;
+                                        $planObj->save();
+                                        if(empty($planObj->id)){
+                                            DB::rollback();
+                                            Session()->flash('flash_notice', 'Something Went Wrong');
+                                            return Redirect::route('admin-plans.index');
+                                        }
+                                    }
+                                }
+                            }
+        
                             DB::commit();
                         }else{
                             DB::rollback();
