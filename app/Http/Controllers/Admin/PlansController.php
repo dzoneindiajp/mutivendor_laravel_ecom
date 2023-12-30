@@ -109,6 +109,7 @@ class PlansController extends Controller
                     $request->all(),
                     array(
                         'name' => 'required',
+                        'payout_period' => 'required|gt:0',
                     ),
                     array(
                         "name.required" => trans("The name field is required."),
@@ -121,6 +122,8 @@ class PlansController extends Controller
                     $obj                                = new Plan;
                     $obj->name                          = $request->input('name');
                     $obj->payout_period                 = !empty($request->input('payout_period')) ? $request->input('payout_period') : 0;
+                    $obj->description                 = !empty($request->input('description')) ? $request->input('description') : "";
+                    $obj->term_conditions                 = !empty($request->input('term_conditions')) ? $request->input('term_conditions') : "";
                     $obj->save();
                     $lastId = $obj->id;
 
@@ -199,6 +202,7 @@ class PlansController extends Controller
                         $request->all(),
                         array(
                             'name' => 'required',
+                            'payout_period' => 'required|gt:0',
                         ),
                         array(
                             "name.required" => trans("The name field is required."),
@@ -210,6 +214,9 @@ class PlansController extends Controller
                         DB::beginTransaction();
                         $obj                                = $plans;
                         $obj->name                          = $request->input('name');
+                        $obj->payout_period                 = !empty($request->input('payout_period')) ? $request->input('payout_period') : 0;
+                        $obj->description                 = !empty($request->input('description')) ? $request->input('description') : "";
+                        $obj->term_conditions                 = !empty($request->input('term_conditions')) ? $request->input('term_conditions') : "";
                         $obj->save();
                         $lastId = $obj->id;
                         if(!empty($lastId)){

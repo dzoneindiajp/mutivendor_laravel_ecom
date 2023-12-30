@@ -4,6 +4,8 @@
 <link href="{{ asset('assets/plugin/tagify/tagify.css') }}" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+<script src="{{ asset('assets/js/ckeditor/ckeditor.js') }}"></script>
+
 @endpush
 @section('content')
 @include('admin.layout.response_message')
@@ -36,34 +38,51 @@
                     <div class="row">
                         <div class="col-xl-6">
                             <div class="card-body p-0">
-
                                 <div class="mb-3">
                                     <label for="name" class="form-label"><span class="text-danger">* </span>Name</label>
-                                    <input type="text" class="form-control" id="edit_name" name="name"
-                                        placeholder="Enter Name" value="{{ $plans->name }}">
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name"
+                                        placeholder="Enter Name" value="{{ $plans->name ?? "" }}">
+                                    @if ($errors->has('name'))
+                                        <div class="invalid-feedback">
+                                            {{ $errors->first('name') }}
+                                        </div>
+                                    @endif
                                 </div>
-                                @if ($errors->has('name'))
-                                <div class="invalid-feedback">
-                                    {{ $errors->first('name') }}
-                                </div>
-                                @endif
-
                             </div>
                         </div>
+
                         <div class="col-xl-6">
                             <div class="card-body p-0">
                                 <div class="mb-3">
-                                    <label for="payout_period" class="form-label"><span class="text-danger"> </span>Payout Period</label>
-                                    <input type="text" class="form-control" id="payout_period" name="payout_period"
-                                        placeholder="Enter Payout Period" value="{{ $plans->payout_period }}">
+                                    <label for="payout_period" class="form-label"><span class="text-danger">* </span>Payout Period (in days)</label>
+                                    <input type="text" class="form-control @error('payout_period') is-invalid @enderror"
+                                        id="payout_period" name="payout_period" placeholder="Enter Payout Period" value="{{ $plans->payout_period ?? "" }}">
+                                    @if ($errors->has('payout_period'))
+                                    <div class="invalid-feedback">
+                                        {{ $errors->first('payout_period') }}
+                                    </div>
+                                    @endif
                                 </div>
-                                @if ($errors->has('payout_period'))
-                                <div class="invalid-feedback">
-                                    {{ $errors->first('payout_period') }}
-                                </div>
-                                @endif
-
                             </div>
+                        </div>
+                        <div class="col-xl-12 mt-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control @error('description') is-invalid @enderror" name="description" id="description" cols="30" rows="5">{!!isset($plans->description) ? $plans->description: old('description') !!}</textarea>
+                            @if ($errors->has('description'))
+                                <div class=" invalid-feedback">
+                                    {{ $errors->first('description') }}
+                                </div>
+                            @endif
+                        </div>
+
+                        <div class="col-xl-12 mt-3">
+                            <label for="term_conditions" class="form-label">Terms and Conditions</label>
+                            <textarea class="form-control @error('term_conditions') is-invalid @enderror" name="term_conditions" id="term_conditions" cols="30" rows="5">{!! isset($plans->term_conditions) ? $plans->term_conditions: old('term_conditions') !!}</textarea>
+                            @if ($errors->has('term_conditions'))
+                                <div class=" invalid-feedback">
+                                    {{ $errors->first('term_conditions') }}
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -115,7 +134,7 @@
                                                                 <option value="" selected>Select Type</option>
                                                                 <option value="flat" {{(!empty($dataVal['type']) && $dataVal['type'] == 'flat') ? 'selected' : ''}} >Flat</option>
                                                                 <option value="percentage" {{(!empty($dataVal['type']) && $dataVal['type'] == 'percentage') ? 'selected' : ''}} >Percentage</option>
-                                                                
+
                                                     </select>
 
                                         </div>
@@ -131,7 +150,7 @@
                                         </div>
                                     </div>
 
-                                    
+
 
                                     <div class="col-md-2">
                                         @if($iterationCount == 0)
@@ -202,7 +221,7 @@
                                                                 <option value="" selected>Select Type</option>
                                                                 <option value="flat" {{(!empty($dataVal['type']) && $dataVal['type'] == 'flat') ? 'selected' : ''}} >Flat</option>
                                                                 <option value="percentage" {{(!empty($dataVal['type']) && $dataVal['type'] == 'percentage') ? 'selected' : ''}} >Percentage</option>
-                                                                
+
                                                     </select>
 
                                         </div>
@@ -265,16 +284,16 @@
 <script src="{{ asset('assets/js/form-validation.js') }}"></script>
 <script src="{{ asset('assets/plugin/tagify/tagify.min.js') }}"></script>
 <script src="{{ asset('assets/js/custom/category.js') }}"></script>
-<script src="{{ asset('assets/js/repeater.js')}}"></script> 
+<script src="{{ asset('assets/js/repeater.js')}}"></script>
 
 <script>
-    
+
 
 var KTFormRepeater = function() {
 
 var demo1 = function() {
-   
-   
+
+
     $('#kt_repeater_1').repeater({
         initEmpty: false,
 
@@ -283,7 +302,7 @@ var demo1 = function() {
         },
 
         show: function() {
-            
+
             var $item = $(this);
             // Get the counter value (assuming you have a counter element)
             var counter = $item.parent().find('[data-repeater-item]').index($item);
@@ -313,5 +332,17 @@ return {
 jQuery(document).ready(function() {
     KTFormRepeater.init();
 });
+
+    CKEDITOR.replace(<?php echo 'description'; ?>, {
+        filebrowserUploadUrl: '<?php echo URL()->to('base/uploder'); ?>',
+        enterMode: CKEDITOR.ENTER_BR
+    });
+    CKEDITOR.config.allowedContent = true;
+
+    CKEDITOR.replace(<?php echo 'term_conditions'; ?>, {
+        filebrowserUploadUrl: '<?php echo URL()->to('base/uploder'); ?>',
+        enterMode: CKEDITOR.ENTER_BR
+    });
+    CKEDITOR.config.allowedContent = true;
 </script>
 @endpush

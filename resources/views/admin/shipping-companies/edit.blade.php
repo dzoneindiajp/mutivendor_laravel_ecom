@@ -40,7 +40,7 @@
                                 <div class="mb-3">
                                     <label for="name" class="form-label"><span class="text-danger">* </span>Name</label>
                                     <input type="text" class="form-control" id="edit_name" name="name"
-                                        placeholder="Enter Name" value="{{ $category->name }}">
+                                        placeholder="Enter Name" value="{{ $shipping_company->name }}">
                                 </div>
                                 @if ($errors->has('name'))
                                 <div class="invalid-feedback">

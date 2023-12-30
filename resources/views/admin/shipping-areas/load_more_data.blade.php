@@ -14,17 +14,17 @@
     <td>
         <div class="hstack gap-2 flex-wrap">
             @if($result->is_active == 1)
-            <a href='{{route("admin-sub-category.status",array($result->id,0))}}' class="btn btn-danger"
+            <a href='{{route("admin-shipping-areas.status",array($result->id,0))}}' class="btn btn-danger"
                 id="deactivate-button"><i class="ri-close-line"></i></a>
             @else
-            <a href='{{route("admin-sub-category.status",array($result->id,1))}}' class="btn btn-success"
+            <a href='{{route("admin-shipping-areas.status",array($result->id,1))}}' class="btn btn-success"
                 id="activate-button"><i class="ri-check-line"></i></a>
             @endif
 
-            <a href="{{route('admin-sub-category.edit',base64_encode($result->id))}}" class="btn btn-info"><i
+            <a href="{{route('admin-shipping-areas.edit',base64_encode($result->id))}}" class="btn btn-info"><i
                     class="ri-edit-line"></i></a>
 
-            <form method="GET" action="{{route('admin-sub-category.delete',base64_encode($result->id))}}">
+            <form method="GET" action="{{route('admin-shipping-areas.delete',base64_encode($result->id))}}">
                 @csrf
                 <input name="_method" type="hidden" value="DELETE">
                 <button type="submit" class="btn btn-danger" id="confirm-button"><i
@@ -40,8 +40,8 @@
                     <ul class="nav nav-hoverable flex-column">
                         <li class="nav-item">
                             <a class="nav-link"
-                                href="{{route('admin-child-category.index',['endesid'=>base64_encode($result->id)])}}">
-                                <span class="nav-text">Child Categories</span>
+                                href="{{route('admin-shipping-costs.index',['endesid'=>base64_encode($result->id)])}}">
+                                <span class="nav-text">Shipping Cost</span>
                             </a>
                         </li>
                     </ul>
