@@ -153,13 +153,21 @@ Route::prefix('admin')->name('admin-')->group(function () {
          Route::get('shipping-companies/destroy/{endepid?}', [App\Http\Controllers\Admin\ShippingCompanyController::class, 'destroy'])->name('shipping-companies.delete');
         /* shipping companies routes */
 
-         /**  SubCategory routes **/
+         /**  ShippingAreas routes **/
          Route::match(['get', 'post'], '/shipping-areas/{endesid?}', [App\Http\Controllers\Admin\ShippingAreasController::class, 'index'])->name('shipping-areas.index');
          Route::match(['get', 'post'], 'shipping-areas/add/{endesid?}', [App\Http\Controllers\Admin\ShippingAreasController::class, 'add'])->name('shipping-areas.add');
          Route::match(['get', 'post'], 'shipping-areas/edit/{endesid?}', [App\Http\Controllers\Admin\ShippingAreasController::class, 'update'])->name('shipping-areas.edit');
          Route::get('shipping-areas/update-status/{id}/{status}', [App\Http\Controllers\Admin\ShippingAreasController::class, 'changeStatus'])->name('shipping-areas.status');
          Route::get('shipping-areas/delete/{endesid?}', [App\Http\Controllers\Admin\ShippingAreasController::class, 'delete'])->name('shipping-areas.delete');
-         /* SubCategory routes */
+         /* ShippingAreas routes */
+
+          /**  ShippingCosts routes **/
+          Route::match(['get', 'post'], '/shipping-costs/{endesid?}', [App\Http\Controllers\Admin\ShippingCostsController::class, 'index'])->name('shipping-costs.index');
+          Route::match(['get', 'post'], 'shipping-costs/add/{endesid?}', [App\Http\Controllers\Admin\ShippingCostsController::class, 'add'])->name('shipping-costs.add');
+          Route::match(['get', 'post'], 'shipping-costs/edit/{endesid?}', [App\Http\Controllers\Admin\ShippingCostsController::class, 'update'])->name('shipping-costs.edit');
+          Route::get('shipping-costs/update-status/{id}/{status}', [App\Http\Controllers\Admin\ShippingCostsController::class, 'changeStatus'])->name('shipping-costs.status');
+          Route::get('shipping-costs/delete/{endesid?}', [App\Http\Controllers\Admin\ShippingCostsController::class, 'delete'])->name('shipping-costs.delete');
+          /* ShippingCosts routes */
 
         /** brand routes **/
         Route::match(['get', 'post'], '/brand', [App\Http\Controllers\Admin\BrandController::class, 'index'])->name('brand.index');

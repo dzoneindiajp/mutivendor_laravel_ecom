@@ -14,8 +14,9 @@
         <nav>
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('admin-dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item"><a href="{{  route('admin-category.index')}}">Categories</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Edit Sub Category</li>
+                <li class="breadcrumb-item"><a href="{{  route('admin-shipping-companies.index')}}">Shipping Companies</a></li>
+                <li class="breadcrumb-item"><a href="{{  route('admin-shipping-areas.index', base64_encode($ShippingAreaDetails->shipping_company_id))}}">Shipping Areas</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Edit Shipping Area</li>
             </ol>
         </nav>
     </div>
@@ -24,150 +25,49 @@
 
 <div class="row">
     <div class="col-xl-12">
-        <form action="{{route('admin-'.$model.'.edit',base64_encode($category->id))}}" method="post" id="categoryForm"
+        <form action="{{route('admin-'.$model.'.edit',base64_encode($ShippingAreaDetails->id))}}" method="post" id="shippingAreaForm"
             enctype="multipart/form-data">
             @csrf
             <div class="card custom-card">
                 <div class="card-header">
                     <div class="card-title">
-                        Edit Sub Category
+                        Edit Shipping Area
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-xl-6">
                             <div class="card-body p-0">
-
                                 <div class="mb-3">
                                     <label for="name" class="form-label"><span class="text-danger">* </span>Name</label>
-                                    <input type="text" class="form-control" id="edit_name" name="name"
-                                        placeholder="Enter Name" onkeyup="editDisplaySlug($(this))"
-                                        value="{{ $category->name }}">
-                                    <h6 class="edit-category-slug mt-2"></h6>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="category" class="form-label"><span class="text-danger">*
-                                        </span>Slug</label>
-                                    <input type="text" class="form-control" disabled value="{{ $category->slug }}">
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror"
+                                        id="name" name="name" placeholder="Enter Name" value = "{{ $ShippingAreaDetails->name }}">
+                                    @if ($errors->has('name'))
+                                    <div class="invalid-feedback">
+                                        {{ $errors->first('name') }}
+                                    </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-6">
-                            <label for="image" class="form-label"><span class="text-danger">
-                                </span>Image</label>
-                            <input type="file" class="form-control @error('image') is-invalid @enderror" id="image"
-                                name="image">
-                            @if (!empty($category->image))
-                            <img height="50" width="50" src="{{isset($category->image)? $category->image:''}}" />
-                            @endif
-                            @if ($errors->has('image'))
-                            <div class="invalid-feedback">
-                                {{ $errors->first('image') }}
-                            </div>
-                            @endif
-                        </div>
-                        <div class="col-xl-6 mb-3">
-                            <label for="thumbnail_image" class="form-label"><span class="text-danger">
-                                </span>Thumbnail Image</label>
-                            <input type="file" class="form-control @error('thumbnail_image') is-invalid @enderror" id="thumbnail_image"
-                                name="thumbnail_image">
-                            @if (!empty($category->thumbnail_image))
-                            <img height="50" width="50" src="{{isset($category->thumbnail_image)? $category->thumbnail_image:''}}" />
-                            @endif
-                            @if ($errors->has('thumbnail_image'))
-                            <div class="invalid-feedback">
-                                {{ $errors->first('thumbnail_image') }}
-                            </div>
-                            @endif
-                        </div>
-                        <div class="col-xl-6 mb-3">
-                            <label for="video" class="form-label"><span class="text-danger">  </span>Video</label>
-                            <input type="file" class="form-control @error('video') is-invalid @enderror" id="video" name="video">
-                            @if (!empty($category->video))
-                                <video height="70" controls>
-                                    <source src="{{isset($category->video)? $category->video:''}}" type="video/mp4">
-                                </video>
-                            @endif
-                            @if ($errors->has('video'))
-                            <div class="invalid-feedback">
-                                {{ $errors->first('video') }}
-                            </div>
-                            @endif
-                        </div>
-                        <div class="col-xl-6">
-                            <label for="meta_title" class="form-label">Meta Title</label>
-                            <input type="text" class="form-control" id="meta_title" name="meta_title"
-                                placeholder="Meta TItle" value="{{ $category->meta_title }}">
-                        </div>
-                        <div class="col-xl-6 mt-3">
-                            <label for="meta_keywords" class="form-label">Meta Keywords</label>
-                            <input type="text" class="form-control" id="meta_keywords" name="meta_keywords"
-                                placeholder="Meta Keywords" value="{{ $category->meta_keywords }}">
-                        </div>
-                        <div class="col-xl-6">
-                            <label for="meta_description" class="form-label">Meta Description</label>
-                            <textarea class="form-control" name="meta_description" id="meta_description" cols="30"
-                                rows="5">{{ $category->meta_description }}</textarea>
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
-            <div class="card custom-card">
-                <div class="card-header">
-                    <div class="card-title">
-                        Variants
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-xl-12 select2-error">
-                            <label for="category_id" class="form-label"><span class="text-danger">
-                                </span>Variants</label>
+                        <div class="col-xl-6 select2-error">
+                            <label for="city_id" class="form-label"><span class="text-danger">*
+                                </span>Cities</label>
                             <select class="js-example-placeholder-single js-states form-control" multiple="multiple"
-                                name="variantsData[]" id="variantsSelect">
+                                name="shippingAreaData[]" id="shippingAreaSelect">
                                 <!-- <option value="" selected>None</option> -->
-                                @forelse ($variants as $variant)
-                                <option value="{{ $variant->id }}"
-                                    {{in_array($variant->id,$categoryVariants) ? 'selected' : ''}}>{{ $variant->name }}
-                                </option>
+                                @forelse ($cities as $city)
+                                <option value="{{ $city->id }}" {{in_array($city->id,$ShippingAreaCity) ? 'selected' : ''}}>{{ $city->name }}</option>
                                 @empty
                                 <option value="" selected>No Data found</option>
                                 @endforelse
                             </select>
 
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card custom-card">
-                <div class="card-header">
-                    <div class="card-title">
-                        Specifications
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-xl-12 select2-error">
-                            <label for="category_id" class="form-label"><span class="text-danger">
-                                </span>Specifications</label>
-                            <select class="js-example-placeholder-single js-states form-control" multiple="multiple"
-                                name="specificationsData[]" id="specificationsSelect">
-                                <!-- <option value="" selected>None</option> -->
-                                @forelse ($specifications as $specification)
-                                <option value="{{ $specification->id }}"
-                                    {{in_array($specification->id,$categorySpecifications) ? 'selected' : ''}}>
-                                    {{ $specification->name }}</option>
-                                @empty
-                                <option value="" selected>No Data found</option>
-                                @endforelse
-                            </select>
 
-                        </div>
                     </div>
                 </div>
+
             </div>
 
             <div class="px-4 py-3 border-top border-block-start-dashed d-sm-flex justify-content-end">

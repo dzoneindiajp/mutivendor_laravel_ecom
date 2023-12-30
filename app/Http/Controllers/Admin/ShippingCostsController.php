@@ -20,12 +20,12 @@ use App\Models\ShippingArea;
 use App\Models\ShippingCompany;
 use App\Models\City;
 
-class ShippingAreasController extends Controller
+class ShippingCostsController extends Controller
 {
-    public $model =    'shipping-areas';
+    public $model =    'shipping-costs';
     public function __construct(Request $request)
     {
-        $this->listRouteName = 'admin-shipping-areas.index';
+        $this->listRouteName = 'admin-shipping-costs.index';
         View()->share('model', $this->model);
         View()->share('listRouteName', $this->listRouteName);
         $this->request = $request;
@@ -36,8 +36,8 @@ class ShippingAreasController extends Controller
         if (!empty($endesid)) {
             $dep_id = base64_decode($endesid);
         }
-        $ShippingCompanyDetails  =  ShippingCompany::where('shipping_companies.id', $dep_id)->first();
-        if (empty($dep_id) && empty($ShippingCompanyDetails) ) {
+        $ShippingAreaDetails  =  ShippingArea::where('shipping_areas.id', $dep_id)->first();
+        if (empty($dep_id) && empty($ShippingAreaDetails) ) {
             return Redirect()->back();
         }
         $DB                    =    ShippingArea::query();
@@ -142,7 +142,7 @@ class ShippingAreasController extends Controller
                                 if(empty($obj2->id)){
                                     DB::rollback();
                                     Session()->flash('flash_notice', 'Something Went Wrong');
-                                    return Redirect::route('admin-shipping-areas.index', $endesid);
+                                    return Redirect::route('admin-shipping-costs.index', $endesid);
                                 }
 
                             }
@@ -151,9 +151,9 @@ class ShippingAreasController extends Controller
                     }else{
                         DB::rollback();
                         Session()->flash('flash_notice', 'Something Went Wrong');
-                        return Redirect::route('admin-shipping-areas.index', $endesid);
+                        return Redirect::route('admin-shipping-costs.index', $endesid);
                     }
-                    return redirect()->route('admin-shipping-areas.index', $endesid)
+                    return redirect()->route('admin-shipping-costs.index', $endesid)
                     ->with('success', 'Shipping area created successfully');
                 }
             }
@@ -206,7 +206,7 @@ class ShippingAreasController extends Controller
                                 if(empty($obj2->id)){
                                     DB::rollback();
                                     Session()->flash('flash_notice', 'Something Went Wrong');
-                                    return Redirect::route('admin-shipping-areas.index', $endesid);
+                                    return Redirect::route('admin-shipping-costs.index', $endesid);
                                 }
 
                             }
@@ -216,10 +216,10 @@ class ShippingAreasController extends Controller
                     }else{
                         DB::rollback();
                         Session()->flash('flash_notice', 'Something Went Wrong');
-                        return Redirect::route('admin-shipping-areas.index', $endesid);
+                        return Redirect::route('admin-shipping-costs.index', $endesid);
                     }
                     Session()->flash('flash_notice', trans("Shipping area updated successfully."));
-                    return Redirect::route('admin-shipping-areas.index', $endesid);
+                    return Redirect::route('admin-shipping-costs.index', $endesid);
                 }
             }
         }

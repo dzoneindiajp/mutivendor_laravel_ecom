@@ -245,7 +245,7 @@ class UsersController extends Controller
                     array(
 
                         'name' => 'required',
-                        'email' => 'nullable|email',
+                        'email' => 'required|email',
                         'phone_number' => ['required','numeric', Rule::unique('users')->ignore($enuserid)->where('user_role_id',config('constant.ROLE_ID.CUSTOMER_ROLE_ID')),'digits:10'],
                         'image' => 'nullable|mimes:jpg,jpeg,png',
                         'gender' => 'required',

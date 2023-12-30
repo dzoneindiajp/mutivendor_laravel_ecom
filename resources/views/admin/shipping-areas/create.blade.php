@@ -15,6 +15,7 @@
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('admin-dashboard') }}">Home</a></li>
                 <li class="breadcrumb-item"><a href="{{  route('admin-shipping-companies.index')}}">Shipping Companies</a></li>
+                <li class="breadcrumb-item"><a href="{{  route('admin-shipping-areas.index', base64_encode($dep_id))}}">Shipping Areas</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Create Shipping Area</li>
             </ol>
         </nav>

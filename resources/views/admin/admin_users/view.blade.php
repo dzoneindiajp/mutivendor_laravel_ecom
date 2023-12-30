@@ -11,7 +11,7 @@
         <nav>
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('admin-dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">User Details</li>
+                <li class="breadcrumb-item active" aria-current="page">Partner Details</li>
             </ol>
         </nav>
     </div>
@@ -22,7 +22,7 @@
         <div class="card custom-card">
             <div class="card-header justify-content-between">
                 <div class="card-title">
-                    User Details
+                    Partner Details
                 </div>
             </div>
             <div class="card-body">

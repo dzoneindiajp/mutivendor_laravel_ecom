@@ -4,7 +4,7 @@
 <link href="{{ asset('assets/plugin/tagify/tagify.css') }}" rel="stylesheet" type="text/css" />
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 <link rel="stylesheet" href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}">
-
+<script src="{{ asset('assets/js/ckeditor/ckeditor.js') }}"></script>
 @endpush
 @section('content')
 @include('admin.layout.response_message')
@@ -62,6 +62,26 @@
                                     @endif
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="col-xl-12 mt-3">
+                            <label for="body" class="form-label">Description</label>
+                            <textarea class="form-control @error('description') is-invalid @enderror" name="description" id="description" cols="30" rows="5">{!! old('description') !!}</textarea>
+                            @if ($errors->has('description'))
+                                <div class=" invalid-feedback">
+                                    {{ $errors->first('description') }}
+                                </div>
+                            @endif
+                        </div>
+
+                        <div class="col-xl-12 mt-3">
+                            <label for="body" class="form-label">Terms and Conditions</label>
+                            <textarea class="form-control @error('term_conditions') is-invalid @enderror" name="term_conditions" id="term_conditions" cols="30" rows="5">{!! old('term_conditions') !!}</textarea>
+                            @if ($errors->has('term_conditions'))
+                                <div class=" invalid-feedback">
+                                    {{ $errors->first('term_conditions') }}
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -316,5 +336,19 @@ jQuery(document).ready(function() {
 });
 </script>
 
+
+<script>
+    CKEDITOR.replace(<?php echo 'description'; ?>, {
+        filebrowserUploadUrl: '<?php echo URL()->to('base/uploder'); ?>',
+        enterMode: CKEDITOR.ENTER_BR
+    });
+    CKEDITOR.config.allowedContent = true;
+
+    CKEDITOR.replace(<?php echo 'term_conditions'; ?>, {
+        filebrowserUploadUrl: '<?php echo URL()->to('base/uploder'); ?>',
+        enterMode: CKEDITOR.ENTER_BR
+    });
+    CKEDITOR.config.allowedContent = true;
+</script>
 
 @endpush
