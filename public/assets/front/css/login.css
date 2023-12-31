@@ -1,0 +1,269 @@
+@charset "UTF-8";
+
+/*------- Typography Style Start Design By Sandeep Yadav +91-9694222776  -------*/
+/*------- google fonts -------*/
+/*@import url("https://fonts.googleapis.com/css?family=Overpass:300,300i,400,400i,600,700,800,900");*/
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&display=swap');
+
+body {
+    font-size: 14px;
+    font-weight: 300;
+    /*font-family: "Overpass", sans-serif;*/
+    font-family: 'Outfit', sans-serif;
+    color: #606060;
+    line-height: 24px;
+}
+
+a,
+a:hover,
+a:focus,
+input,
+button,
+textarea,
+button:hover,
+button:focus {
+    outline: none;
+    text-decoration: none;
+    -webkit-transition: all 0.4s ease-out;
+    transition: all 0.4s ease-out;
+}
+
+.form-control:focus {
+    border-color: #fedc19;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+table tbody {
+    border-color: #e5e5e5;
+}
+
+.table > :not(:last-child) > :last-child > * {
+    border-bottom-color: inherit;
+}
+
+button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+img {
+    max-width: 100%;
+    -webkit-transition: all 0.4s ease-out;
+    transition: all 0.4s ease-out;
+}
+
+.img-full img {
+    width: 100%;
+}
+
+p {
+    color: #606060;
+    font-size: 14px;
+    margin-bottom: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0;
+    padding: 0;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+    ul li {
+        list-style: none;
+    }
+
+.fix {
+    overflow: hidden;
+}
+
+figure {
+    margin: 0;
+}
+
+.bdr-top {
+    border-top: 1px solid #e5e5e5;
+}
+
+.bdr-top-2 {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.bdr-bottom {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ratings span {
+    color: #ffba00;
+    font-size: 12px;
+}
+
+.bg-black {
+    background-color: #111;
+}
+
+.bg-gray {
+    background-color: #fbf1f1;
+}
+
+.bg-gray-light {
+    background-color: #f8f6f6;
+}
+
+.bg-navy-blue {
+    background: #333c4a;
+}
+
+.theme-color-3 {
+    background-color: #c59f59;
+}
+
+.theme-color-4 {
+    background-color: #62d2a2;
+}
+
+.theme-color-5 {
+    background-color: #15161e;
+}
+
+.c-red {
+    background: red;
+}
+
+.c-gray {
+    background: gray;
+}
+
+.c-blue {
+    background: blue;
+}
+
+.c-brown {
+    background: brown;
+}
+
+.c-black {
+    background: black;
+}
+
+body.modal-open {
+    padding-right: 0 !important;
+    overflow-y: scroll !important;
+}
+
+.container {
+    padding-right: var(--bs-gutter-x, 15px);
+    padding-left: var(--bs-gutter-x, 15px);
+}
+
+@media only screen and (min-width: 1400px) {
+    .container {
+        max-width: 1920px;
+        padding-left: 90px;
+        padding-right: 90px;
+    }
+}
+
+.container-fluid {
+    padding-right: var(--bs-gutter-x, 15px);
+    padding-left: var(--bs-gutter-x, 15px);
+}
+
+
+
+.login-box {
+    width: 500px;
+    justify-content: center;
+    margin: 0 auto;
+    display: flex;
+    padding: 20px;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.white-box {
+    width: 100%;
+    background: #fff;
+    padding: 40px;
+}
+img.shape-bottom {
+    transform: rotateX(180deg);
+}
+.shape.text-center {
+    width: 100%;
+}
+.white-box h2 {
+    
+    color:#000;
+    text-align:center;
+}
+input.form-control.login {
+    height: 51px;
+    border: 1px solid rgba(217, 217, 231, 1);
+    border-radius: 0;
+    font-size: 14px;
+}
+.form-group label {
+    padding: 0 0 7px 0;
+    color:#000;
+}
+.login-button {
+    background: transparent;
+    padding: 10px;
+    display: block;
+    width: 100%;
+    text-align: center;
+    color: #000;
+    font-weight: 400;
+    font-size: 15px;
+    border:1px solid #000;
+}
+.login-button:hover {
+    color:#000;
+}
+    .login-button svg.right {
+        display: none;
+    }
+    .login-button:hover svg.right {
+        display: inline-block;
+    }
+
+    button .login-button .right {
+        margin-left: 20px;
+    }
+
+.forgot-password {
+    padding: 5px 0;
+    border-bottom: 2px dotted rgba(255, 185, 50, 1);
+    color:#000;
+}
+
+@media only screen and (max-width: 600px) {
+    .login-box {
+        width: 100% !important;
+        margin: 0 auto;
+        display: flex;
+        padding: 20px 0;
+    }
+    .white-box {
+        width: 100%;
+        padding: 30px 20px;
+    }
+
+}
