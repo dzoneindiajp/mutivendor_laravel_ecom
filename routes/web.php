@@ -169,6 +169,19 @@ Route::prefix('admin')->name('admin-')->group(function () {
           Route::get('shipping-costs/delete/{endesid?}', [App\Http\Controllers\Admin\ShippingCostsController::class, 'delete'])->name('shipping-costs.delete');
           /* ShippingCosts routes */
 
+
+          /* Referral History routes */
+          Route::match(['get', 'post'], '/referral-histories', [App\Http\Controllers\Admin\ReferralHistoryController::class, 'index'])->name('referral_histories.index');
+          Route::get('add-referral-history', [App\Http\Controllers\Admin\ReferralHistoryController::class, 'create'])->name('referral_histories.create');
+          Route::post('save-referral-history', [App\Http\Controllers\Admin\ReferralHistoryController::class, 'save'])->name('referral_histories.save');
+          Route::get('referral-history-delete/{id}', [App\Http\Controllers\Admin\ReferralHistoryController::class, 'destroy'])->name('referral_histories.delete');
+          Route::match(['get'], '/referral-map', [App\Http\Controllers\Admin\ReferralHistoryController::class, 'referra_map'])->name('referra_map');
+          Route::get('referral-histories/tree-view/{enuserid}', [App\Http\Controllers\Admin\ReferralHistoryController::class, 'treeView'])->name('referral_histories.treeView');
+          Route::post('referral-histories/user-search', [App\Http\Controllers\Admin\ReferralHistoryController::class, 'userSearch'])->name('referral_histories.userSearch');
+
+
+          /* Referral History routes */
+
         /** brand routes **/
         Route::match(['get', 'post'], '/brand', [App\Http\Controllers\Admin\BrandController::class, 'index'])->name('brand.index');
         Route::match(['get', 'post'], '/brand/create', [App\Http\Controllers\Admin\BrandController::class, 'create'])->name('brand.create');

@@ -35,23 +35,6 @@
                         class="ri-delete-bin-5-line"></i></button>
             </form>
 
-            <div class="dropdown dropdown-inline">
-                <a href="javascript:;" class="btn btn-light"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="ri-list-check"></i>
-                </a>
-                <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
-                    <ul class="nav nav-hoverable flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link"
-                                href="">
-                                <span class="nav-text">Plan Details</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
         </div>
     </td>
 </tr>
