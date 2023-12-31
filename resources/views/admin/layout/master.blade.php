@@ -4,7 +4,7 @@
 
 <head>
 
-@php 
+@php
 $fav_icon = Config('constant.SETTINGS_IMAGE_URL').Config('Site.fav_icon');
 @endphp
     <!-- Meta Data -->
@@ -65,12 +65,12 @@ $fav_icon = Config('constant.SETTINGS_IMAGE_URL').Config('Site.fav_icon');
 <body>
 
 <script type="text/javascript">
-        $(document).ready(function() {
-            $('.fancybox-buttons').magnificPopup({
-                type: 'image'
-            });
+    $(document).ready(function() {
+        $('.fancybox-buttons').magnificPopup({
+            type: 'image'
         });
-    </script>
+    });
+</script>
 
     <!-- Start Switcher -->
     <div class="offcanvas offcanvas-end" tabindex="-1" id="switcher-canvas" aria-labelledby="offcanvasRightLabel">
@@ -659,7 +659,7 @@ $fav_icon = Config('constant.SETTINGS_IMAGE_URL').Config('Site.fav_icon');
     <!-- Scroll To Top -->
 
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
-    
+
     <!-- Popper JS -->
     <script src="{{ asset('assets/libs/@popperjs/core/umd/popper.min.js') }}"></script>
 

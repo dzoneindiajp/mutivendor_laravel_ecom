@@ -256,7 +256,7 @@ class PartnerController extends Controller
     }
     public function update(Request $request, $enuserid = null)
     {
-        
+
         $model = User::find($enuserid);
         if (empty($model)) {
             return View("admin.$this->model.edit");
@@ -358,7 +358,7 @@ class PartnerController extends Controller
                             // Save the referral code to the user or do whatever is needed
                             User::where('id', $lastId)->update(["referral_code"=>$referralCode]);
 
-                            
+
                         }
                         PartnerPlanDetail::where('user_id',$lastId)->delete();
                         if(!empty($request->planDetailsArr) && !empty($request->plan_id)){
@@ -489,7 +489,7 @@ class PartnerController extends Controller
 
             return View("admin.$this->model.view", $data);
         }
-    }    
+    }
     public function fetchPlanDetails(Request $request, $planId = null)
     {
         $payout_period = Plan::where('id',$planId)->value('payout_period');

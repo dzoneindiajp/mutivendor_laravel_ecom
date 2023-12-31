@@ -101,7 +101,7 @@ class ProductController extends Controller
 
 
             $results = $DB->with('frontProductImage')->select('products.*', 'categories.name as category_name', 'sub_categories.name as sub_category_name', 'child_categories.name as child_category_name')->orderBy($sortBy, $order)->offset($offset)->limit($limit)->get();
-          
+
             $totalResults = $DB->count();
             if ($request->ajax()) {
 
@@ -152,7 +152,7 @@ class ProductController extends Controller
         $formData = $request->all();
         $response = array();
         if (!empty($formData)) {
-          
+
             $basicInformationValidationArray = [
                 'name' => 'required',
                 'bar_code' => 'required',
@@ -247,9 +247,9 @@ class ProductController extends Controller
 
 
                     }
-                    
+
                     $obj->slug = $slug;
-                    
+
                     $obj->name = !empty($request->name) ? $request->name : NULL;
                     ;
                     $obj->product_number = '00';
@@ -289,7 +289,7 @@ class ProductController extends Controller
                         if(!empty($request->productDetailsArr)){
                             foreach($request->productDetailsArr as $productDetailKey => $productDetail){
                                 if(!empty($productDetail['name']) && !empty($productDetail['value'])){
-                                    
+
                                     $obj = new ProductDescription;
                                     $obj->product_id = $request->session()->get('currentProductId');
                                     $obj->name = $productDetail['name'];
@@ -541,7 +541,7 @@ class ProductController extends Controller
 
                                 }
                             }
-                            
+
                             foreach ($variantsDataArr as $key => $variantData) {
                                 if (!empty($variantData['variant_id']) && !empty($variantData['variant_values'][0])) {
                                     $variantName = $this->getVariantName($variantData['variant_id']);
@@ -549,7 +549,7 @@ class ProductController extends Controller
 
                                     $variantValuesNames = $this->getVariantValuesNames($variantData['variant_values']);
                                     $variantValuesStoredData = $this->getVariantValuesStoredData($variantData['variant_values']);
-                                    
+
                                     // if(!empty($variantValuesStoredData)){
                                     //     $selectedImages = ProductVariantCombinationImage::where('product_variant_combination_id',$variantValuesStoredData->id)->pluck('product_image_id')->toArray();
                                     //     $variantsDataArr[$key]['selected_images'] = $selectedImages;
@@ -561,7 +561,7 @@ class ProductController extends Controller
                                 }
 
                             }
-                           
+
                             $productImages = ProductImage::where('product_id', $request->session()->get('currentProductId'))->get();
                             // if($productImages->isNotEmpty()){
                             //     foreach ($productImages as $key => $productImage) {
@@ -775,7 +775,7 @@ class ProductController extends Controller
 
         $variantValuesNames = VariantValue::whereIn('id', $variantValues)->pluck('name')->toArray();
         return $variantValuesNames; // Return the variant values names
-    }    
+    }
     function getVariantValuesStoredData($variantValues)
     {
         $returnData = [];
@@ -784,7 +784,7 @@ class ProductController extends Controller
                 $variantValueData = ProductVariantCombination::where('product_id',request()->session()->get('currentProductId'))->where(function ($query) use ($variantValue) {
                     $query->where('product_variant_combinations.variant1_value_id', $variantValue)
                         ->orWhere('product_variant_combinations.variant2_value_id', $variantValue);
-                        
+
                 })->first();
                 if(!empty($variantValueData)){
 
@@ -793,7 +793,7 @@ class ProductController extends Controller
             }
 
         }
-        return $returnData; 
+        return $returnData;
     }
 
     public function uploadImages(Request $request)
@@ -1032,7 +1032,7 @@ class ProductController extends Controller
             if(!empty($productDetails)){
                 $categories = Category::where('is_active', 1)->where('is_deleted', 0)->get();
                 $brands = Brand::where('is_active', 1)->where('is_deleted', 0)->get();
-    
+
                 $request->session()->put('currentProductId',$productId);
 
                 $productDetails->product_images = ProductImage::where('product_id',$productId)->get();
@@ -1042,7 +1042,7 @@ class ProductController extends Controller
             }else{
                 return redirect()->back()->with(['error' => 'Invalid Request']);
             }
-            
+
         } catch (Exception $e) {
             Log::error($e);
             return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);
@@ -1138,7 +1138,7 @@ class ProductController extends Controller
         try {
             $categoryId = $request->category_id ?? "";
             $subCategories = Category::where('parent_id', $categoryId)->where('is_active', 1)->where('is_deleted', 0)->get();
-           
+
             return response()->json(['subCategories' => $subCategories, 'success' => true, 'message' => 'Data fetched'], 200);
         } catch (\Exception $e) {
             \Log::error($e);
@@ -1157,7 +1157,7 @@ class ProductController extends Controller
 
                     $productVariantValues = ProductVariantValue::where('product_veriant_id',$productVariant->id)->pluck('veriant_value_id');
                 }
-             
+
                 return response()->json(['variantValues' => $variantValues,'productVariantValues' => $productVariantValues, 'success' => true, 'message' => 'Data fetched'], 200);
             }else{
                 $response = array();
@@ -1168,7 +1168,7 @@ class ProductController extends Controller
                 return Response::json($response, 500);
             }
 
-            
+
         } catch (\Exception $e) {
             \Log::error($e);
             return response()->json(['message' => 'Something is wrong', 'success' => false, 'error_msg' => $e->getMessage()], 500);
