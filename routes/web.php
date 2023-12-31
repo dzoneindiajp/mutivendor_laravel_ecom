@@ -398,3 +398,10 @@ Route::prefix('admin')->name('admin-')->group(function () {
 
     });
 });
+
+
+
+Route::name('front-')->group(function () {
+  Route::get('/', [App\Http\Controllers\Front\HomeController::class, 'index'])->name('home.index');
+  Route::get('/shop', [App\Http\Controllers\Front\ShopController::class, 'index'])->name('shop.index');
+});
