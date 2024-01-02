@@ -168,7 +168,7 @@ class ProductController extends Controller
                 'selling_price' => 'required|numeric|gt:0',
             ];
             $specificationsValidationArray = [
-                'specificationDataArr' => 'required|array|at_least_one_value'
+                // 'specificationDataArr' => 'required|array|at_least_one_value'
             ];
             $shippingSpecificationsValidationArray = [
                 'height' => 'required',
@@ -178,11 +178,11 @@ class ProductController extends Controller
                 'dc' => 'required'
             ];
             $variantsTabFirstStepArray = [
-                'variantsDataArr' => 'required|array|at_least_one_value_variant'
+                // 'variantsDataArr' => 'required|array|at_least_one_value_variant'
             ];
             $variantsTabSecondStepArray = [
-                'variantsDataArr' => 'required|array|at_least_one_value_variant',
-                'variantCombinationArr' => 'required|array'
+                // 'variantsDataArr' => 'required|array|at_least_one_value_variant',
+                // 'variantCombinationArr' => 'required|array'
             ];
             $mediasValidationArray = [];
             $advanceSeoValidationArray = [];
