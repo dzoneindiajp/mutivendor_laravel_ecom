@@ -40,7 +40,7 @@ class ShippingAreasController extends Controller
         if (empty($dep_id) && empty($ShippingCompanyDetails) ) {
             return Redirect()->back();
         }
-        $DB                    =    ShippingArea::query();
+        $DB                    =    ShippingArea::where('shipping_company_id', $dep_id);
         $searchVariable        =    array();
         $inputGet            =    $request->all();
         if ($request->all()) {

@@ -155,9 +155,9 @@ class ProductController extends Controller
 
             $basicInformationValidationArray = [
                 'name' => 'required',
-                'bar_code' => 'required',
+                // 'bar_code' => 'required',
                 'category_id' => 'required',
-                'brand_id' => 'required'
+                // 'brand_id' => 'required'
             ];
 
             $detailsValidationArray = [
@@ -1187,4 +1187,28 @@ class ProductController extends Controller
             return response()->json(['message' => 'Something is wrong', 'success' => false, 'error_msg' => $e->getMessage()], 500);
         }
     }
+
+    // app/Http/Controllers/Admin/ProductController.php
+
+    public function updateStock(Request $request)
+    {
+        $productId = $request->input('productId');
+        $inStock = $request->input('inStock');
+        // Update the product in the database
+        Product::where('id', $productId)->update(['in_stock' => $inStock]);
+
+        return response()->json(['success' => true]);
+    }
+
+
+    public function updateFeatured(Request $request)
+    {
+        $productId = $request->input('productId');
+        $isFeatured = $request->input('isFeatured');
+        // Update the product in the database
+        Product::where('id', $productId)->update(['is_featured' => $isFeatured]);
+
+        return response()->json(['success' => true]);
+    }
+
 }

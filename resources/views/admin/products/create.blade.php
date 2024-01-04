@@ -199,7 +199,7 @@
                                                     <div class="row gy-4">
                                                         <div class="col-xl-12">
                                                             <label for="bar_code" class="form-label"><span
-                                                                    class="text-danger">* </span>Bar Code</label>
+                                                                    class="text-danger"> </span>Bar Code</label>
                                                             <input type="text" class="form-control" id="bar_code"
                                                                 name="bar_code" placeholder="Enter Bar Code" value="{{!empty($productDetails->bar_code)  ? $productDetails->bar_code : ''}}">
                                                             <div class="invalid-feedback fw-bold"></div>
@@ -220,7 +220,7 @@
                                                         </div>
                                                         <div class="col-xl-12 select2-error">
                                                             <label for="brand_id" class="form-label"><span
-                                                                    class="text-danger">*
+                                                                    class="text-danger">
                                                                 </span>Brand</label>
                                                             <select
                                                                 class="js-example-placeholder-single js-states form-control"
@@ -292,13 +292,13 @@
                                                         <div class="form-group">
                                                             <label for="value" class="form-label">Value</label><span class="text-danger">
                                                                 </span>
-                                                            <textarea class="form-control" name="value" 
+                                                            <textarea class="form-control" name="value"
                                                                 cols="20" rows="5">{!!!empty($dataVal['value']) ? $dataVal['value'] : ''!!}</textarea>
-                                                           
+
 
                                                         </div>
                                                     </div>
-                                                    
+
                                                     <div class="col-md-12 d-flex justify-content-end">
                                                         @if($iterationCount == 0)
                                                         <a href="javascript:;" data-repeater-delete=""
@@ -307,7 +307,7 @@
                                                             <i class="la la-trash-o"></i>Delete Detail
                                                         </a>
                                                         @else
-                                                       
+
                                                         <a href="javascript:;" data-repeater-delete=""
                                                             class="btn btn-sm font-weight-bolder btn btn-danger-light btn-border-down">
                                                             <i class="la la-trash-o"></i>Delete Detail
@@ -351,7 +351,7 @@
                                                         <div class="form-group">
                                                             <label for="value" class="form-label">Value</label><span class="text-danger">
                                                                 </span>
-                                                            <textarea class="form-control" name="value" 
+                                                            <textarea class="form-control" name="value"
                                                                 cols="20" rows="5"></textarea>
 
                                                         </div>
@@ -359,7 +359,7 @@
 
 
 
-                                                    
+
                                                     <div class="col-md-12 d-flex justify-content-end">
                                                         <a href="javascript:;" data-repeater-delete=""
                                                             class="btn btn-sm font-weight-bolder btn btn-danger-light btn-border-down"
@@ -374,7 +374,7 @@
 
                                     </div>
                                     @endif
-                                    
+
                                     <div
                                         class="py-3 border-top border-block-start-dashed d-sm-flex justify-content-between">
                                         <button type="button" class="btn btn-dark" id="actionBtn" data-action="back"
@@ -425,9 +425,9 @@
                                         </div>
                                     </div>
                                     <div class="col-xxl-6 col-xl-12 col-lg-12 col-md-6 mt-3">
-                                    
+
                                         <div class="form-check"> <input class="form-check-input" name="is_including_taxes" type="checkbox" value="1" id="flexCheckDefaultTaxes" {{!empty($productDetails->is_including_taxes)  ? 'checked' : ''}}> <label class="form-label form-check-label" for="flexCheckDefaultTaxes"> Is Including Taxes ? </label> </div>
-                                    
+
                                     </div>
                                     <div
                                         class="py-3 border-top border-block-start-dashed d-sm-flex justify-content-between">
@@ -641,23 +641,23 @@
 <script>
     jQuery(document).ready(function() {
         setTimeout(() => {
-            
+
             $('#category_id').trigger('change');
 
-        }, 200); 
-    
+        }, 200);
+
     });
-    
+
 </script>
 @endif
 <script>
-    
+
 
 var KTFormRepeater = function() {
 
 var demo1 = function() {
-   
-   
+
+
     $('#kt_repeater_1').repeater({
         initEmpty: false,
 
@@ -683,7 +683,7 @@ var demo1 = function() {
                     }
                 }
                 });
-               
+
 
             });
             $elem = $(this).slideDown();
@@ -706,7 +706,7 @@ return {
     init: function() {
         demo1();
          // Replace each textarea with CKEditor
-        
+
         }
 };
 }();
@@ -726,7 +726,7 @@ jQuery(document).ready(function() {
             }
         }
         });
-        
+
     });
 
 
@@ -1755,7 +1755,7 @@ $(document).on('click', '#actionBtn', function(e) {
 
                     } else {
                         if (datas['status'] == 'error' && datas['errors']) {
-                            
+
                             $.each(datas['errors'], function(index, html) {
                                 if (index == 'long_description' || index ==
                                     'short_description' || index == 'return_policy' ||
@@ -2004,7 +2004,7 @@ $(document).on('click', '.createVariantBtn', function() {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         success: function(response) {
-            
+
             $('.invalid-feedback').html("");
             $('.invalid-feedback').removeClass("error");
             $('.is-invalid').removeClass("is-invalid");

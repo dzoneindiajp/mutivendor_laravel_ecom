@@ -69,14 +69,14 @@ class BannerController extends Controller
         $sortBy = ($request->input('sortBy')) ? $request->input('sortBy') : 'banners.created_at';
         $order = ($request->input('order')) ? $request->input('order') : 'DESC';
         $offset = !empty($request->input('offset')) ? $request->input('offset') : 0 ;
-        $limit =  !empty($request->input('limit')) ? $request->input('limit') : Config("Reading.records_per_page"); 
+        $limit =  !empty($request->input('limit')) ? $request->input('limit') : Config("Reading.records_per_page");
 
         $results = $DB->orderBy($sortBy, $order)->offset($offset)->limit($limit)->get();
         $totalResults = $DB->count();
-        
+
         if(!empty($results)) {
             foreach($results as &$result) {
-               
+
 
                 if($result->type == "full_image") {
                     $result->type_name = "Full Image";
@@ -102,7 +102,7 @@ class BannerController extends Controller
     {
         return View("admin.$this->model.add");
     }
-    
+
     public function edit(Request $request, $enuserid = null)
     {
         $user_id = '';
@@ -133,7 +133,7 @@ class BannerController extends Controller
                     'type' => 'required',
                     // 'image' => 'required_if:type,full_image,left_image,right_image|mimes:jpg,jpeg,png',
                     // 'video' => 'required_if:type,video|mimetypes:video/mp4,video/quicktime',
-                    'image' => $request->input('type') === 'video' ? 'nullable' : 'required_if:type,full_image,left_image,right_image|mimes:jpg,jpeg,png',
+                    'image' => $request->input('type') === 'video' ? 'nullable' : 'required_if:type,full_image,left_image,right_image|mimes:jpg,jpeg,png,webp',
                     'video' => $request->input('type') === 'video' ?'required_if:type,video|mimetypes:video/mp4,video/quicktime' : 'nullable',
                     'description' => 'required_if:type,left_image,right_image',
                     // 'height' => 'required_if:type,full_image,left_image,right_image',
@@ -150,17 +150,17 @@ class BannerController extends Controller
                 )
             );
             if ($validator->fails()) {
-                echo "<pre>"; print_r($validator->errors()); die;
                 return redirect()->back()->withErrors($validator)->withInput();
             } else {
                 DB::beginTransaction();
                 $obj                                = new Banner;
-                
+
                 $obj->type                          = $request->input('type');
                 $obj->description                   = !empty($request->input('description')) ? $request->input('description') : "";
                 $obj->height                        = !empty($request->input('height')) ? $request->input('height') : NULL;
                 $obj->width                         = !empty($request->input('width')) ? $request->input('width') : NULL;
                 $obj->url                           = !empty($request->input('url')) ? $request->input('url') : "";
+                $obj->order_number                           = !empty($request->input('order_number')) ? $request->input('order_number') : "";
 
                 if ($request->hasFile('image')) {
                     $extension = $request->file('image')->getClientOriginalExtension();
@@ -190,7 +190,7 @@ class BannerController extends Controller
                         $obj->video = $folderName . $fileName;
                     }
                 }
-               
+
                 $obj->save();
                 $lastId = $obj->id;
                 if(!empty($lastId)){
@@ -216,7 +216,7 @@ class BannerController extends Controller
         } else {
             $thisData = $request->all();
             if (!empty($thisData)) {
-                
+
                 $validator = Validator::make(
                     array(
                         'type'               => $request->input('type'),
@@ -232,7 +232,7 @@ class BannerController extends Controller
                         'image' => (($request->input('type') === 'video' ) || (($request->input('type') !== 'video' && empty($request->image) && $model->type === $request->input('type') ))) ? 'nullable' : 'required_if:type,full_image,left_image,right_image|mimes:jpg,jpeg,png',
                         'video' =>(($request->input('type') !== 'video' ) || (($request->input('type') === 'video' && empty($request->video) && $model->type === $request->input('type')))) ? 'nullable' :'required_if:type,video|mimetypes:video/mp4,video/quicktime' ,
                         'description' => 'required_if:type,left_image,right_image',
-    
+
                     ),
                     array(
                         "type.required" => trans("The Banner type field is required."),
@@ -243,12 +243,12 @@ class BannerController extends Controller
                         "description.required_if" => trans("The description field is required."),
                     )
                 );
-                
+
                 if ($validator->fails()) {
                     return Redirect::back()
                         ->withErrors($validator)->withInput();
                 }else{
-                    
+
                     DB::beginTransaction();
                     $obj                                = $model;
                     $obj->type                          = $request->input('type');
@@ -256,6 +256,7 @@ class BannerController extends Controller
                     $obj->height                        = !empty($request->input('height')) ? $request->input('height') : $model->height;
                     $obj->width                         = !empty($request->input('width')) ? $request->input('width') : $model->width;
                     $obj->url                           = !empty($request->input('url')) ? $request->input('url') : $model->url;
+                    $obj->order_number                           = !empty($request->input('order_number')) ? $request->input('order_number') : "";
 
                     if ($request->hasFile('image')) {
                         $extension = $request->file('image')->getClientOriginalExtension();
@@ -285,11 +286,11 @@ class BannerController extends Controller
                             $obj->video = $folderName . $fileName;
                         }
                     }
-                
+
                     $obj->save();
                     $lastId = $obj->id;
                     if(!empty($lastId)){
-                        
+
                         DB::commit();
                     }else{
                         DB::rollback();
@@ -315,7 +316,7 @@ class BannerController extends Controller
         }
         Banner::where('id',$user_id)->delete();
         Session()->flash('flash_notice', trans("Banner has been removed successfully."));
-        
+
         return back();
     }
 
@@ -348,7 +349,7 @@ class BannerController extends Controller
         if (!empty($enuserid)) {
 
             $user_id = base64_decode($enuserid);
-            $userDetails = Banner::where('blogs.id',$user_id)->select('blogs.*')->first();
+            $userDetails = Banner::where('banners.id',$user_id)->select('banners.*')->first();
 
             $data = compact('user_id', 'userDetails');
 

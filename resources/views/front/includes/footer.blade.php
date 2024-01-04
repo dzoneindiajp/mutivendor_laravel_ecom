@@ -80,10 +80,10 @@
                         <br />
                         <div class="social-share-area mt-10">
                             <div class="social-icon">
-                                <a href="#"><i class="fa fa-facebook"></i></a>
-                                <a href="#"><i class="fa fa-twitter"></i></a>
-                                <a href="#"><i class="fa fa-youtube-play"></i></a>
-                                <a href="#"><i class="fa fa-instagram"></i></a>
+                                <a href="{{Config("Social.facebook")}}"><i class="fa fa-facebook"></i></a>
+                                <a href="{{Config("Social.twitter")}}"><i class="fa fa-twitter"></i></a>
+                                <a href="{{Config("Social.youtube")}}"><i class="fa fa-youtube-play"></i></a>
+                                <a href="{{Config("Social.instagram")}}"><i class="fa fa-instagram"></i></a>
                             </div>
 
                         </div>
@@ -101,14 +101,16 @@
                 <div class="row align-items-center">
                     <div class="col-md-8 order-2 order-md-1">
                         <div class="copyright-text">
-                            <p>&copy; <b>Copyright @ 2023 Jaipur Jewellery House</b> All Rights Reserved Developed by <a
-                                    href="https://dzoneindia.co.in/" target="_blank"><b>DZone India</b></a></p>
+                            <p>{{Config("Site.copyright")}}</p>
 
                         </div>
                     </div>
+                    @php
+                        $payment_icon = Config('constant.SETTINGS_IMAGE_URL').Config('Site.paymet_image');
+                    @endphp
                     <div class="col-md-4 ms-auto order-1 order-md-2">
                         <div class="footer-payment">
-                            <img src="{{asset('assets/front/img/payment.png')}}" alt="">
+                            <img src="{{$payment_icon}}" alt="">
                         </div>
                     </div>
                 </div>

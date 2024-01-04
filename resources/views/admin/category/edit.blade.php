@@ -4,6 +4,7 @@
 <link href="{{ asset('assets/plugin/tagify/tagify.css') }}" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+<script src="{{ asset('assets/js/ckeditor/ckeditor.js') }}"></script>
 @endpush
 @section('content')
 @include('admin.layout.response_message')
@@ -92,6 +93,15 @@
                             <div class="invalid-feedback">
                                 {{ $errors->first('video') }}
                             </div>
+                            @endif
+                        </div>
+                        <div class="col-xl-12 mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control @error('title') is-invalid @enderror" name="description" id="description" cols="30" rows="5">{!! isset($category->description) ? $category->description: old('description') !!}</textarea>
+                            @if ($errors->has('description'))
+                                <div class=" invalid-feedback">
+                                    {{ $errors->first('description') }}
+                                </div>
                             @endif
                         </div>
                         <div class="col-xl-6 mb-3">
@@ -192,15 +202,15 @@
                         <input type="hidden" id="taxValues" value="{{ json_encode($categoryTaxesValues) }}">
 
                         <div id="taxCountFields" >
-                           
+
                             @forelse($taxes as $tax)
                             <div class="mb-3 taxDiv{{$tax->id}} taxContainers" style="{{($key = array_search($tax->id,$categoryTaxesValues)) ? '' : 'display:none' }}"><label for="tax_counts[{{ $tax->id }}]" class="form-label">{{$tax->name ?? ''}}</label><input type="text" class="form-control" id="tax_counts[{{ $tax->id }}]" name="tax_counts[{{ $tax->id }}]" placeholder="Enter Value" value="{{($key = array_search($tax->id,$categoryTaxesValues)) ? $key : '' }}" fdprocessedid="fdaby"></div>
                             @empty
-                                
+
                             @endforelse
-                            
-                            
-                           
+
+
+
                         </div>
                     </div>
                 </div>
@@ -230,7 +240,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         // Add an event listener to the taxesSelect dropdown
         $('#taxesSelect').on('change', function () {
-           
+
             var selectedTaxes = $(this).val();
             $('.taxContainers').hide();
             $('.taxContainers').find('input').prop('disabled',true);
@@ -251,5 +261,12 @@
     });
 </script>
 
+<script>
+    CKEDITOR.replace(<?php echo 'description'; ?>, {
+        filebrowserUploadUrl: '<?php echo URL()->to('base/uploder'); ?>',
+        enterMode: CKEDITOR.ENTER_BR
+    });
+    CKEDITOR.config.allowedContent = true;
+</script>
 
 @endpush

@@ -1,33 +1,25 @@
-   
+
 @extends('front.layouts.app')
 @section('content')
 <!-- slider area start -->
     <div class="hero-area main-slider">
         <div class="hero-slider-active slider-arrow-style slick-dot-style hero-dot">
-            <div class="hero-single-slide hero-1 d-flex align-items-center">
-                <img src="{{ asset('assets/front/img/slider/slide1.png')}}" width="100%" />
-                <div class="slider-content">
-                    <!--<h1>Regal Elegance, Affordable Price: Discover Exquisite jewellery fit for Royalty </h1>
-                    <a href="#" class="slider-btn">
-                        Explore <svg width="30" height="9" viewBox="0 0 30 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1 4C0.723858 4 0.5 4.22386 0.5 4.5C0.5 4.77614 0.723858 5 1 5V4ZM29.3536 4.85355C29.5488 4.65829 29.5488 4.34171 29.3536 4.14645L26.1716 0.964466C25.9763 0.769204 25.6597 0.769204 25.4645 0.964466C25.2692 1.15973 25.2692 1.47631 25.4645 1.67157L28.2929 4.5L25.4645 7.32843C25.2692 7.52369 25.2692 7.84027 25.4645 8.03553C25.6597 8.2308 25.9763 8.2308 26.1716 8.03553L29.3536 4.85355ZM1 5H29V4H1V5Z" fill="white" />
-                        </svg>
-                    </a>-->
-                </div>
-            </div>
-            <div class="hero-single-slide hero-1 d-flex align-items-center">
+            @if(!empty($all_top_sliders))
+                @foreach($all_top_sliders as $banner)
+                    <div class="hero-single-slide hero-1 d-flex align-items-center">
+                        <img src="{{ $banner['image']}}" width="100%" />
+                        <div class="slider-content">
+                            <!--<h1>Regal Elegance, Affordable Price: Discover Exquisite jewellery fit for Royalty </h1>
+                            <a href="#" class="slider-btn">
+                                Explore <svg width="30" height="9" viewBox="0 0 30 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1 4C0.723858 4 0.5 4.22386 0.5 4.5C0.5 4.77614 0.723858 5 1 5V4ZM29.3536 4.85355C29.5488 4.65829 29.5488 4.34171 29.3536 4.14645L26.1716 0.964466C25.9763 0.769204 25.6597 0.769204 25.4645 0.964466C25.2692 1.15973 25.2692 1.47631 25.4645 1.67157L28.2929 4.5L25.4645 7.32843C25.2692 7.52369 25.2692 7.84027 25.4645 8.03553C25.6597 8.2308 25.9763 8.2308 26.1716 8.03553L29.3536 4.85355ZM1 5H29V4H1V5Z" fill="white" />
+                                </svg>
+                            </a>-->
+                        </div>
+                    </div>
+                @endforeach
+            @endif
 
-                <img src="{{ asset('assets/front/img/slider/slide1.png')}}" width="100%" />
-                <div class="slider-content">
-                    <!--<h1>Regal Elegance, Affordable Price: Discover Exquisite jewellery fit for Royalty </h1>
-                    <a href="#" class="slider-btn">
-                        Explore
-                        <svg width="30" height="9" viewBox="0 0 30 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1 4C0.723858 4 0.5 4.22386 0.5 4.5C0.5 4.77614 0.723858 5 1 5V4ZM29.3536 4.85355C29.5488 4.65829 29.5488 4.34171 29.3536 4.14645L26.1716 0.964466C25.9763 0.769204 25.6597 0.769204 25.4645 0.964466C25.2692 1.15973 25.2692 1.47631 25.4645 1.67157L28.2929 4.5L25.4645 7.32843C25.2692 7.52369 25.2692 7.84027 25.4645 8.03553C25.6597 8.2308 25.9763 8.2308 26.1716 8.03553L29.3536 4.85355ZM1 5H29V4H1V5Z" fill="white" />
-                        </svg>
-                    </a>-->
-                </div>
-            </div>
         </div>
     </div>
     <!-- slider area end -->
@@ -35,13 +27,15 @@
     <div class="banner-statistic-one pt-30 top-space-category-1 top-category-s">
         <div class="container">
             <div class="row">
+                @if(!empty($all_categories))
+                @foreach($all_categories as $all_category)
                 <div class="col-md-3 col-lg-3 col-6">
                     <div class="img-container img-full fix mb-sm-30">
-                        <img src="{{ asset('assets/front/img/bestseller/cate-1.jpg')}}" alt="banner image">
+                        <img src="{{ $all_category['image']}}" alt="banner image">
                         <div class="category-heading">
                             <div class="border-category">
                                 <!--<h5>Category</h5>-->
-                                <h2>Rings</h2>
+                                <h2>{{ $all_category['name']}}</h2>
                                 <a href="#" class="home-btn btn" tabindex="0">
                                     Check more products &nbsp;&nbsp;&nbsp;
                                     <svg class="right-arrow" width="30" height="9" viewBox="0 0 30 9" xmlns="http://www.w3.org/2000/svg">
@@ -52,7 +46,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-lg-3 col-6">
+                @endforeach
+                @endif
+                {{-- <div class="col-md-3 col-lg-3 col-6">
                     <div class="img-container img-full fix mb-sm-30">
                         <img src="{{ asset('assets/front/img/bestseller/cate-2.jpg')}}" alt="banner image">
                         <div class="category-heading">
@@ -96,7 +92,7 @@
                             </a>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>
@@ -718,9 +714,13 @@
     </div>
     <!-- featured product area end -->
     <!-- offer area start -->
+    @if(!empty($all_middle_sliders))
     <div class="offer-img">
-        <img src="{{ asset('assets/front/img/bestseller/offer-2.png')}}" />
+        @foreach($all_middle_sliders as $all_middle_slider)
+        <img src="{{ $all_middle_slider['image']}}" />
+        @endforeach
     </div>
+    @endif
     <!-- offer area end -->
     <!-- featured product area start -->
     <div class="page-section feature-product-home pt-100 pb-14 pt-sm-30 pb-sm-0">
@@ -1488,5 +1488,5 @@
         </div>
     </div>
     <!-- serviec area end -->
-    
+
 @endsection

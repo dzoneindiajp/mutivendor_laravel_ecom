@@ -19,7 +19,7 @@ class CmspagesController extends Controller
         $this->request = $request;
     }
     public function index(Request $request)
-    {  
+    {
         $DB = Cms::query();
         $searchVariable = array();
         $inputGet = $request->all();
@@ -52,7 +52,7 @@ class CmspagesController extends Controller
         $sortBy = ($request->input('sortBy')) ? $request->input('sortBy') : 'created_at';
         $order = ($request->input('order')) ? $request->input('order') : 'DESC';
         $offset = !empty($request->input('offset')) ? $request->input('offset') : 0 ;
-        $limit =  !empty($request->input('limit')) ? $request->input('limit') : Config("Reading.records_per_page"); 
+        $limit =  !empty($request->input('limit')) ? $request->input('limit') : Config("Reading.records_per_page");
 
         $results = $DB->orderBy($sortBy, $order)->offset($offset)->limit($limit)->get();
         $totalResults = $DB->count();
@@ -61,7 +61,7 @@ class CmspagesController extends Controller
 
             return  View("admin.$this->model.load_more_data", compact('results','totalResults'));
         }else{
-            
+
             return  View("admin.$this->model.index", compact('results','totalResults'));
         }
     }
@@ -97,7 +97,7 @@ class CmspagesController extends Controller
                 $obj->body      = $request->input('body');
                 $obj->save();
                 $lastId = $obj->id;
-                
+
                 Session()->flash('success',"Cms has been added successfully");
                 return Redirect()->route("admin-". $this->model . ".index");
             }
@@ -117,14 +117,14 @@ class CmspagesController extends Controller
         return view("admin.$this->model.view", $data);
     }
 
-   
+
     public function edit($encmsid)
     {
         $cms_id = '';
         if (!empty($encmsid)) {
             $cms_id = base64_decode($encmsid);
             $cmsDetails         =   Cms::find($cms_id);
-            
+
             return View("admin.$this->model.edit", compact('cmsDetails'));
 
         }else{
@@ -161,11 +161,11 @@ class CmspagesController extends Controller
                 $obj->body                  = $request->input('body');
                 $obj->save();
                 $lastId                     =    $obj->id;
-                
+
                 Session()->flash('success', "Cms has been updated successfully");
                 return Redirect()->route("admin-".$this->model . ".index");
             }
-        
+
         }else{
             return Redirect()->route("admin-".$this->model . ".index");
         }
@@ -184,7 +184,7 @@ class CmspagesController extends Controller
             $cms_id     = base64_decode($encmsid);
         }
         $CmsDetails     =  Cms::find($cms_id);
-        
+
         if ($CmsDetails) {
             $CmsDetails->delete();
             Session()->flash('flash_notice', trans("Cms has been removed successfully"));

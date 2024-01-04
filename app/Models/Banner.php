@@ -12,47 +12,36 @@ class Banner extends Model
     public $table = 'banners';
 
     function getActiveSliders(){
-        $language_id	        =   getCurrentLanguage();
 
-        $all_sliders 			=   Banner::where('banners.is_active', 1)->where('banners.is_secondary_banner',0)->where('banners.is_side_banner',0)
-                                            ->leftjoin('banner_descriptions','banner_descriptions.parent_id','banners.id')
-                                            ->where('banner_descriptions.language_id',$language_id)
-                                            ->select('banners.id','banner_descriptions.description','banners.image','banners.mobile_image','banners.video_path','banners.is_secondary_banner','banners.is_side_banner')->get()->toArray();
+        $all_sliders 			=   Banner::where('banners.is_active', 1)->where('banners.is_deleted', 0)
+                                            ->select('banners.id','banners.description','banners.image','banners.video','banners.url','banners.height','banners.width','banners.order_number')->get()->toArray();
         return $all_sliders;
     }
 
-    function getActiveSecondarySlider(){
-        $language_id	        =   getCurrentLanguage();
-
-        $secondary_slider 			=   Banner::where('banners.is_active', 1)->where('banners.is_secondary_banner',1)
-                                            ->leftjoin('banner_descriptions','banner_descriptions.parent_id','banners.id')
-                                            ->where('banner_descriptions.language_id',$language_id)
-                                            ->select('banners.id','banner_descriptions.description','banners.image','banners.mobile_image','banners.video_path','banners.is_secondary_banner','banners.is_side_banner')->first();
-        return $secondary_slider;
+    function getTopActiveSliders(){
+        $all_top_sliders 			=   Banner::where('banners.is_active', 1)->where('banners.is_deleted', 0)
+        ->where('banners.order_number', 1)
+        ->select('banners.id','banners.description','banners.image','banners.video','banners.url','banners.height','banners.width','banners.order_number')->get()->toArray();
+        return $all_top_sliders;
     }
-    function getActiveSideSlider(){
-        $language_id	        =   getCurrentLanguage();
 
-        $secondary_slider 			=   Banner::where('banners.is_active', 1)->where('banners.is_side_banner',1)
-                                            ->leftjoin('banner_descriptions','banner_descriptions.parent_id','banners.id')
-                                            ->where('banner_descriptions.language_id',$language_id)
-                                            ->select('banners.id','banner_descriptions.description','banners.image','banners.mobile_image','banners.video_path','banners.is_secondary_banner','banners.is_side_banner')->first();
-        return $secondary_slider;
+    function getMiddleActiveSliders(){
+        $all_top_sliders 			=   Banner::where('banners.is_active', 1)->where('banners.is_deleted', 0)
+                                            ->where('banners.order_number', 2)
+                                            ->select('banners.id','banners.description','banners.image','banners.video','banners.url','banners.height','banners.width','banners.order_number')->get()->toArray();
+
+        return $all_top_sliders;
     }
 
     function getImageAttribute($value = ""){
         if($value != "" && File::exists(Config('constant.BANNER_IMAGE_ROOT_PATH').$value)){
             return  Config('constant.BANNER_IMAGE_URL').$value;
-        }else {
-            return  Config('constant.WEBSITE_IMG_URL')."astro/noimage.png";
         }
     }
 
     function getVideoAttribute($value = ""){
         if($value != "" && File::exists(Config('constant.BANNER_VIDEO_ROOT_PATH').$value)){
             return  Config('constant.BANNER_VIDEO_URL').$value;
-        }else {
-            return  Config('constant.WEBSITE_IMG_URL')."astro/noimage.png";
         }
     }
 

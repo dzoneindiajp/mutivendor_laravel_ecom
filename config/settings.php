@@ -1,4 +1,10 @@
 <?php 
+config(["Contact.address"=>"100 S Congress Ave, STE 2000 Austin, TX"]);
+config(["Contact.address_icon"=>"fa fa-map-marker"]);
+config(["Contact.contact_email"=>"support@Jaipurjewellaryhouse.com"]);
+config(["Contact.contact_number"=>"+1(858)568-1132"]);
+config(["Contact.mail_icon"=>"fa fa-envelope"]);
+config(["Contact.phone_icon"=>"fa fa-mobile"]);
 config(["Reading.date_format"=>"Y-m-d"]);
 config(["Reading.records_per_page"=>"10"]);
 config(["Site.copyright"=>"Copyright © 2023 Jaipurjewellaryhouse."]);
@@ -6,9 +12,10 @@ config(["Site.fav_icon"=>"NOV2023/1699297022-settings.ico"]);
 config(["Site.from_email"=>"noreply@jaipurjewellary.com"]);
 config(["Site.landline"=>"1234567895"]);
 config(["Site.logo"=>"NOV2023/1699296776-settings.jpg"]);
+config(["Site.paymet_image"=>"JAN2024/1704225873-settings.png"]);
 config(["Site.phone_number"=>"8279249283"]);
 config(["Site.title"=>"Jaipur Jewellery House."]);
 config(["Social.facebook"=>"www.facebook.com"]);
 config(["Social.instagram"=>"www.instagram.com"]);
-config(["Social.whatsapp"=>"www.web.whatsapp.com"]);
-config(["Social.whatsapp_allow"=>"0"]);
+config(["Social.twitter"=>"www.twitter.com"]);
+config(["Social.youtube"=>"www.youtube.com"]);
