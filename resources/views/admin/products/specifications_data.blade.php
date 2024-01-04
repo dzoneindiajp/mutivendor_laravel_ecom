@@ -1,6 +1,6 @@
 @if(!empty(($specificationsData)))
-<div id="kt_repeater_1" class="ml-7">
-    <div class="form-group row" id="kt_repeater_1">
+<div id="kt_repeater_specifications" class="ml-7">
+    <div class="form-group row" id="kt_repeater_specifications">
         <div data-repeater-list="specificationDataArr" class="col-lg-12">
             @foreach($specificationsData as $dataKey => $dataVal)
             @if(!empty($dataVal['name']) && !empty($dataVal['id']) )
@@ -54,7 +54,7 @@ var KTFormRepeater = function() {
 
     var demo1 = function() {
 
-        $('#kt_repeater_1').repeater({
+        $('#kt_repeater_specifications').repeater({
             initEmpty: false,
 
             defaultValues: {
