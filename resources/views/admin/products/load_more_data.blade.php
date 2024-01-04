@@ -14,6 +14,12 @@
     <td>{{ $product->buying_price ?? 0 }}</td>
     <td>{{ $product->selling_price ?? 0 }}</td>
     <td>
+        <input type="checkbox" class="in-stock-checkbox" data-product-id="{{ $product->id }}" {{ $product->in_stock ? 'checked' : '' }}>
+    </td>
+    <td>
+        <input type="checkbox" class="is-featured-checkbox" data-product-id="{{ $product->id }}" {{ $product->is_featured ? 'checked' : '' }}>
+    </td>
+    <td>
         <div class="hstack gap-2 flex-wrap">
             <a href="{{ route('admin-product-view',['token' => encrypt($product->id)]) }}" class="btn btn-info"><i
                     class="ri-eye-line"></i></a>

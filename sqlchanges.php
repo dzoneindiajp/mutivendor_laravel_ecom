@@ -10,3 +10,8 @@ ALTER TABLE `users` ADD `plan_id` BIGINT(20) NULL DEFAULT NULL AFTER `designatio
 
 ALTER TABLE `plans` ADD `description` TEXT NULL DEFAULT NULL AFTER `name`;
 ALTER TABLE `plans` ADD `term_conditions` TEXT NULL DEFAULT NULL AFTER `description`;
+
+
+
+
+ALTER TABLE `banners` ADD `order_number` INT NULL DEFAULT NULL AFTER `width`;

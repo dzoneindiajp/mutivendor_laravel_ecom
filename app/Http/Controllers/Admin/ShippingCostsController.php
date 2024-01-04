@@ -17,6 +17,7 @@ use App\Models\CategorySpecification;
 use App\Models\Specification;
 use App\Models\ShippingAreaCity;
 use App\Models\ShippingArea;
+use App\Models\ShippingCost;
 use App\Models\ShippingCompany;
 use App\Models\City;
 
@@ -37,10 +38,12 @@ class ShippingCostsController extends Controller
             $dep_id = base64_decode($endesid);
         }
         $ShippingAreaDetails  =  ShippingArea::where('shipping_areas.id', $dep_id)->first();
+
         if (empty($dep_id) && empty($ShippingAreaDetails) ) {
             return Redirect()->back();
         }
-        $DB                    =    ShippingArea::query();
+        $shipping_company_id = $ShippingAreaDetails->shipping_company_id;
+        $DB                    =    ShippingCost::where('shipping_area_id', $dep_id);
         $searchVariable        =    array();
         $inputGet            =    $request->all();
         if ($request->all()) {
@@ -60,27 +63,24 @@ class ShippingCostsController extends Controller
             if ((!empty($searchData['date_from'])) && (!empty($searchData['date_to']))) {
                 $dateS = $searchData['date_from'];
                 $dateE = $searchData['date_to'];
-                $DB->whereBetween('shipping_areas.created_at', [$dateS . " 00:00:00", $dateE . " 23:59:59"]);
+                $DB->whereBetween('shipping_costs.created_at', [$dateS . " 00:00:00", $dateE . " 23:59:59"]);
             } elseif (!empty($searchData['date_from'])) {
                 $dateS = $searchData['date_from'];
-                $DB->where('shipping_areas.created_at', '>=', [$dateS . " 00:00:00"]);
+                $DB->where('shipping_costs.created_at', '>=', [$dateS . " 00:00:00"]);
             } elseif (!empty($searchData['date_to'])) {
                 $dateE = $searchData['date_to'];
-                $DB->where('shipping_areas.created_at', '<=', [$dateE . " 00:00:00"]);
+                $DB->where('shipping_costs.created_at', '<=', [$dateE . " 00:00:00"]);
             }
             foreach ($searchData as $fieldName => $fieldValue) {
                 if ($fieldValue != "") {
-                    if ($fieldName == "name") {
-                        $DB->where("shipping_areas.name", 'like', '%' . $fieldValue . '%');
-                    }
-                    if ($fieldName == "is_active") {
-                        $DB->where("shipping_areas.is_active", $fieldValue);
+                    if ($fieldName == "weight") {
+                        $DB->where("shipping_costs.weight", 'like', '%' . $fieldValue . '%');
                     }
                 }
                 $searchVariable    =    array_merge($searchVariable, array($fieldName => $fieldValue));
             }
         }
-        $DB->select("shipping_areas.*");
+        $DB->select("shipping_costs.*");
         $sortBy = ($request->input('sortBy')) ? $request->input('sortBy') : 'created_at';
         $order  = ($request->input('order')) ? $request->input('order')   : 'Desc';
         $offset = !empty($request->input('offset')) ? $request->input('offset') : 0 ;
@@ -91,9 +91,9 @@ class ShippingCostsController extends Controller
 
         if($request->ajax()){
 
-            return  View("admin.$this->model.load_more_data", compact('results','totalResults','dep_id'));
+            return  View("admin.$this->model.load_more_data", compact('results','totalResults','dep_id','shipping_company_id'));
         }else{
-            return  View("admin.$this->model.index", compact('results','totalResults','dep_id'));
+            return  View("admin.$this->model.index", compact('results','totalResults','dep_id','shipping_company_id'));
         }
     }
 
@@ -106,47 +106,33 @@ class ShippingCostsController extends Controller
             return Redirect()->back();
         }
         $formData =    $request->all();
-        $ShippingCompanyDetails  =  ShippingCompany::where('shipping_companies.id', $dep_id)->first();
+        $ShippingCompanyDetails  =  ShippingArea::where('shipping_areas.id', $dep_id)->first();
         if ($request->isMethod('POST')) {
             if (!empty($formData)) {
                 $validator = Validator::make(
                     $request->all(),
                     array(
-                        'name' => 'required',
+                        'weight' => 'required|numeric',
+                        'amount' => 'required|numeric',
                     ),
                     array(
-                        "name.required" => trans("The name field is required."),
+                        "weight.required" => trans("The weight field is required."),
+                        "amount.required" => trans("The amount field is required."),
                     )
                 );
                 if ($validator->fails()) {
                     return Redirect::back()->withErrors($validator)->withInput();
                 } else {
                     DB::beginTransaction();
-                    $obj                                = new ShippingArea;
-                    $obj->shipping_company_id           = $dep_id;
-                    $obj->name                          = $request->input('name');
+                    $obj                                = new ShippingCost;
+                    $obj->shipping_company_id           = $ShippingCompanyDetails->shipping_company_id;
+                    $obj->shipping_area_id              = $dep_id;
+                    $obj->weight                          = $request->input('weight');
+                    $obj->amount                          = $request->input('amount');
                     $obj->save();
                     $lastId = $obj->id;
 
                     if(!empty($lastId)){
-                        ShippingAreaCity::where('shipping_area_id', $lastId)->delete();
-                        if(!empty($request->shippingAreaData) && is_array($request->shippingAreaData)){
-                            foreach($request->shippingAreaData as $ShippingAreaCityKey => $ShippingAreaCityVal){
-                                // $checkIfvarientExists = Variant::where('id',$variantVal)->first();
-                                $cityId = $ShippingAreaCityVal;
-
-                                $obj2    =   new ShippingAreaCity;
-                                $obj2->shipping_area_id = $lastId;
-                                $obj2->city_id = $cityId;
-                                $obj2->save();
-                                if(empty($obj2->id)){
-                                    DB::rollback();
-                                    Session()->flash('flash_notice', 'Something Went Wrong');
-                                    return Redirect::route('admin-shipping-costs.index', $endesid);
-                                }
-
-                            }
-                        }
                         DB::commit();
                     }else{
                         DB::rollback();
@@ -154,12 +140,11 @@ class ShippingCostsController extends Controller
                         return Redirect::route('admin-shipping-costs.index', $endesid);
                     }
                     return redirect()->route('admin-shipping-costs.index', $endesid)
-                    ->with('success', 'Shipping area created successfully');
+                    ->with('success', 'Shipping cost created successfully');
                 }
             }
         }
-        $cities = City::select('id', 'name')->get();
-        return  View("admin.$this->model.create", compact('dep_id','cities'));
+        return  View("admin.$this->model.create", compact('dep_id', 'ShippingCompanyDetails'));
     }
 
     public function update(Request $request, $endesid = null)
@@ -168,8 +153,8 @@ class ShippingCostsController extends Controller
         if (!empty($endesid)) {
             $des_id = base64_decode($endesid);
         }
-        $ShippingAreaDetails  =  ShippingArea::where('shipping_areas.id', $des_id)->first();
-        if (empty($ShippingAreaDetails)) {
+        $ShippingCostDetails  =  ShippingCost::where('shipping_costs.id', $des_id)->first();
+        if (empty($ShippingCostDetails)) {
             return Redirect()->back();
         }
         if ($request->isMethod('POST')) {
@@ -178,56 +163,39 @@ class ShippingCostsController extends Controller
                 $validator = Validator::make(
                     $request->all(),
                     array(
-                        'name' => 'required',
+                        'weight' => 'required|numeric',
+                        'amount' => 'required|numeric',
                     ),
                     array(
-                        "name.required" => trans("The name field is required."),
+                        "weight.required" => trans("The weight field is required."),
+                        "amount.required" => trans("The amount field is required."),
                     )
                 );
                 if ($validator->fails()) {
                     return Redirect::back()->withErrors($validator)->withInput();
                 } else {
                     DB::beginTransaction();
-                    $obj                                = ShippingArea::find($des_id);
-                    $obj->name                          = $request->input('name');
+                    $obj                                = ShippingCost::find($des_id);
+                    $obj->shipping_company_id           = $ShippingCostDetails->shipping_company_id;
+                    $obj->shipping_area_id              = $ShippingCostDetails->shipping_area_id;
+                    $obj->weight                          = $request->input('weight');
+                    $obj->amount                          = $request->input('amount');
                     $obj->save();
                     $lastId = $obj->id;
                     if(!empty($lastId)){
-                        ShippingAreaCity::where('shipping_area_id', $lastId)->delete();
-                        if(!empty($request->shippingAreaData) && is_array($request->shippingAreaData)){
-                            foreach($request->shippingAreaData as $ShippingAreaCityKey => $ShippingAreaCityVal){
-                                // $checkIfvarientExists = Variant::where('id',$variantVal)->first();
-                                $cityId = $ShippingAreaCityVal;
-
-                                $obj2    =   new ShippingAreaCity;
-                                $obj2->shipping_area_id = $lastId;
-                                $obj2->city_id = $cityId;
-                                $obj2->save();
-                                if(empty($obj2->id)){
-                                    DB::rollback();
-                                    Session()->flash('flash_notice', 'Something Went Wrong');
-                                    return Redirect::route('admin-shipping-costs.index', $endesid);
-                                }
-
-                            }
-                        }
-
                         DB::commit();
                     }else{
                         DB::rollback();
                         Session()->flash('flash_notice', 'Something Went Wrong');
                         return Redirect::route('admin-shipping-costs.index', $endesid);
                     }
-                    Session()->flash('flash_notice', trans("Shipping area updated successfully."));
+                    Session()->flash('flash_notice', trans("Shipping cost updated successfully."));
                     return Redirect::route('admin-shipping-costs.index', $endesid);
                 }
             }
         }
 
-        $cities = City::select('id', 'name')->get();
-        $ShippingAreaCity = ShippingAreaCity::where('shipping_area_id',$des_id)->pluck('city_id')->toArray();
-
-        return  View("admin.$this->model.edit", compact('ShippingAreaDetails','cities','ShippingAreaCity'));
+        return  View("admin.$this->model.edit", compact('ShippingCostDetails'));
     }
 
 
@@ -238,15 +206,13 @@ class ShippingCostsController extends Controller
             if (!empty($token)) {
                 $categoryId = base64_decode($token);
             }
-            $category = ShippingArea::find($categoryId);
+            $category = ShippingCost::find($categoryId);
             if (empty($category)) {
                 return Redirect()->route($this->model . '.index');
             }
             if ($category) {
-                ShippingArea::where('id', $categoryId)->delete();
-                ShippingAreaCity::where('shipping_area_id',$categoryId)->delete();
-
-                Session()->flash('flash_notice', trans("Shipping area has been removed successfully."));
+                ShippingCost::where('id', $categoryId)->delete();
+                Session()->flash('flash_notice', trans("Shipping cost has been removed successfully."));
             }
             return back();
         } catch (Exception $e) {
@@ -258,11 +224,11 @@ class ShippingCostsController extends Controller
     public function changeStatus($modelId = 0, $status = 0)
     {
         if ($status == 1) {
-            $statusMessage = trans("Shipping area has been actvated successfully");
+            $statusMessage = trans("Shipping cost has been actvated successfully");
         } else {
-            $statusMessage = trans("Shipping area has been deactivated successfully");
+            $statusMessage = trans("Shipping cost has been deactivated successfully");
         }
-        $category = ShippingArea::find($modelId);
+        $category = ShippingCost::find($modelId);
         if ($category) {
             $currentStatus = $category->is_active;
             if (isset($currentStatus) && $currentStatus == 0) {

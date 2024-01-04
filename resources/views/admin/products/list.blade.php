@@ -8,6 +8,13 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 @endpush
 
+<style>
+    .table-container {
+        width: 100%;
+        overflow-x: auto; /* Add a scrollbar for horizontal overflow */
+    }
+</style>
+
 @section('content')
 
 @include('admin.layout.response_message')
@@ -128,41 +135,46 @@
                         <span class="badge ms-2 totalDataCount">{{ $totalResults ?? 0 }}</span> </button>
 
                 </div>
-                <table id="datatable-basic" data-sorting="" data-order="" class="table table-bordered text-nowrap"
-                    style="width:100%">
-                    <thead>
-                        <tr>
-                            <th class="sortable" data-column="products.name">Name <i class="sort-icon ri-sort-asc"></i></th>
-                            <th class="sortable" data-column="products.slug">Slug <i class="sort-icon ri-sort-asc"></i></th>
-                            <th class="sortable" data-column="category_name">Category <i class="sort-icon ri-sort-asc"></i></th>
-                            <th class="sortable" data-column="sub_category_name">Sub Category <i class="sort-icon ri-sort-asc"></i>
-                            </th>
-                            <th class="sortable" data-column="child_category_name">Child Category <i class="sort-icon ri-sort-asc"></i>
-                            </th>
-                            <th>Image</th>
-                            <th class="sortable" data-column="products.buying_price">Buying Price <i class="sort-icon ri-sort-asc"></i></th>
-                            <th class="sortable" data-column="products.selling_price">Selling Price <i class="sort-icon ri-sort-asc"></i></th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr id="loader-row" style="display: none;">
-                            <td colspan="7" style="text-align: center;">
-                                <button class="btn btn-light" type="button" disabled="">
-                                    <span class="spinner-grow spinner-grow-sm align-middle" role="status"
-                                        aria-hidden="true"></span> Loading...
-                                </button>
-                            </td>
-                        </tr>
-                        @if($results->isNotEmpty())
-                        @include('admin.products.load_more_data', ['results' => $results])
-                        @else
-                        <tr>
-                            <td colspan="7" style="text-align: center;">No results found.</td>
-                        </tr>
-                        @endif
-                    </tbody>
-                </table>
+                <div class="table-container">
+                    <table id="datatable-basic" data-sorting="" data-order="" class="table table-bordered text-nowrap"
+                        style="width:100%">
+                        <thead>
+                            <tr>
+                                <th class="sortable" data-column="products.name">Name <i class="sort-icon ri-sort-asc"></i></th>
+                                <th class="sortable" data-column="products.slug">Slug <i class="sort-icon ri-sort-asc"></i></th>
+                                <th class="sortable" data-column="category_name">Category <i class="sort-icon ri-sort-asc"></i></th>
+                                <th class="sortable" data-column="sub_category_name">Sub Category <i class="sort-icon ri-sort-asc"></i>
+                                </th>
+                                <th class="sortable" data-column="child_category_name">Child Category <i class="sort-icon ri-sort-asc"></i>
+                                </th>
+                                <th>Image</th>
+                                <th class="sortable" data-column="products.buying_price">Buying Price <i class="sort-icon ri-sort-asc"></i></th>
+                                <th class="sortable" data-column="products.selling_price">Selling Price <i class="sort-icon ri-sort-asc"></i></th>
+                                <th>In Stock</th>
+                                <th>Featured</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="loader-row" style="display: none;">
+                                <td colspan="7" style="text-align: center;">
+                                    <button class="btn btn-light" type="button" disabled="">
+                                        <span class="spinner-grow spinner-grow-sm align-middle" role="status"
+                                            aria-hidden="true"></span> Loading...
+                                    </button>
+                                </td>
+                            </tr>
+                            @if($results->isNotEmpty())
+                            @include('admin.products.load_more_data', ['results' => $results])
+                            @else
+                            <tr>
+                                <td colspan="7" style="text-align: center;">No results found.</td>
+                            </tr>
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+
                 @if($results->isNotEmpty() && $totalResults > Config('Reading.records_per_page'))
             <div class="my-3" style="display: flex; justify-content: center;">
                 <button class="btn btn-primary-light btn-border-down" fdprocessedid="l5zhli" id="load-more"
@@ -220,6 +232,52 @@ var routeName = '{{route($listRouteName)}}';
 <!-- Sweetalerts JS -->
 <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
 <script src="{{ asset('assets/js/sweet-alerts.js') }}"></script>
+
+<script>
+    $(document).ready(function () {
+        $('.in-stock-checkbox').on('change', function () {
+            var productId = $(this).data('product-id');
+            var inStock = $(this).prop('checked') ? 1 : 0;
+
+            $.ajax({
+                url: "{{ route('admin-product-update-stock') }}", // Replace with your actual route
+                type: 'POST',
+                data: { productId: productId, inStock: inStock },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (response) {
+                    // Handle success (if needed)
+                },
+                error: function (error) {
+                    // Handle error (if needed)
+                }
+            });
+        });
+    });
+
+    $(document).ready(function () {
+        $('.is-featured-checkbox').on('change', function () {
+            var productId = $(this).data('product-id');
+            var isFeatured = $(this).prop('checked') ? 1 : 0;
+
+            $.ajax({
+                url: "{{ route('admin-product-update-featured') }}", // Replace with your actual route
+                type: 'POST',
+                data: { productId: productId, isFeatured: isFeatured },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (response) {
+                    // Handle success (if needed)
+                },
+                error: function (error) {
+                    // Handle error (if needed)
+                }
+            });
+        });
+    });
+</script>
 
 
 @endpush

@@ -58,6 +58,8 @@ Route::prefix('admin')->name('admin-')->group(function () {
             Route::match(['get', 'post'], 'upload-images', [ProductController::class, 'uploadImages'])->name('upload-images');
             Route::get('delete-image', [ProductController::class, 'deleteImage'])->name('delete-image');
             Route::get('update-image-meta-values', [ProductController::class, 'updateImageMetaValues'])->name('update-image-meta-values');
+            Route::post('update-stock', [ProductController::class, 'updateStock'])->name('update-stock');
+            Route::post('update-featured', [ProductController::class, 'updateFeatured'])->name('update-featured');
             Route::prefix('options')->name('options-')->group(function () {
                 Route::get('list', [ProductOptionsController::class, 'index'])->name('list');
                 Route::get('create', [ProductOptionsController::class, 'create'])->name('create');
