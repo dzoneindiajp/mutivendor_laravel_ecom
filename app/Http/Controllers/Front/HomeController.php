@@ -21,8 +21,11 @@ class HomeController extends Controller
 
             $categories = new Category;
             $all_categories = $categories->getActiveCategories();
+
+            $product  =  new Product;
+            $featured_products = $product->getAllFeaturedProducts();
             // echo "<pre>"; print_r($all_categories); die;
-            return view('front.modules.home.index',compact("all_top_sliders", "all_middle_sliders","all_categories"));
+            return view('front.modules.home.index',compact("all_top_sliders", "all_middle_sliders","all_categories","featured_products"));
         } catch (Exception $e) {
             Log::error($e);
             return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);
