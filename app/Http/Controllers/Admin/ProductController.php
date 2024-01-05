@@ -171,11 +171,11 @@ class ProductController extends Controller
                 // 'specificationDataArr' => 'required|array|at_least_one_value'
             ];
             $shippingSpecificationsValidationArray = [
-                'height' => 'required',
-                'weight' => 'required',
-                'width' => 'required',
-                'length' => 'required',
-                'dc' => 'required'
+                // 'height' => 'required',
+                // 'weight' => 'required',
+                // 'width' => 'required',
+                // 'length' => 'required',
+                // 'dc' => 'required'
             ];
             $variantsTabFirstStepArray = [
                 // 'variantsDataArr' => 'required|array|at_least_one_value_variant'
@@ -253,9 +253,9 @@ class ProductController extends Controller
                     $obj->name = !empty($request->name) ? $request->name : NULL;
                     ;
                     $obj->product_number = '00';
-                    $obj->bar_code = $request->bar_code;
+                    $obj->bar_code = $request->bar_code ?? Null;
                     $obj->category_id = $request->category_id;
-                    $obj->brand_id = $request->brand_id;
+                    $obj->brand_id = $request->brand_id ?? Null;
                     $obj->sub_category_id = !empty($request->sub_category_id) ? $request->sub_category_id : NULL;
                     $obj->child_category_id = !empty($request->child_category_id) ? $request->child_category_id : NULL;
                     $obj->save();
@@ -506,6 +506,7 @@ class ProductController extends Controller
                 } else if ((!empty($request->current_tab) && $request->current_tab == 'variantsTab' && $request->current_action == 'first_step')) {
 
                     if (!empty($request->session()->has('currentProductId'))) {
+                        $productDetails = Product::where('id', $request->session()->get('currentProductId'))->first();
                         $variantsDataArr = $request->variantsDataArr;
                         if (!empty($variantsDataArr)) {
 
@@ -542,6 +543,23 @@ class ProductController extends Controller
                                 }
                             }
 
+                            // Inserting main product entry in ProductVariantCombinations Table
+                            $obj = new ProductVariantCombination;
+                            $obj->slug = $productDetails->slug ?? Null;
+                            $obj->product_id = $productDetails->id ?? Null;
+                            $obj->variant1_value_id = Null;
+                            $obj->variant2_value_id = Null;
+                            $obj->buying_price = $productDetails->buying_price ?? 0.00;
+                            $obj->selling_price = $productDetails->selling_price ?? 0.00;
+                            $obj->height = $productDetails->height ?? Null;
+                            $obj->weight = $productDetails->weight ?? Null;
+                            $obj->width = $productDetails->width ?? Null;
+                            $obj->length = $productDetails->length ?? Null;
+                            $obj->dc = $productDetails->dc ?? Null;
+                            $obj->bar_code = $productDetails->bar_code ?? Null;
+                            $obj->product_number = $productDetails->product_number ?? Null;
+                            $obj->save();
+
                             foreach ($variantsDataArr as $key => $variantData) {
                                 if (!empty($variantData['variant_id']) && !empty($variantData['variant_values'][0])) {
                                     $variantName = $this->getVariantName($variantData['variant_id']);
@@ -561,6 +579,7 @@ class ProductController extends Controller
                                 }
 
                             }
+                            // print_r($variantsDataArr);die;
 
                             $productImages = ProductImage::where('product_id', $request->session()->get('currentProductId'))->get();
                             // if($productImages->isNotEmpty()){
@@ -598,6 +617,7 @@ class ProductController extends Controller
                     if (!empty($request->session()->has('currentProductId'))) {
                         $productDetails = Product::where('id', $request->session()->get('currentProductId'))->first();
                         $variantCombinationArr = $request->variantCombinationArr;
+                        // print_r($variantCombinationArr);die;
                         if (!empty($variantCombinationArr)) {
 
                             $getProductVariantCombinations = ProductVariantCombination::where('product_id', $request->session()->get('currentProductId'))->get();
@@ -612,25 +632,35 @@ class ProductController extends Controller
                             foreach ($variantCombinationArr as $variantCombVal) {
                                 if (!empty($variantCombVal['image_ids']) && !empty($variantCombVal['main_variant_id']) && !empty($variantCombVal['variant_value_ids'])) {
                                     foreach ($variantCombVal['variant_value_ids'] as $variantValIdData) {
-                                        if (!empty($variantValIdData['buying_price']) && !empty($variantValIdData['selling_price']) && !empty($variantValIdData['height']) && !empty($variantValIdData['weight']) && !empty($variantValIdData['width']) && !empty($variantValIdData['length']) && !empty($variantValIdData['dc']) && !empty($variantValIdData['bar_code'])) {
+                                        if (!empty($variantValIdData['buying_price']) && !empty($variantValIdData['selling_price'])) {
                                             $getVariantValueName = VariantValue::where('id', $variantCombVal['main_variant_id'])->first()->name;
                                             $originalString = $getVariantValueName ?? "";
                                             $lowercaseString = Str::lower($originalString);
                                             $slug = Str::slug($lowercaseString, '-');
-
+                                            
                                             $obj = new ProductVariantCombination;
-                                            $obj->slug = $productDetails->slug . "-" . $slug;
+                                            if(!empty($variantValIdData['value_id'])){
+                                                
+                                                $getVariantValueName2 = VariantValue::where('id', $variantValIdData['value_id'])->first()->name;
+                                                $originalString2 = $getVariantValueName2 ?? "";
+                                                $lowercaseString2 = Str::lower($originalString2);
+                                                $slug2 = Str::slug($lowercaseString2, '-');
+                                                $obj->slug = $productDetails->slug . "-" . $slug."-".$slug2;
+                                            }else{
+
+                                                $obj->slug = $productDetails->slug . "-" . $slug;
+                                            }
                                             $obj->product_id = $productDetails->id;
                                             $obj->variant1_value_id = $variantCombVal['main_variant_id'];
                                             $obj->variant2_value_id = !empty($variantValIdData['value_id']) ? $variantValIdData['value_id'] : NULL;
                                             $obj->buying_price = $variantValIdData['buying_price'] ?? 0.00;
                                             $obj->selling_price = $variantValIdData['selling_price'] ?? 0.00;
-                                            $obj->height = $variantValIdData['height'] ?? '';
-                                            $obj->weight = $variantValIdData['weight'] ?? '';
-                                            $obj->width = $variantValIdData['width'] ?? '';
-                                            $obj->length = $variantValIdData['length'] ?? '';
-                                            $obj->dc = $variantValIdData['dc'] ?? '';
-                                            $obj->bar_code = $variantValIdData['bar_code'] ?? '';
+                                            $obj->height = $variantValIdData['height'] ?? Null;
+                                            $obj->weight = $variantValIdData['weight'] ?? Null;
+                                            $obj->width = $variantValIdData['width'] ?? Null;
+                                            $obj->length = $variantValIdData['length'] ?? Null;
+                                            $obj->dc = $variantValIdData['dc'] ?? Null;
+                                            $obj->bar_code = $variantValIdData['bar_code'] ?? Null;
                                             $obj->product_number = ' ';
                                             $obj->save();
                                             $lastId = $obj->id;
@@ -643,6 +673,7 @@ class ProductController extends Controller
                                                 $response["http_code"] = 500;
                                                 return Response::json($response, 500);
                                             }
+                                            ProductVariantCombination::where('id',$lastId)->update(['product_number' =>$productDetails->product_number.'V'.$lastId ]);
 
                                             foreach ($variantCombVal['image_ids'] as $imageVal) {
                                                 $obj2 = new ProductVariantCombinationImage;

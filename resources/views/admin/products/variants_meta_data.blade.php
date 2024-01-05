@@ -10,12 +10,12 @@
                     <th>Variant</th>
                     <th>Buying Price<span class="text-danger">* </span></th>
                     <th>Selling Price<span class="text-danger">* </span></th>
-                    <th>Height<span class="text-danger">* </span></th>
-                    <th>Weight<span class="text-danger">* </span></th>
-                    <th>Width<span class="text-danger">* </span></th>
-                    <th>Length<span class="text-danger">* </span></th>
-                    <th>DC<span class="text-danger">* </span></th>
-                    <th>Bar Code<span class="text-danger">* </span></th>
+                    <th>Height<span class="text-danger">  </span></th>
+                    <th>Weight<span class="text-danger"> </span></th>
+                    <th>Width<span class="text-danger"> </span></th>
+                    <th>Length<span class="text-danger"> </span></th>
+                    <th>DC<span class="text-danger"> </span></th>
+                    <th>Bar Code<span class="text-danger"> </span></th>
                 </tr>
             </thead>
             <tbody>
@@ -26,7 +26,7 @@
                 <tr>
                     <td>{{$variantValName2 ?? ''}}</td>
                    
-                    <input type="hidden" class="form-control"  name="variantCombinationArr[{{$variantValueNameKey}}][variant_value_ids][{{$variantValName2Key}}][value_id]" value="{{!empty($variantsDataArr[$variantValueNameKey]['variant_values'][$variantValName2Key]) ? $variantsDataArr[$variantValueNameKey]['variant_values'][$variantValName2Key] : '' }}"
+                    <input type="hidden" class="form-control"  name="variantCombinationArr[{{$variantValueNameKey}}][variant_value_ids][{{$variantValName2Key}}][value_id]" value="{{!empty($variantsDataArr[1]['variant_values'][$variantValName2Key]) ? $variantsDataArr[1]['variant_values'][$variantValName2Key] : '' }}"
                                  >
                        
                     <td>

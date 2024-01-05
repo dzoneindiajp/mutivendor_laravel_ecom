@@ -3,6 +3,8 @@
 use App\Models\Acl;
 use  App\Models\Department;
 use  App\Models\Designation;
+use  App\Models\ProductVariantCombination;
+use  App\Models\ProductVariantCombinationImage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
@@ -198,6 +200,39 @@ if(!function_exists('DesignationbyName'))
         return $Desginationname; 
         }
     } 
+}
+if(!function_exists('getCartData'))
+{
+  function getCartData(){
+    $cartData = session()->get('cartData', []);
+    if(!empty($cartData)){
+      foreach($cartData as &$cartVal){
+        $productDetails = ProductVariantCombination::where('product_variant_combinations.id',$cartVal['product_id'] ?? 0)->leftJoin('products','products.id','product_variant_combinations.product_id')->select('product_variant_combinations.*','products.name')->first();
+        $cartVal['product_name'] = $productDetails->name ?? '';
+        $cartVal['product_price'] = ($productDetails->selling_price?? 0) * ($cartVal['quantity'] ?? 0) ;
+        $cartVal['buying_price'] = ($productDetails->buying_price?? 0) * ($cartVal['quantity'] ?? 0) ;
+        $productImage = ProductVariantCombinationImage::where('product_variant_combination_images.product_variant_combination_id',$productDetails->id)->leftJoin('product_images','product_images.id','product_variant_combination_images.product_image_id')->value('product_images.image');
+        $cartVal['product_image'] = (!empty($productImage)) ? Config('constant.PRODUCT_IMAGE_URL') . $productImage : Config('constant.IMAGE_URL') . "noimage.png";
+      }
+    }
+    
+    return $cartData;
+  }
+}
+if(!function_exists('isProductAddedInCart'))
+{
+  function isProductAddedInCart($productId){
+    $cartData = session()->get('cartData', []);
+    if(!empty($cartData)){
+      foreach($cartData as $cartVal){
+        if($productId == $cartVal['product_id']){
+          return true;
+        }
+      }
+    }
+    
+    return false;
+  }
 }
 
 
