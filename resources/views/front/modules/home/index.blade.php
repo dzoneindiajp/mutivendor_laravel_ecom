@@ -344,6 +344,7 @@
     </div>
     <!-- featured product area end -->
     <!-- featured product area start -->
+    @if($featured_products->isNotEmpty())
     <div class="page-section feature-product-home pt-30 pb-14 pt-sm-60 pb-sm-0">
         <div class="container">
             <div class="row">
@@ -712,6 +713,8 @@
             </div>
         </div>
     </div>
+    @endif
+
     <!-- featured product area end -->
     <!-- offer area start -->
     @if(!empty($all_middle_sliders))
@@ -723,6 +726,8 @@
     @endif
     <!-- offer area end -->
     <!-- featured product area start -->
+
+
     <div class="page-section feature-product-home pt-100 pb-14 pt-sm-30 pb-sm-0">
         <div class="container">
             <div class="row">
@@ -1052,6 +1057,8 @@
             </div>
         </div>
     </div>
+
+
     <!-- featured product area end -->
     <!-- details area start -->
     <div class="page-section top-space-category pt-150 pb-100 bg-dark pb-14 pt-sm-30 pb-sm-0">
