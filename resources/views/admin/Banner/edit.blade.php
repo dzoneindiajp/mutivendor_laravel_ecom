@@ -58,6 +58,15 @@
                                                 </div>
                                                 @endif
                                             </div>
+                                            <div class="col-xl-6">
+												<label for="order_number" class="form-label"><span class="text-danger"> </span>Order Number</label>
+												<input type="text" class="form-control @error('order_number') is-invalid @enderror" id="order_number" name="order_number" value="{{isset($userDetails->order_number) ? $userDetails->order_number: old('order_number')}}" placeholder="Order Number">
+												@if ($errors->has('order_number'))
+													<div class=" invalid-feedback">
+														{{ $errors->first('order_number') }}
+													</div>
+												@endif
+											</div>
                                         </div>
 										<div class="row gy-3 mt-2" id="imageField">
 											<div class="col-xl-6" >
@@ -99,6 +108,7 @@
 													</div>
 												@endif
 											</div>
+
 										</div>
 										<div class="row gy-3 mt-2" id="heightWidth">
 											<div class="col-xl-6" >
@@ -142,7 +152,7 @@
                     </div>
                 </div>
             </div>
-            
+
         </form>
     </div>
 </div>

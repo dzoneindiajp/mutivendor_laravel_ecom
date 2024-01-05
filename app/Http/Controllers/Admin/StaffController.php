@@ -23,7 +23,7 @@ class StaffController extends Controller
 {
     public $model =  'staff';
     public function __construct(Request $request){
-        
+
         View()->share('model', $this->model);
         $this->request  = $request;
     }
@@ -77,6 +77,7 @@ class StaffController extends Controller
         }
 
         $DB->where("user_role_id", config('constant.ROLE_ID.STAFF_ROLE_ID'));
+        $DB->where("is_deleted", 0);
         $DB->select("users.*");
         $sortBy = ($request->input('sortBy')) ? $request->input('sortBy') : 'created_at';
         $order  = ($request->input('order')) ? $request->input('order')   : 'DESC';
@@ -129,7 +130,7 @@ class StaffController extends Controller
             $obj->department_id                     =  $request->input('department_id');
             $obj->designation_id                     =  $request->input('designation_id');
             $obj->password                             =  Hash::make($request->input('password'));
-            
+
             if ($request->hasFile('image')) {
                 $extension = $request->file('image')->getClientOriginalExtension();
                 $originalName = $request->file('image')->getClientOriginalName();
@@ -279,7 +280,7 @@ class StaffController extends Controller
 
     public function update(Request $request, $enstfid)
     {
-        
+
         $stf_id = '';
         if (!empty($enstfid)) {
             $stf_id = base64_decode($enstfid);

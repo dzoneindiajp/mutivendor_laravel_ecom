@@ -13,12 +13,14 @@
 
 <!-- Page Header -->
 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
-    <h1 class="page-title fw-semibold fs-18 mb-0">Banners</h1>
+    <h1 class="page-title fw-semibold fs-18 mb-0">Shipping Costs</h1>
     <div class="ms-md-1 ms-0">
         <nav>
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('admin-dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Banners</li>
+                <li class="breadcrumb-item"><a href="{{  route('admin-shipping-companies.index')}}">Shipping Companies</a></li>
+                <li class="breadcrumb-item"><a href="{{  route('admin-shipping-areas.index', base64_encode($shipping_company_id))}}">Shipping Areas</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Shipping Costs</li>
             </ol>
         </nav>
     </div>
@@ -29,14 +31,15 @@
         <div class="card custom-card">
             <div class="card-header justify-content-between">
                 <div class="card-title">
-                    Banners
+                    Shipping Costs
                 </div>
                 <div class="prism-toggle">
                     <a href="javascript:void(0);" class="btn btn-primary dropdown-toggle mr-2" data-bs-toggle="collapse"
                         data-bs-target="#collapseOne6">
                         Search
                     </a>
-                    <a href="{{ route('admin-Banner.create') }}" class="btn btn-primary">Add Banner</a>
+                    <a href="{{ route('admin-shipping-costs.add',base64_encode($dep_id)) }}"
+                    class="btn btn-primary">Add Shipping Cost</a>
                 </div>
             </div>
 
@@ -45,15 +48,11 @@
                     data-parent="#accordionExample6">
                     <div>
                         <form id="listSearchForm" class="row mb-6">
-                            <div class="col-lg-3  mb-lg-5 mb-6">
 
-                                <label>Status</label>
-                                <select name="is_active" class="form-control select2init"
-                                    value="{{$searchVariable['is_active'] ?? ''}}">
-                                    <option value="">All</option>
-                                    <option value="1">Activate</option>
-                                    <option value="0">Deactivate</option>
-                                </select>
+                            <div class="col-lg-3 mb-lg-5 mb-6">
+                                <label>Weight</label>
+                                <input type="text" class="form-control" name="weight" placeholder="Weight"
+                                    value="{{$searchVariable['weight'] ?? '' }}">
                             </div>
 
                             <div class="col-lg-3 mb-lg-5 mb-6">
@@ -80,7 +79,7 @@
                                     </span>
                                 </button>
                                 &nbsp;&nbsp;
-                                <a href='{{ route("admin-"."$model.index")}}'
+                                <a href='{{ route("admin-"."$model.index", $dep_id)}}'
                                     class="btn btn-secondary btn-secondary--icon">
                                     <span>
                                         <i class="la la-close"></i>
@@ -105,15 +104,13 @@
                 style="width:100%">
                 <thead>
                     <tr id="tableHeaders">
-                        <th >Image/Video </th>
-                        <th >Type </th>
-                        <th class="sortable" data-column="created_at">Added On <i class="sort-icon ri-sort-asc"></i></th>
-                        <th class="sortable" data-column="is_active">Status <i class="sort-icon ri-sort-asc"></i>
-                        </th>
+                        <th class="sortable" data-column="name">Weight(In KG) <i class="sort-icon ri-sort-asc"></i></th>
+                        <th class="sortable" data-column="name">Amount <i class="sort-icon ri-sort-asc"></i></th>
+                        <th class="sortable" data-column="created_at">Created At <i class="sort-icon ri-sort-asc"></i></th>
                         <th>Action </th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="powerwidgets">
                     <tr id="loader-row" style="display: none;">
                         <td colspan="7" style="text-align: center;">
                             <button class="btn btn-light" type="button" disabled="">
@@ -123,7 +120,7 @@
                         </td>
                     </tr>
                     @if($results->isNotEmpty())
-                    @include('admin.Banner.load_more_data', ['results' => $results])
+                    @include('admin.shipping-costs.load_more_data', ['results' => $results])
                     @else
                     <tr>
                         <td colspan="7" style="text-align: center;">No results found.</td>
@@ -170,7 +167,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 <script src="{{ asset('assets/plugins/jquery-validation/jquery.validate.min.js') }}"></script>
-
+<script>
+var routeName = '{{route($listRouteName,base64_encode($dep_id))}}';
+// Your DataTables initialization or other JavaScript logic here
+</script>
 <!-- Internal Datatables JS -->
 <script src="{{ asset('assets/js/datatables.js') }}"></script>
 

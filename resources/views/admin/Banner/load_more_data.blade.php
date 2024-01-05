@@ -1,4 +1,4 @@
-<?php 
+<?php
     $createPermission   = functionCheckPermission("BannerController@create");
     $viewPermission     = functionCheckPermission("BannerController@view");
     $deletePermission   = functionCheckPermission("BannerController@delete");
@@ -17,12 +17,12 @@
                 <source src="{{isset($result->video)? $result->video:''}}" type="video/mp4">
             </video>
         </a>
-        
+
         @endif
     </td>
     <td>{{ $result->type_name ?? "N/A" }}</td>
     <td>{{ date('Y-m-d',strtotime($result->created_at)) }}</td>
-    
+
     <td>
         @if($result->is_active == 1)
         <span class="badge bg-success">Activated</span>
@@ -44,8 +44,8 @@
 
             @endif
             @if($viewPermission == 1)
-            <a href="{{route('admin-Banner.show',base64_encode($result->id))}}" class="btn btn-info"><i
-                    class="ri-eye-line"></i></a>
+            {{-- <a href="{{route('admin-Banner.show',base64_encode($result->id))}}" class="btn btn-info"><i
+                    class="ri-eye-line"></i></a> --}}
             @endif
 
             <a href="{{route('admin-Banner.edit',base64_encode($result->id))}}" class="btn btn-info"><i

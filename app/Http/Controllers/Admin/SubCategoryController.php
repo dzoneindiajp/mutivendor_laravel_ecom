@@ -20,7 +20,7 @@ class SubCategoryController extends Controller
 {
     public $model =    'sub-category';
     public function __construct(Request $request)
-    {   
+    {
         $this->listRouteName = 'admin-sub-category.index';
         View()->share('model', $this->model);
         View()->share('listRouteName', $this->listRouteName);
@@ -82,18 +82,18 @@ class SubCategoryController extends Controller
         $sortBy = ($request->input('sortBy')) ? $request->input('sortBy') : 'category_order';
         $order  = ($request->input('order')) ? $request->input('order')   : 'ASC';
         $offset = !empty($request->input('offset')) ? $request->input('offset') : 0 ;
-        $limit =  !empty($request->input('limit')) ? $request->input('limit') : Config("Reading.records_per_page"); 
+        $limit =  !empty($request->input('limit')) ? $request->input('limit') : Config("Reading.records_per_page");
 
         $results = $DB->orderBy($sortBy, $order)->offset($offset)->limit($limit)->get();
         $totalResults = $DB->count();
 
-        if(!empty($results)) {
-            foreach($results as &$result) {
-                if(!empty($result->image)){
-                    $result->image = Config('constant.CATEGORY_IMAGE_URL').$result->image;
-                }
-            }
-        }
+        // if(!empty($results)) {
+        //     foreach($results as &$result) {
+        //         if(!empty($result->image)){
+        //             $result->image = Config('constant.CATEGORY_IMAGE_URL').$result->image;
+        //         }
+        //     }
+        // }
 
         if($request->ajax()){
 
@@ -104,7 +104,7 @@ class SubCategoryController extends Controller
     }
 
     public function add(Request $request, $endesid = null)
-    {   
+    {
         if (!empty($endesid)) {
             $dep_id = base64_decode($endesid);
         }
@@ -165,7 +165,7 @@ class SubCategoryController extends Controller
                         $extension = $request->file('thumbnail_image')->getClientOriginalExtension();
                         $originalName = $request->file('thumbnail_image')->getClientOriginalName();
                         $fileName = time() . '-thumbnail_image.' . $extension;
-                        
+
                         $folderName = strtoupper(date('M') . date('Y')) . "/";
                         $folderPath = Config('constant.CATEGORY_IMAGE_ROOT_PATH') . $folderName;
                         if (!File::exists($folderPath)) {
@@ -180,7 +180,7 @@ class SubCategoryController extends Controller
                         $extension = $request->file('video')->getClientOriginalExtension();
                         $originalName = $request->file('video')->getClientOriginalName();
                         $fileName = time() . '-video.' . $extension;
-    
+
                         $folderName = strtoupper(date('M') . date('Y')) . "/";
                         $folderPath = Config('constant.CATEGORY_VIDEO_ROOT_PATH') . $folderName;
                         if (!File::exists($folderPath)) {
@@ -193,6 +193,7 @@ class SubCategoryController extends Controller
 
                     $category = Category::create([
                         'name' => $request->name,
+                        'description' => $request->description,
                         'parent_id' => $dep_id,
                         'slug' => $slug,
                         'image' => $imagePath,
@@ -209,15 +210,15 @@ class SubCategoryController extends Controller
                             foreach($request->variantsData as $variantKey => $variantVal){
                                 // $checkIfvarientExists = Variant::where('id',$variantVal)->first();
                                 $variantId = $variantVal;
-                                
+
                                 // if(empty($checkIfvarientExists)){
-                                    
+
                                 //     $variantObj   = new Variant;
                                 //     $variantObj->name = $variantVal;
                                 //     $variantObj->save();
-                                    
+
                                 //     $variantId = $variantObj->id;
-                                   
+
                                 //     if(empty($variantId)){
                                 //         DB::rollback();
                                 //         Session()->flash('flash_notice', 'Something Went Wrong');
@@ -228,10 +229,10 @@ class SubCategoryController extends Controller
                                 $obj2->category_id = $lastId;
                                 $obj2->variant_id = $variantId;
                                 $obj2->save();
-                               
+
                             }
                         }
-    
+
                         if(!empty($request->specificationsData) && is_array($request->specificationsData)){
                             foreach($request->specificationsData as $specificationVal){
                                 // $checkIfspecificationExists = Specification::where('id',$specificationVal)->first();
@@ -252,8 +253,8 @@ class SubCategoryController extends Controller
                                 $obj2->category_id = $lastId;
                                 $obj2->specification_id = $specificationId;
                                 $obj2->save();
-                               
-    
+
+
                             }
                         }
                     }
@@ -278,9 +279,9 @@ class SubCategoryController extends Controller
         if (empty($category)) {
             return Redirect()->back();
         }
-        if(!empty($category->image)){
-            $category->image = Config('constant.CATEGORY_IMAGE_URL').$category->image;
-        }
+        // if(!empty($category->image)){
+        //     $category->image = Config('constant.CATEGORY_IMAGE_URL').$category->image;
+        // }
         if ($request->isMethod('POST')) {
             $formData = $request->all();
             if (!empty($formData)) {
@@ -321,6 +322,7 @@ class SubCategoryController extends Controller
                     $obj->name                          = $request->input('name');
                     $obj->parent_id                     = $category->parent_id;
                     $obj->slug                          = $slug;
+                    $obj->description                          = $request->input('description');
                     $obj->meta_title                    = $request->input('meta_title');
                     $obj->meta_description              = $request->input('meta_description');
                     $obj->meta_keywords                 = $request->input('meta_keywords');
@@ -343,7 +345,7 @@ class SubCategoryController extends Controller
                         $extension = $request->file('thumbnail_image')->getClientOriginalExtension();
                         $originalName = $request->file('thumbnail_image')->getClientOriginalName();
                         $fileName = time() . '-thumbnail_image.' . $extension;
-                        
+
                         $folderName = strtoupper(date('M') . date('Y')) . "/";
                         $folderPath = Config('constant.CATEGORY_IMAGE_ROOT_PATH') . $folderName;
                         if (!File::exists($folderPath)) {
@@ -358,7 +360,7 @@ class SubCategoryController extends Controller
                         $extension = $request->file('video')->getClientOriginalExtension();
                         $originalName = $request->file('video')->getClientOriginalName();
                         $fileName = time() . '-video.' . $extension;
-    
+
                         $folderName = strtoupper(date('M') . date('Y')) . "/";
                         $folderPath = Config('constant.CATEGORY_VIDEO_ROOT_PATH') . $folderName;
                         if (!File::exists($folderPath)) {
@@ -368,7 +370,7 @@ class SubCategoryController extends Controller
                             $obj->video = $folderName . $fileName;
                         }
                     }
-                    
+
                     $obj->save();
                     $lastId = $obj->id;
                     if(!empty($lastId)){
@@ -378,7 +380,7 @@ class SubCategoryController extends Controller
                             foreach($request->variantsData as $variantKey => $variantVal){
                                 // $checkIfvarientExists = Variant::where('id',$variantVal)->first();
                                 $variantId = $variantVal;
-                                
+
                                 $obj2    =   new CategoryVariant;
                                 $obj2->category_id = $lastId;
                                 $obj2->variant_id = $variantId;
@@ -396,7 +398,7 @@ class SubCategoryController extends Controller
                             foreach($request->specificationsData as $specificationVal){
                                 // $checkIfspecificationExists = Specification::where('id',$specificationVal)->first();
                                 $specificationId = $specificationVal;
-                                
+
                                 $obj2    =   new CategorySpecification;
                                 $obj2->category_id = $lastId;
                                 $obj2->specification_id = $specificationId;
@@ -409,7 +411,7 @@ class SubCategoryController extends Controller
 
                             }
                         }
-                        
+
                         DB::commit();
                     }else{
                         DB::rollback();
@@ -423,10 +425,10 @@ class SubCategoryController extends Controller
         }
 
         $variants = Variant::select('id', 'name')->get();
-        $specifications = Specification::leftJoin('specification_groups', 'specifications.specification_group_id', '=', 'specification_groups.id')->select('specifications.id', DB::raw("CONCAT(specification_groups.name, ' > ', specifications.name) as name"))->get();   
+        $specifications = Specification::leftJoin('specification_groups', 'specifications.specification_group_id', '=', 'specification_groups.id')->select('specifications.id', DB::raw("CONCAT(specification_groups.name, ' > ', specifications.name) as name"))->get();
         $categoryVariants = CategoryVariant::where('category_id',$des_id)->pluck('variant_id')->toArray();
         $categorySpecifications = CategorySpecification::where('category_id',$des_id)->pluck('specification_id')->toArray();
-        
+
         return  View("admin.$this->model.edit", compact('category','variants','specifications','categoryVariants','categorySpecifications'));
     }
 
@@ -448,8 +450,8 @@ class SubCategoryController extends Controller
                 ));
                 CategoryVariant::where('category_id',$categoryId)->delete();
                 CategorySpecification::where('category_id',$categoryId)->delete();
-    
-    
+
+
                 Session()->flash('flash_notice', trans("Sub category has been removed successfully."));
             }
             return back();

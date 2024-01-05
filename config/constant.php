@@ -6,6 +6,7 @@ return [
 	'APP_PATH'     			=> app_path(),
     'DS'     				=> '/',
     'WEBSITE_URL'							=> $WEBSITE_URL,
+    'ADMIN_WEBSITE_URL'							=> env("ADMIN_APP_URL"),
 
 	'USER_IMAGE_PATH'                       => $WEBSITE_URL.'public/uploads/users/',
 	'USER_IMAGE_ROOT_PATH'                       => 'public/uploads/users/',

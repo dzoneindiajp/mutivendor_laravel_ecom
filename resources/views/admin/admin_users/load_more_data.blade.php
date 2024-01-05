@@ -1,4 +1,4 @@
-<?php 
+<?php
     $createPermission   = functionCheckPermission("UsersController@create");
     $editPermission   = functionCheckPermission("UsersController@edit");
     $viewPermission     = functionCheckPermission("UsersController@view");

@@ -83,13 +83,13 @@ class CategoryController extends Controller
             $results = $DB->orderBy($sortBy, $order)->offset($offset)->limit($limit)->get();
             $totalResults = $DB->count();
 
-            if(!empty($results)) {
-                foreach($results as &$result) {
-                    if(!empty($result->image)){
-                        $result->image = Config('constant.CATEGORY_IMAGE_URL').$result->image;
-                    }
-                }
-            }
+            // if(!empty($results)) {
+            //     foreach($results as &$result) {
+            //         if(!empty($result->image)){
+            //             $result->image = Config('constant.CATEGORY_IMAGE_URL').$result->image;
+            //         }
+            //     }
+            // }
             if($request->ajax()){
 
                 return  View("admin.$this->model.load_more_data", compact('results','totalResults'));
@@ -107,9 +107,9 @@ class CategoryController extends Controller
     public function create()
     {
         try {
-            $variants = Variant::select('id', 'name')->get();
-            $taxes = Tax::select('id', 'name')->get();
-            $specifications = Specification::leftJoin('specification_groups', 'specifications.specification_group_id', '=', 'specification_groups.id')->select('specifications.id', DB::raw("CONCAT(specification_groups.name, ' > ', specifications.name) as name"))->get();
+            $variants = Variant::where('is_deleted', 0)->where('is_active', 1)->select('id', 'name')->get();
+            $taxes = Tax::where('is_active', 1)->select('id', 'name')->get();
+            $specifications = Specification::where('specifications.is_deleted', 0)->where('specifications.is_active', 1)->leftJoin('specification_groups', 'specifications.specification_group_id', '=', 'specification_groups.id')->select('specifications.id', DB::raw("CONCAT(specification_groups.name, ' > ', specifications.name) as name"))->get();
             return view('admin.category.create',compact('variants','specifications', 'taxes'));
         } catch (Exception $e) {
             Log::error($e);
@@ -156,6 +156,7 @@ class CategoryController extends Controller
                     $obj                                = new Category;
                     $obj->name                          = $request->input('name');
                     $obj->slug                          = $slug;
+                    $obj->description                          = $request->input('description');
                     $obj->meta_title                    = !empty($request->input('meta_title')) ? $request->input('meta_title') : NULL;
                     $obj->meta_description              = !empty($request->input('meta_description')) ? $request->input('meta_description') : NULL;
                     $obj->meta_keywords                 = !empty($request->input('meta_keywords')) ? $request->input('meta_keywords') : NULL;
@@ -309,12 +310,13 @@ class CategoryController extends Controller
 
                 $category = Category::find($categoryId);
 
-                if(!empty($category->image)){
-                    $category->image = Config('constant.CATEGORY_IMAGE_URL').$category->image;
-                }
-                $variants = Variant::select('id', 'name')->get();
-                $taxes = Tax::select('id', 'name')->get();
-                $specifications = Specification::leftJoin('specification_groups', 'specifications.specification_group_id', '=', 'specification_groups.id')->select('specifications.id', DB::raw("CONCAT(specification_groups.name, ' > ', specifications.name) as name"))->get();
+                // if(!empty($category->image)){
+                //     $category->image = Config('constant.CATEGORY_IMAGE_URL').$category->image;
+                // }
+
+                $variants = Variant::where('is_deleted', 0)->where('is_active', 1)->select('id', 'name')->get();
+                $taxes = Tax::where('is_active', 1)->select('id', 'name')->get();
+                $specifications = Specification::where('specifications.is_deleted', 0)->where('specifications.is_active', 1)->leftJoin('specification_groups', 'specifications.specification_group_id', '=', 'specification_groups.id')->select('specifications.id', DB::raw("CONCAT(specification_groups.name, ' > ', specifications.name) as name"))->get();
                 $categoryVariants = CategoryVariant::where('category_id',$categoryId)->pluck('variant_id')->toArray();
                 $categorySpecifications = CategorySpecification::where('category_id',$categoryId)->pluck('specification_id')->toArray();
                 $categoryTaxes = CategoryTax::where('category_id',$categoryId)->pluck('tax_id' )->toArray();
@@ -330,7 +332,7 @@ class CategoryController extends Controller
 
     public function update(Request $request, $token)
     {
-      
+
         try {
 
             $categoryId = '';
@@ -382,6 +384,7 @@ class CategoryController extends Controller
                         $obj                                = $category;
                         $obj->name                          = $request->input('name');
                         $obj->slug                          = $slug;
+                        $obj->description                          = $request->input('description');
                         $obj->meta_title                    = $request->input('meta_title');
                         $obj->meta_description              = $request->input('meta_description');
                         $obj->meta_keywords                 = $request->input('meta_keywords');
