@@ -7,6 +7,7 @@ config(["Contact.mail_icon"=>"fa fa-envelope"]);
 config(["Contact.phone_icon"=>"fa fa-mobile"]);
 config(["Reading.date_format"=>"Y-m-d"]);
 config(["Reading.records_per_page"=>"10"]);
+config(["Reading.default_currency"=>"$"]);
 config(["Site.copyright"=>"Copyright © 2023 Jaipurjewellaryhouse."]);
 config(["Site.fav_icon"=>"NOV2023/1699297022-settings.ico"]);
 config(["Site.from_email"=>"noreply@jaipurjewellary.com"]);

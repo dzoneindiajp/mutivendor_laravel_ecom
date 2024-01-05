@@ -403,7 +403,10 @@ Route::prefix('admin')->name('admin-')->group(function () {
 
 
 
-Route::name('front-')->group(function () {
+Route::name('front-')->middleware('web')->group(function () {
   Route::get('/', [App\Http\Controllers\Front\HomeController::class, 'index'])->name('home.index');
-  Route::get('/shop', [App\Http\Controllers\Front\ShopController::class, 'index'])->name('shop.index');
+  Route::get('/shop/{categoryId?}/{subCategoryId?}/{childCategoryId?}', [App\Http\Controllers\Front\ShopController::class, 'index'])->name('shop.index');
+  Route::get('/cart', [App\Http\Controllers\Front\CartController::class, 'index'])->name('cart.index');
+  Route::post('/add-to-cart', [App\Http\Controllers\Front\CartController::class, 'addToCart'])->name('user.addToCart');
+  Route::match(['get', 'post'],'/remove-from-cart', [App\Http\Controllers\Front\CartController::class, 'removeFromCart'])->name('user.removeFromCart');
 });

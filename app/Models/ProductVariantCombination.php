@@ -13,5 +13,6 @@ class ProductVariantCombination extends Eloquent {
  * @var string
  */
 	protected $table = 'product_variant_combinations';
-	
+
+
 }// end EmailAction class
