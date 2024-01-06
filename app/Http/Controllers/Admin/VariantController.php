@@ -110,7 +110,7 @@ class VariantController extends Controller
                                $obj2   =  new VariantValue;
                                $obj2->variant_id = $lastId;
                                $obj2->name = $variantValue['name'];
-                               $obj2->color_code = !empty($variantValue['color_code']) ? $variantValue['color_code'] : null;
+                               $obj2->color_code = !empty($variantValue['color_code_hidden']) ? $variantValue['color_code_hidden'] : null;
                                $obj2->save();
                                if(empty($obj2->id)){
                                     DB::rollback();
@@ -182,7 +182,7 @@ class VariantController extends Controller
                                    $obj2   =  new VariantValue;
                                    $obj2->variant_id = $lastId;
                                    $obj2->name = $variantValue['name'];
-                                   $obj2->color_code = !empty($variantValue['color_code']) ? $variantValue['color_code'] : null;
+                                   $obj2->color_code = !empty($variantValue['color_code_hidden']) ? $variantValue['color_code_hidden'] : null;
                                    $obj2->save();
                                    if(empty($obj2->id)){
                                         DB::rollback();

@@ -792,3 +792,32 @@ $(".link").each(function () {
 	});
 });
 
+function show_message(message, type, attributes = {}) {
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "1000",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+    if (type == 'success') {
+        toastr.success(message, attributes.hasOwnProperty('title') ? attributes.title : '');
+        // toastr.success(message,attributes.hasOwnProperty('title') ? attributes.title : 'Success');
+    } else if (type == 'error') {
+        toastr.error(message, attributes.hasOwnProperty('title') ? attributes.title : '');
+    } else if (type == 'warning') {
+        toastr.warning(message, attributes.hasOwnProperty('title') ? attributes.title : '');
+    }
+
+}
+

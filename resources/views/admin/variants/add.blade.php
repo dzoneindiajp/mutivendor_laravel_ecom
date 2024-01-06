@@ -4,10 +4,10 @@
 <link href="{{ asset('assets/plugin/tagify/tagify.css') }}" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}">
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css"/> 
 
 <!-- Include Pickr JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
 
 @endpush
 @section('content')
@@ -91,11 +91,10 @@
                                         <div class="form-group">
                                             <label for="color">Color</label><span class="text-danger">
                                                  </span>
-                                            <!-- <input type="text" id="color-picker" /> -->
-                                            <!-- <input type="color" name="color_code" id="color_code"
-                                                class="form-control form-control-color border-0 @error('color_code') is-invalid @enderror" value="{{!empty($dataVal['color_code']) ? $dataVal['color_code'] : ''}}"> -->
-                                            <input type="text" name="color_code" id="color-picker"
+                                            
+                                            <input type="text" name="color_code"
                                                 class="form-control form-control-color border-0 @error('color_code') is-invalid @enderror" value="{{!empty($dataVal['color_code']) ? $dataVal['color_code'] : ''}}">
+                                                <input type="hidden" name="color_code_hidden" class="colorCodeInputHidden" value="{{!empty($dataVal['color_code']) ? $dataVal['color_code'] : '#000000'}}">
 
                                         </div>
                                     </div>
@@ -154,9 +153,9 @@
                                         <div class="form-group">
                                             <label for="color">Color</label><span class="text-danger">
                                                  </span>
-                                            <input type="text" name="color_code" id="color-picker"
-                                                class="form-control form-control-color border-0 @error('color_code') is-invalid @enderror" value="#136ad0">
-
+                                            <input type="text" name="color_code" 
+                                                class="form-control form-control-color border-0 @error('color_code') is-invalid @enderror" value="">
+                                            <input type="hidden" name="color_code_hidden" class="colorCodeInputHidden" value="#000000" >
                                         </div>
                                     </div>
 
@@ -239,45 +238,5 @@
     });
 </script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const pickr = Pickr.create({
-            el: '#color-picker',
-            theme: 'classic', // You can change the theme if needed
-            useAsButton: true,
-            swatches: [
-                'rgba(244, 67, 54, 1)',
-                'rgba(233, 30, 99, 0.95)',
-                'rgba(156, 39, 176, 0.9)',
-                'rgba(103, 58, 183, 0.85)',
-                'rgba(63, 81, 181, 0.8)',
-                'rgba(33, 150, 243, 0.75)',
-                'rgba(3, 169, 244, 0.7)',
-                'rgba(0, 188, 212, 0.7)',
-                'rgba(0, 150, 136, 0.7)',
-                'rgba(76, 175, 80, 0.7)',
-                'rgba(139, 195, 74, 0.7)',
-                'rgba(205, 220, 57, 0.8)',
-                'rgba(255, 235, 59, 0.9)',
-                'rgba(255, 193, 7, 1)'
-            ],
-            components: {
-                preview: true,
-                opacity: true,
-                hue: true,
-                interaction: {
-                    hex: true,
-                    rgba: true,
-                    hsla: true,
-                    hsva: true,
-                    cmyk: true,
-                    input: true,
-                    clear: true,
-                    save: true
-                }
-            }
-        });
-    });
-</script>
 
 @endpush

@@ -28,14 +28,14 @@
         <div class="card custom-card">
             <div class="card-header justify-content-between">
                 <div class="card-title">
-                    Plans
+                Referral Histories
                 </div>
                 <div class="prism-toggle">
                     <a href="javascript:void(0);" class="btn btn-primary dropdown-toggle mr-2" data-bs-toggle="collapse"
                         data-bs-target="#collapseOne6">
                         Search
                     </a>
-                    <button type="button" class="btn btn-primary mr-2" data-toggle="modal" data-target="#exampleModal">Tree View</button>
+                    <button type="button" class="btn btn-primary mr-2" data-bs-toggle="modal" data-bs-target="#exampleModal">Tree View</button>
                 </div>
             </div>
 
@@ -159,9 +159,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Select User</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <i aria-hidden="true" class="ki ki-close"></i>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="col-md-12 text-center">
@@ -182,7 +180,7 @@
                     <div class="spinner-border text-secondary userSpinner" style="display:none;" role="status">
                         <span class="sr-only">Loading...</span>
                     </div>
-                    <div class="userData append_div">
+                    <div class="userData append_div mt-3">
                         {!! $usersHtml !!}
                     </div>
 

@@ -1,11 +1,11 @@
 @if($results->isNotEmpty())
 @forelse($results as $result)
-<div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-6 col-6 list-data-row" data-total-count="{{$totalResults}}">
+<div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-6 col-6 list-data-row"  data-total-count="{{$totalResults}}">
     <div class="product-item mb-20">
         <div class="product-description">
             <div class="manufacturer">
                 <p>
-                    <a href="product-details.html">{{$result->category_name ?? ''}}</a>
+                    <a href="{{route('front-shop.productDetail',$result->slug)}}">{{$result->category_name ?? ''}}</a>
                     <span style="float:right;">
                         <a class="wishlist-list wish" href="javascript:void(0)" title="" tabindex="0"><svg
                                 xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
@@ -20,11 +20,11 @@
                 </p>
             </div>
             <div class="product-name">
-                <h3><a href="product-details.html">{{$result->name ?? ''}}</a></h3>
+                <h3><a href="{{route('front-shop.productDetail',$result->slug)}}">{{$result->name ?? ''}} {{$result->variant_value1_name ?? ''}} {{$result->variant_value2_name ?? ''}}</a></h3>
             </div>
         </div>
         <div class="product-thumb">
-            <a href="product-details.html">
+            <a href="{{route('front-shop.productDetail',$result->slug)}}">
                 @if(!empty($result->productImages))
                 @foreach($result->productImages as $productImageKey => $productImage)
                 <img src="{{$productImage}}" class="{{($productImageKey == 0 ? 'simple-product' : 'hover-product')}}"

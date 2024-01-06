@@ -462,7 +462,7 @@
                                                 <div class="row gy-3">
                                                     <div class="col-xl-12">
                                                         <label for="height" class="form-label"><span
-                                                                class="text-danger">*
+                                                                class="text-danger">
                                                             </span>Height</label>
                                                         <input type="text" class="form-control" id="height"
                                                             name="height" value="{{!empty($productDetails->height)  ? $productDetails->height : ''}}" placeholder="Height">
@@ -471,7 +471,7 @@
                                                     </div>
                                                     <div class="col-xl-12">
                                                         <label for="width" class="form-label"><span
-                                                                class="text-danger">*
+                                                                class="text-danger">
                                                             </span>Width</label>
                                                         <input type="text" class="form-control" id="width" name="width" value="{{!empty($productDetails->width)  ? $productDetails->width : ''}}"
                                                             placeholder="Width">
@@ -479,7 +479,7 @@
 
                                                     </div>
                                                     <div class="col-xl-12">
-                                                        <label for="dc" class="form-label"><span class="text-danger">*
+                                                        <label for="dc" class="form-label"><span class="text-danger">
                                                             </span>DC</label>
                                                         <input type="text" class="form-control" id="dc" name="dc"
                                                             placeholder="DC" value="{{!empty($productDetails->dc)  ? $productDetails->dc : ''}}">
@@ -498,7 +498,7 @@
                                                 <div class="row gy-4">
                                                     <div class="col-xl-12">
                                                         <label for="weight" class="form-label"><span
-                                                                class="text-danger">*
+                                                                class="text-danger">
                                                             </span>Weight</label>
                                                         <input type="text" class="form-control" id="weight"
                                                             name="weight" placeholder="Weight" value="{{!empty($productDetails->weight)  ? $productDetails->weight : ''}}">
@@ -507,7 +507,7 @@
                                                     </div>
                                                     <div class="col-xl-12">
                                                         <label for="length" class="form-label"><span
-                                                                class="text-danger">*
+                                                                class="text-danger">
                                                             </span>Length</label>
                                                         <input type="text" class="form-control" id="length"
                                                             name="length" placeholder="Length" value="{{!empty($productDetails->length)  ? $productDetails->length : ''}}">
