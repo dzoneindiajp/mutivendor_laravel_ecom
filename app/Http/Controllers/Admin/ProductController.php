@@ -507,118 +507,9 @@ class ProductController extends Controller
 
                     if (!empty($request->session()->has('currentProductId'))) {
                         $productDetails = Product::where('id', $request->session()->get('currentProductId'))->first();
-                        $variantsDataArr = $request->variantsDataArr;
-                        if (!empty($variantsDataArr)) {
-
-                            $getProductVariants = ProductVariant::where('product_id', $request->session()->get('currentProductId'))->get();
-                            if ($getProductVariants->isNotEmpty()) {
-                                foreach ($getProductVariants as $pVarValue) {
-                                    ProductVariantValue::where('product_veriant_id', $pVarValue->id)->delete();
-                                }
-                            }
-                            ProductVariant::where('product_id', $request->session()->get('currentProductId'))->delete();
-
-                            foreach ($variantsDataArr as $variantValue) {
-                                if ( !empty($variantValue['variant_id']) && !empty($variantValue['variant_values'][0])) {
-                                    $obj2 = new ProductVariant;
-                                    $obj2->product_id = $request->session()->get('currentProductId');
-                                    $obj2->variant_id = $variantValue['variant_id'];
-                                    $obj2->save();
-                                    $pVariantId = $obj2->id;
-                                    if (empty($pVariantId)) {
-                                        $response = array();
-                                        $response["status"] = "error";
-                                        $response["msg"] = trans("Something Went Wrong");
-                                        $response["data"] = (object) array();
-                                        $response["http_code"] = 500;
-                                        return Response::json($response, 500);
-                                    }
-                                    foreach ($variantValue['variant_values'] as $dataVal) {
-                                        $obj3 = new ProductVariantValue;
-                                        $obj3->product_veriant_id = $pVariantId;
-                                        $obj3->veriant_value_id = $dataVal;
-                                        $obj3->save();
-                                    }
-
-                                }
-                            }
-
-                            // Inserting main product entry in ProductVariantCombinations Table
-                            $obj = new ProductVariantCombination;
-                            $obj->slug = $productDetails->slug ?? Null;
-                            $obj->product_id = $productDetails->id ?? Null;
-                            $obj->variant1_value_id = Null;
-                            $obj->variant2_value_id = Null;
-                            $obj->buying_price = $productDetails->buying_price ?? 0.00;
-                            $obj->selling_price = $productDetails->selling_price ?? 0.00;
-                            $obj->height = $productDetails->height ?? Null;
-                            $obj->weight = $productDetails->weight ?? Null;
-                            $obj->width = $productDetails->width ?? Null;
-                            $obj->length = $productDetails->length ?? Null;
-                            $obj->dc = $productDetails->dc ?? Null;
-                            $obj->bar_code = $productDetails->bar_code ?? Null;
-                            $obj->product_number = $productDetails->product_number ?? Null;
-                            $obj->save();
-                            $variantCombId = $obj->id;
-
-                            // Inserting main product Images entry in ProductVariantCombinationImages Table
-                            if(!empty($variantCombId)){
-                                $productImages = ProductImage::where('product_id',$productDetails->id)->get();
-                                if($productImages->isNotEmpty()){
-                                    foreach($productImages as $productImageData){
-                                        $obj = new ProductVariantCombinationImage;
-                                        $obj->product_variant_combination_id = $variantCombId;
-                                        $obj->product_image_id = $productImageData->id;
-                                        $obj->save();
-                                    }
-                                }
-                            }
-
-
-                            foreach ($variantsDataArr as $key => $variantData) {
-                                if (!empty($variantData['variant_id']) && !empty($variantData['variant_values'][0])) {
-                                    $variantName = $this->getVariantName($variantData['variant_id']);
-                                    $variantsDataArr[$key]['variant_name'] = $variantName;
-
-                                    $variantValuesNames = $this->getVariantValuesNames($variantData['variant_values']);
-                                    $variantValuesStoredData = $this->getVariantValuesStoredData($variantData['variant_values']);
-
-                                    // if(!empty($variantValuesStoredData)){
-                                    //     $selectedImages = ProductVariantCombinationImage::where('product_variant_combination_id',$variantValuesStoredData->id)->pluck('product_image_id')->toArray();
-                                    //     $variantsDataArr[$key]['selected_images'] = $selectedImages;
-                                    // }
-                                    $variantsDataArr[$key]['variant_values_names'] = $variantValuesNames;
-                                    $variantsDataArr[$key]['variant_values_data'] = $variantValuesStoredData;
-                                }else{
-                                    unset($variantsDataArr[$key]);
-                                }
-
-                            }
-                            // print_r($variantsDataArr);die;
-
-                            $productImages = ProductImage::where('product_id', $request->session()->get('currentProductId'))->get();
-                            // if($productImages->isNotEmpty()){
-                            //     foreach ($productImages as $key => $productImage) {
-                            //         $checkIfItIsSelected = ProductVariantCombinationImage::where('product_variant_combination_id')
-                            //     }
-                            // }
-                            $htmlData = View::make("admin.products.variants_combinations", compact('variantsDataArr', 'productImages'))->render();
-
-                            $response = array();
-                            $response["status"] = "success";
-                            $response["msg"] = "";
-                            $response["data"] = $htmlData;
-                            $response["http_code"] = 200;
-                            return Response::json($response, 200);
-                        } else {
-                            $response = array();
-                            $response["status"] = "error";
-                            $response["msg"] = trans("Something Went Wrong");
-                            $response["data"] = (object) array();
-                            $response["http_code"] = 500;
-                            return Response::json($response, 500);
-                        }
-
+                        
+                       $response =  $this->variantsFirstStepAction($request,$productDetails);
+                       return $response;
                     } else {
                         $response = array();
                         $response["status"] = "error";
@@ -631,6 +522,9 @@ class ProductController extends Controller
 
                     if (!empty($request->session()->has('currentProductId'))) {
                         $productDetails = Product::where('id', $request->session()->get('currentProductId'))->first();
+
+                        $this->variantsFirstStepAction($request,$productDetails);
+
                         $variantCombinationArr = $request->variantCombinationArr;
                         
                         if (!empty($variantCombinationArr)) {
@@ -807,6 +701,129 @@ class ProductController extends Controller
             return Response::json($response, 500);
         }
         return json_encode($response);
+    }
+
+    function variantsFirstStepAction($request,$productDetails){
+        $variantsDataArr = $request->variantsDataArr;
+        if (!empty($variantsDataArr)) {
+
+            $getProductVariants = ProductVariant::where('product_id', $request->session()->get('currentProductId'))->get();
+            if ($getProductVariants->isNotEmpty()) {
+                foreach ($getProductVariants as $pVarValue) {
+                    ProductVariantValue::where('product_veriant_id', $pVarValue->id)->delete();
+                }
+            }
+            ProductVariant::where('product_id', $request->session()->get('currentProductId'))->delete();
+
+            foreach ($variantsDataArr as $variantValue) {
+                if ( !empty($variantValue['variant_id']) && !empty($variantValue['variant_values'][0])) {
+                    $obj2 = new ProductVariant;
+                    $obj2->product_id = $request->session()->get('currentProductId');
+                    $obj2->variant_id = $variantValue['variant_id'];
+                    $obj2->save();
+                    $pVariantId = $obj2->id;
+                    if (empty($pVariantId)) {
+                        $response = array();
+                        $response["status"] = "error";
+                        $response["msg"] = trans("Something Went Wrong");
+                        $response["data"] = (object) array();
+                        $response["http_code"] = 500;
+                        return Response::json($response, 500);
+                    }
+                    foreach ($variantValue['variant_values'] as $dataVal) {
+                        $obj3 = new ProductVariantValue;
+                        $obj3->product_veriant_id = $pVariantId;
+                        $obj3->veriant_value_id = $dataVal;
+                        $obj3->save();
+                    }
+
+                }
+            }
+
+            // Inserting main product entry in ProductVariantCombinations Table
+            $checkIfMainProductCombinationExists = ProductVariantCombination::where('product_id',$productDetails->id)->where('is_main_product',1)->first();
+            if(!empty($checkIfMainProductCombinationExists)){
+
+                $obj =  ProductVariantCombination::find($checkIfMainProductCombinationExists->id);
+            }else{
+
+                $obj = new ProductVariantCombination;
+            }
+            $obj->is_main_product = 1;
+            $obj->slug = $productDetails->slug ?? Null;
+            $obj->product_id = $productDetails->id ?? Null;
+            $obj->variant1_value_id = Null;
+            $obj->variant2_value_id = Null;
+            $obj->buying_price = $productDetails->buying_price ?? 0.00;
+            $obj->selling_price = $productDetails->selling_price ?? 0.00;
+            $obj->height = $productDetails->height ?? Null;
+            $obj->weight = $productDetails->weight ?? Null;
+            $obj->width = $productDetails->width ?? Null;
+            $obj->length = $productDetails->length ?? Null;
+            $obj->dc = $productDetails->dc ?? Null;
+            $obj->bar_code = $productDetails->bar_code ?? Null;
+            $obj->product_number = $productDetails->product_number ?? Null;
+            $obj->save();
+            $variantCombId = $obj->id;
+
+            // Inserting main product Images entry in ProductVariantCombinationImages Table
+            if(!empty($variantCombId)){
+                $productImages = ProductImage::where('product_id',$productDetails->id)->get();
+                if($productImages->isNotEmpty()){
+                    ProductVariantCombinationImage::where('product_variant_combination_id',$variantCombId)->delete();
+                    foreach($productImages as $productImageData){
+                        $obj = new ProductVariantCombinationImage;
+                        $obj->product_variant_combination_id = $variantCombId;
+                        $obj->product_image_id = $productImageData->id;
+                        $obj->save();
+                    }
+                }
+            }
+
+
+            foreach ($variantsDataArr as $key => $variantData) {
+                if (!empty($variantData['variant_id']) && !empty($variantData['variant_values'][0])) {
+                    $variantName = $this->getVariantName($variantData['variant_id']);
+                    $variantsDataArr[$key]['variant_name'] = $variantName;
+
+                    $variantValuesNames = $this->getVariantValuesNames($variantData['variant_values']);
+                    $variantValuesStoredData = $this->getVariantValuesStoredData($variantData['variant_values']);
+
+                    // if(!empty($variantValuesStoredData)){
+                    //     $selectedImages = ProductVariantCombinationImage::where('product_variant_combination_id',$variantValuesStoredData->id)->pluck('product_image_id')->toArray();
+                    //     $variantsDataArr[$key]['selected_images'] = $selectedImages;
+                    // }
+                    $variantsDataArr[$key]['variant_values_names'] = $variantValuesNames;
+                    $variantsDataArr[$key]['variant_values_data'] = $variantValuesStoredData;
+                }else{
+                    unset($variantsDataArr[$key]);
+                }
+
+            }
+            // print_r($variantsDataArr);die;
+
+            $productImages = ProductImage::where('product_id', $request->session()->get('currentProductId'))->get();
+            // if($productImages->isNotEmpty()){
+            //     foreach ($productImages as $key => $productImage) {
+            //         $checkIfItIsSelected = ProductVariantCombinationImage::where('product_variant_combination_id')
+            //     }
+            // }
+            $htmlData = View::make("admin.products.variants_combinations", compact('variantsDataArr', 'productImages'))->render();
+
+            $response = array();
+            $response["status"] = "success";
+            $response["msg"] = "";
+            $response["data"] = $htmlData;
+            $response["http_code"] = 200;
+            return Response::json($response, 200);
+        } else {
+            $response = array();
+            $response["status"] = "error";
+            $response["msg"] = trans("Something Went Wrong");
+            $response["data"] = (object) array();
+            $response["http_code"] = 500;
+            return Response::json($response, 500);
+        }
     }
 
 
