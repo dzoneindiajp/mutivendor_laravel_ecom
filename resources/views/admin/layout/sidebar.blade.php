@@ -1,12 +1,15 @@
 <!-- Start::main-sidebar-header -->
+@php
+    $admin_logo = Config('constant.SETTINGS_IMAGE_URL').Config('Site.admin_logo');
+@endphp
 <div class="main-sidebar-header">
-    <a href="index.html" class="header-logo">
-        <img src="{{ asset('assets/images/brand-logos/desktop-logo.png') }}" alt="logo" class="desktop-logo">
-        <img src="{{ asset('assets/images/brand-logos/toggle-logo.png') }}" alt="logo" class="toggle-logo">
-        <img src="{{ asset('assets/images/brand-logos/desktop-dark.png') }}" alt="logo" class="desktop-dark">
-        <img src="{{ asset('assets/images/brand-logos/toggle-dark.png') }}" alt="logo" class="toggle-dark">
-        <img src="{{ asset('assets/images/brand-logos/desktop-white.png') }}" alt="logo" class="desktop-white">
-        <img src="{{ asset('assets/images/brand-logos/toggle-white.png') }}" alt="logo" class="toggle-white">
+    <a href="{{route("admin-dashboard")}}" class="header-logo">
+        {{-- <img src="{{ $admin_logo }}" alt="logo" class="desktop-logo">
+        <img src="{{ $admin_logo }}" alt="logo" class="toggle-logo"> --}}
+        <img src="{{ $admin_logo }}" alt="logo" class="desktop-dark">
+        {{-- <img src="{{ $admin_logo }}" alt="logo" class="toggle-dark">
+        <img src="{{ $admin_logo }}" alt="logo" class="desktop-white">
+        <img src="{{ $admin_logo }}" alt="logo" class="toggle-white"> --}}
     </a>
 </div>
 <!-- End::main-sidebar-header -->
@@ -26,10 +29,24 @@
                 <path d="M13.293 6.293 7.586 12l5.707 5.707 1.414-1.414L10.414 12l4.293-4.293z"></path>
             </svg>
         </div>
-        <?php
-        $menus   =    Session()->get('acls');
-        echo sideBarNavigation($menus);
-        ?>
+        @if(Auth::user()->user_role_id == 4)
+        <ul class="main-menu">
+            <li class="slide">
+                <a href="{{route('admin-partners.show', base64_encode(Auth::user()->id))}}" class="side-menu__item ">
+                    <i class="bx bx-user side-menu__icon"></i><span class="menu-text">View Profile</span><i class=""></i>
+                </a>
+            </li>
+            <li class="slide">
+                <a href="{{route('admin-referral_histories.index')}}" class="side-menu__item ">
+                    <i class="bx bx-user side-menu__icon"></i><span class="menu-text">referral-histories</span><i class=""></i>
+                </a>
+            </li>
+        @else
+            <?php
+            $menus   =    Session()->get('acls');
+            echo sideBarNavigation($menus);
+            ?>
+        @endif
 
 
         <div class="slide-right" id="slide-right"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24"

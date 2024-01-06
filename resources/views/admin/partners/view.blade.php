@@ -80,7 +80,7 @@
                                                         </th>
                                                         <td>
                                                             <div class="input-group">
-                                                                <input type="text" class="form-control" id="referralLink" value="{{ $userDetails->referral_code ?? '' }}" readonly>
+                                                                <input type="text" class="form-control" id="referralLink" value="{{ env('APP_URL') . 'login?' . http_build_query(['referral_code' => $userDetails->referral_code ?? '']) }}" readonly>
                                                                 <button class="btn btn-primary" id="copyReferralLink">
                                                                     <i class="bi bi-files"></i> Copy
                                                                 </button>

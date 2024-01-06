@@ -53,6 +53,48 @@ class Product extends Model
             if($results->isNotEmpty()){
                 foreach($results as $result){
                     $result->productImages = ProductVariantCombinationImage::where('product_variant_combination_images.product_variant_combination_id',$result->id)->leftJoin('product_images','product_images.id','product_variant_combination_images.product_image_id')->limit(2)->pluck('product_images.image')->toArray();
+                    $result->isProductAddedIntoCart = isProductAddedInCart($result->id) ? 1 : 0;
+                    if(!empty($result->productImages)){
+                        $tempProductImages = [];
+
+                        foreach ($result->productImages as $productImageKey => $productImage) {
+                            $productImage = (!empty($productImage)) ? Config('constant.PRODUCT_IMAGE_URL') . $productImage : Config('constant.IMAGE_URL') . "noimage.png";
+                            $tempProductImages[$productImageKey] = $productImage;
+                        }
+
+                        $result->productImages = $tempProductImages;
+                    }
+                }
+            }
+            return $results;
+
+
+
+        // } catch (Exception $e) {
+        //     Log::error($e);
+        //     return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);
+        // }
+    }
+
+
+    public function getAllHomeSubCatProducts($subCategoryId) {
+
+        // try {
+
+            $DB = ProductVariantCombination::leftJoin('products','products.id','product_variant_combinations.product_id')->leftJoin('categories', 'products.category_id', '=', 'categories.id');
+
+            if(!empty($subCategoryId)){
+                $DB->where('products.sub_category_id',$subCategoryId);
+            }
+
+            $limit = Config("Reading.records_per_page");
+            // print_r($limit);die;
+            // print_r($totalResults);die;
+            $results = $DB->where('products.is_featured', 1)->select('product_variant_combinations.*','products.name','categories.name as category_name', 'products.is_featured')->groupBy('product_variant_combinations.id')->limit($limit)->get();
+            if($results->isNotEmpty()){
+                foreach($results as $result){
+                    $result->productImages = ProductVariantCombinationImage::where('product_variant_combination_images.product_variant_combination_id',$result->id)->leftJoin('product_images','product_images.id','product_variant_combination_images.product_image_id')->limit(2)->pluck('product_images.image')->toArray();
+                    $result->isProductAddedIntoCart = isProductAddedInCart($result->id) ? 1 : 0;
                     if(!empty($result->productImages)){
                         $tempProductImages = [];
 

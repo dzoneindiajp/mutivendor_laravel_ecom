@@ -76,14 +76,14 @@ $('#category_id').on('change', function (e) {
                         }
                     }),
                 });
-                
+
                 if(selectedSubcategory){
                     $('#sub_category_id').val(selectedSubcategory).trigger('change');
                 }
             } else {
                 $('#subcategory-filter').hide();
             }
-           
+
         },
         error: function (jqXHR, exception) {
             console.log("error");
@@ -113,13 +113,13 @@ $('#sub_category_id').on('change', function (e) {
                     }),
                 });
                 if(selectedChildcategory){
-                   
+
                     $('#child_category_id').val(selectedChildcategory).trigger('change');
                 }
             } else {
                 $('#child-category-filter').hide();
             }
-           
+
         },
         error: function (jqXHR, exception) {
             console.log("error");
@@ -132,7 +132,7 @@ $('#edit_category_id').on('change', function (e) {
     let $this = $(this),
         url = $this.attr('data-action'),
         categoryId = $this.val() ?? "";
-        
+
         $('#edit_sub_category_id').html('<option value="">None</option>');
         $('#edit_child_category_id').html('<option value="">None</option>');
 

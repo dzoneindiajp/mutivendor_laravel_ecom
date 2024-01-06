@@ -20,9 +20,12 @@
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-lg-3 col-md-3 col-6">
+                        @php
+                        $LOGO_icon = Config('constant.SETTINGS_IMAGE_URL').Config('Site.logo');
+                       @endphp
                         <div class="logo">
                             <a href="{{route('front-home.index')}}">
-                                <img src="{{asset('assets/front/img/logo/Logo-black.png')}}" alt="Brand logo">
+                                <img src="{{$LOGO_icon}}" alt="Brand logo">
                             </a>
                         </div>
                     </div>
@@ -64,7 +67,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="col-lg-4 col-md-6 col-6 ms-auto">
                         <div class="header-setting-option">
                             <div class="settings-top">
