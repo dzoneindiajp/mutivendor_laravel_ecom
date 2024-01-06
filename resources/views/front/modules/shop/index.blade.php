@@ -1,5 +1,5 @@
 @extends('front.layouts.app')
-@section('content')    
+@section('content')
     <!-- breadcrumb area start -->
     <div class="breadcrumb-area pb-60 pt-60" style="background-image: url({{asset('assets/front/img/slider/bg-about.png')}}); background-size: 100%; background-repeat: no-repeat; ">
         <div class="container">
@@ -305,7 +305,7 @@
                             <!-- shop product top wrap start -->
                             <!-- product view mode wrapper start -->
                             <div class="shop-product-wrap grid row">
-                                
+
                             @if($results->isNotEmpty())
                             @include('front.modules.shop.load_more_data', ['results' => $results])
                             @else

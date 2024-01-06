@@ -154,7 +154,12 @@
                                                                 name="name" placeholder="Enter Name"
                                                                 onkeyup="displaySlug($(this))" value="{{!empty($productDetails->name)  ? $productDetails->name : ''}}">
                                                             <div class="invalid-feedback fw-bold"></div>
-                                                            <h6 class="product-slug mt-2"></h6>
+                                                            {{-- <h6 class="product-slug mt-2"></h6> --}}
+                                                        </div>
+                                                        <div class="col-xl-12 SlugBox" style="display: none">
+                                                            <label for="category" class="form-label"><span class="text-danger">*
+                                                            </span>Slug</label>
+                                                        <input type="text" class="form-control category-slug" disabled value="">
                                                         </div>
                                                         <div class="col-xl-12 select2-error">
                                                             <label for="category_id" class="form-label"><span

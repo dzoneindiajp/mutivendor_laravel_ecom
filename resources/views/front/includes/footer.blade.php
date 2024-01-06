@@ -8,14 +8,18 @@
                     <div class="footer-widget">
                         <div class="footer-widget-title">
                             <div class="footer-logo">
+                                @php
+                                 $LOGO_icon = Config('constant.SETTINGS_IMAGE_URL').Config('Site.logo');
+                                @endphp
                                 <a href="index.html">
-                                    <img src="{{asset('assets/front/img/logo/Logo-black.png')}}" alt="">
+                                    <img src="{{$LOGO_icon}}" alt="">
                                 </a>
                             </div>
                         </div>
                         <div class="footer-widget-body">
-                            <p>Here you can read some details about a nifty little lifecycle of your order's journey
-                                from the time you place your order to your new treasures arriving at your doorstep.</p>
+                            {{-- <p>Here you can read some details about a nifty little lifecycle of your order's journey
+                                from the time you place your order to your new treasures arriving at your doorstep.</p> --}}
+                            <p>{{Config("Homepage.about_footer")}}</p>
                         </div>
 
                     </div>
@@ -44,15 +48,14 @@
                         <div class="footer-widget-body">
                             <ul class="address-box">
                                 <li>
-                                    <p><i class="fa fa-envelope color-yellow"></i>support@trueview.health</p>
+                                    <p><i class="{{Config("Contact.mail_icon")}} color-yellow"></i>{{Config("Contact.contact_email")}}</p>
                                 </li>
                                 <li>
-                                    <p><i class="fa fa-mobile color-yellow"></i> +1(858)568-1132</p>
+                                    <p><i class="{{Config("Contact.phone_icon")}} color-yellow"></i> {{Config("Contact.contact_number")}}</p>
                                 </li>
                                 <li>
                                     <p>
-                                        <i class="fa fa-map-marker color-yellow"></i> 100 S Congress Ave, STE 2000
-                                        Austin, TX
+                                        <i class="{{Config("Contact.address_icon")}} color-yellow"></i> {{Config("Contact.address")}}
                                     </p>
                                 </li>
 
@@ -106,7 +109,7 @@
                         </div>
                     </div>
                     @php
-                        $payment_icon = Config('constant.SETTINGS_IMAGE_URL').Config('Site.paymet_image');
+                        $payment_icon = Config('constant.SETTINGS_IMAGE_URL').Config('Homepage.paymet_image');
                     @endphp
                     <div class="col-md-4 ms-auto order-1 order-md-2">
                         <div class="footer-payment">

@@ -17,7 +17,7 @@ class ShopController extends Controller
     public function index(Request $request,$categoryId = null,$subCategoryId = null,$childCategory = null) {
         // try {
             $DB = ProductVariantCombination::leftJoin('products','products.id','product_variant_combinations.product_id')->leftJoin('categories', 'products.category_id', '=', 'categories.id');
-            
+
             if(!empty($categoryId)){
                 $DB->where('products.category_id',$categoryId);
             }
@@ -29,15 +29,15 @@ class ShopController extends Controller
             }
             $offset = !empty($request->input('offset')) ? $request->input('offset') : 0;
             $limit = !empty($request->input('limit')) ? $request->input('limit') : Config("Reading.records_per_page");
-            
+
             if (!empty($request->all())) {
                 $searchData = $request->all();
-                
+
                 if ((isset($searchData['min_price'])) && (isset($searchData['max_price']))) {
                     $DB->whereBetween('product_variant_combinations.selling_price', [$searchData['min_price'], $searchData['max_price']]);
                 }
             }
-            
+
             if(!empty($request->sortBy) && $request->sortBy == 'a_z'){
                 $DB->orderBy('products.name','asc');
             }elseif(!empty($request->sortBy) && $request->sortBy == 'z_a'){
@@ -49,7 +49,7 @@ class ShopController extends Controller
             }else{
                 $DB->orderBy('product_variant_combinations.created_at','desc');
             }
-            
+
             $totalResults = $DB->count();
             // print_r($totalResults);die;
             $results = $DB->select('product_variant_combinations.*','products.name','categories.name as category_name')->groupBy('product_variant_combinations.id')->offset($offset)->limit($limit)->get();
@@ -68,8 +68,8 @@ class ShopController extends Controller
                     }
                 }
             }
-            
-            
+
+
             if ($request->ajax()) {
 
                 return View("front.modules.shop.load_more_data", compact('results', 'totalResults'));
@@ -79,7 +79,7 @@ class ShopController extends Controller
                 return view('front.modules.shop.index', compact('results', 'categories', 'totalResults'));
 
             }
-            
+
         // } catch (Exception $e) {
         //     Log::error($e);
         //     return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);

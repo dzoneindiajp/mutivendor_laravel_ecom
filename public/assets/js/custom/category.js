@@ -5,15 +5,22 @@ function displaySlug(ele) {
         category = $this.val(),
         lowercaseString = category.toLowerCase(),
         replacedString = lowercaseString.replace(/ /g, '-');
+        slug_data = 'https://jaipurjewelleryhouse.com/' + replacedString;
+        // $('.category-slug').text('Slug : https://jaipurjewelleryhouse.com/' + replacedString);
+        $('.category-slug').val(slug_data);
+        $('.SlugBox').show();
 
-        $('.category-slug').text('Slug : https://jaipurjewelleryhouse.com/' + replacedString);
 }
 
 function editDisplaySlug(ele) {
+
     let $this = ele;
         editCategory = $this.val(),
         editLowercaseString = editCategory.toLowerCase(),
         editReplacedString = editLowercaseString.replace(/ /g, '-');
-
-        $('.edit-category-slug').text('Slug : https://jaipurjewelleryhouse.com/' + editReplacedString);
+        slug_data = 'https://jaipurjewelleryhouse.com/' + editReplacedString;
+        // $('.edit-category-slug').text('Slug : https://jaipurjewelleryhouse.com/' + editReplacedString);
+        $('.edit-category-slug').val(slug_data);
+        $('.oldSlug').hide();
+        $('.newSlug').show();
 }

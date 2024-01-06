@@ -115,7 +115,7 @@
 														case 'textarea': ?>
 															<div class="col-xl-6">
 																<label><?php echo $label; ?></label>
-																<textarea name="Setting[{{$i}}]['value']" class="form-control textarea_resize" rows=3,cols=3></textarea>
+																<textarea name="Setting[{{$i}}]['value']" class="form-control textarea_resize" rows=3,cols=3>{!!$setting['value'] ?? ''!!}</textarea>
 															</div>
 														<?php
 															break;
@@ -137,7 +137,7 @@
                     </div>
                 </div>
             </div>
-            
+
         </form>
     </div>
 </div>

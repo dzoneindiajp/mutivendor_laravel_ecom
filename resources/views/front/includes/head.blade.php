@@ -8,13 +8,16 @@
     <meta name="title" content="{{ env('APP_NAME','CRM-TEST') }}">
     <meta name="description" content="Jaipur Jewellery House">
 
-    <title> 
+    <title>
         @hasSection('title')
             @yield('title')
         @else
             {{ env('APP_NAME', 'Jaipur Jewellery') }}
         @endif
     </title>
+    @php
+        $fav_icon = Config('constant.SETTINGS_IMAGE_URL').Config('Site.fav_icon');
+    @endphp
     <link rel="shortcut icon" href="{{ asset('assets/front/img/favicon.png') }}" type="image/x-icon" />
     <link href="{{ asset('assets/front/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/front/css/font-awesome.min.css') }}" rel="stylesheet">
@@ -22,8 +25,8 @@
     <link href="{{ asset('assets/front/css/helper.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/front/css/plugins.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/front/css/style.css') }}" rel="stylesheet">
-   
-    @stack('styles')  
 
-   
+    @stack('styles')
+
+
 </head>

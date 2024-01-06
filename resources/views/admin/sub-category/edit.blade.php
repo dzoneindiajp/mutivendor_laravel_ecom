@@ -44,15 +44,19 @@
                                     <input type="text" class="form-control" id="edit_name" name="name"
                                         placeholder="Enter Name" onkeyup="editDisplaySlug($(this))"
                                         value="{{ $category->name }}">
-                                    <h6 class="edit-category-slug mt-2"></h6>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="category" class="form-label"><span class="text-danger">*
-                                        </span>Slug</label>
-                                    <input type="text" class="form-control" disabled value="{{ $category->slug }}">
+                                    {{-- <h6 class="edit-category-slug mt-2"></h6> --}}
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-xl-6 mb-3 oldSlug">
+                            <label for="category" class="form-label"><span class="text-danger">*
+                            </span>Slug</label>
+                            <input type="text" class="form-control edit-category" disabled value="{{ $category->slug }}">
+                        </div>
+                        <div class="col-xl-6 mb-3 newSlug" style="display: none">
+                            <label for="category" class="form-label"><span class="text-danger">*
+                            </span>Slug</label>
+                            <input type="text" class="form-control edit-category-slug" disabled value="">
                         </div>
                         <div class="col-xl-6">
                             <label for="image" class="form-label"><span class="text-danger">

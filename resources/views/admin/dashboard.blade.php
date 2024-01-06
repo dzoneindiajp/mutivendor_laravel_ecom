@@ -6,7 +6,7 @@
 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
     <div>
         <p class="fw-semibold fs-18 mb-0">Welcome back, {{ ucfirst(auth()->user()->name) }}</p>
-        <span class="fs-semibold text-muted">Track your sales activity, leads and deals here.</span>
+        <span class="fs-semibold text-muted">Track your activities here.</span>
     </div>
     {{-- <div class="btn-list mt-md-0 mt-2">
         <button type="button" class="btn btn-primary btn-wave">
@@ -21,6 +21,7 @@
 <!-- End::page-header -->
 
 <!-- Start::row-1 -->
+@if (Auth::user()->user_role_id != 4)
 <div class="row">
     <div class="col-xxl-3 col-xl-3 col-lg-6 col-md-6">
         <div class="card custom-card">
@@ -139,5 +140,14 @@
         </div>
     </div>
 </div>
+@else
+<div class="row justify-content-center align-items-center" style="height: 100vh;">
+    <div class="col text-center">
+        <h1 style="color: #f542cb;">Welcome In Partner Panel</h1>
+    </div>
+</div>
+
+
+@endif
 <!-- End::row-1 -->
 @endsection

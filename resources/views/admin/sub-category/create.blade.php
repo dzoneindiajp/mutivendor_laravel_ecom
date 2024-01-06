@@ -41,7 +41,7 @@
                                     <label for="name" class="form-label"><span class="text-danger">* </span>Name</label>
                                     <input type="text" class="form-control @error('name') is-invalid @enderror"
                                         id="name" name="name" placeholder="Enter Name" onkeyup="displaySlug($(this))">
-                                    <h6 class="category-slug mt-2"></h6>
+                                    {{-- <h6 class="category-slug mt-2"></h6> --}}
                                     @if ($errors->has('name'))
                                     <div class="invalid-feedback">
                                         {{ $errors->first('name') }}
@@ -49,6 +49,11 @@
                                     @endif
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-xl-6 mb-3 SlugBox" style="display: none">
+                            <label for="category" class="form-label"><span class="text-danger">*
+                            </span>Slug</label>
+                        <input type="text" class="form-control category-slug" disabled value="">
                         </div>
                         <div class="col-xl-6">
                             <label for="image" class="form-label"><span class="text-danger">

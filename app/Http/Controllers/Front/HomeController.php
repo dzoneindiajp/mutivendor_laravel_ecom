@@ -24,8 +24,16 @@ class HomeController extends Controller
 
             $product  =  new Product;
             $featured_products = $product->getAllFeaturedProducts();
-            // echo "<pre>"; print_r($all_categories); die;
-            return view('front.modules.home.index',compact("all_top_sliders", "all_middle_sliders","all_categories","featured_products"));
+
+            $sub_category = Category::whereNotNull('categories.parent_id')->whereNotNull('categories.description')->first();
+            if(!empty($sub_category)) {
+                $sub_cat_product  =  new Product;
+                $sub_cat_products = $sub_cat_product->getAllHomeSubCatProducts($sub_category->id);
+
+                $sub_category->sub_cat_products = $sub_cat_products;
+            }
+            // echo "<pre>"; print_r($sub_category); die;
+            return view('front.modules.home.index',compact("all_top_sliders", "all_middle_sliders","all_categories","featured_products", "sub_category"));
         } catch (Exception $e) {
             Log::error($e);
             return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);

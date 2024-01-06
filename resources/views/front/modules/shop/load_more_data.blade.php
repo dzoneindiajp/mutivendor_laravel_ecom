@@ -1,5 +1,6 @@
 @if($results->isNotEmpty())
 @forelse($results as $result)
+
 <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-6 col-6 list-data-row" data-total-count="{{$totalResults}}">
     <div class="product-item mb-20">
         <div class="product-description">
@@ -8,14 +9,14 @@
                     <a href="product-details.html">{{$result->category_name ?? ''}}</a>
                     <span style="float:right;">
                         <a class="wishlist-list wish" href="javascript:void(0)" title="" tabindex="0"><svg
-                                xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="feather feather-heart">
-                                <path
-                                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
-                                </path>
-                                <use xlink:href="#wish"></use>
-                            </svg></a>
+                            xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" class="feather feather-heart">
+                            <path
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                            </path>
+                            <use xlink:href="#wish"></use>
+                        </svg></a>
                     </span>
                 </p>
             </div>
@@ -72,3 +73,4 @@
     <h6>No Products found.</h6>
 </div>
 @endif
+
