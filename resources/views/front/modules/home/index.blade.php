@@ -297,18 +297,18 @@
                         <div class="product-description">
                             <div class="manufacturer">
                                 <p>
-                                    <a href="{{route('front-shop.productDetail',$result->slug)}}">Fashion Manufacturer</a>
+                                    <a href="{{route('front-shop.index')}}">Fashion Manufacturer</a>
                                     <span style="float:right;">
                                         <a class="wishlist-list wish" href="#" title="" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path><use xlink:href="#wish"></use></svg></a>
                                     </span>
                                 </p>
                             </div>
                             <div class="product-name">
-                                <h3><a href="{{route('front-shop.productDetail',$result->slug)}}">Endeavor Daytrip</a></h3>
+                                <h3><a href="{{route('front-shop.index')}}">Endeavor Daytrip</a></h3>
                             </div>
                         </div>
                         <div class="product-thumb">
-                            <a href="{{route('front-shop.productDetail',$result->slug)}}">
+                            <a href="{{route('front-shop.index')}}">
                                 <img src="{{ asset('assets/front/img/product/product-j1.jpg')}}" class="simple-product" alt="product image">
                                 <img src="{{ asset('assets/front/img/product/product-j2.jpg')}}" class="hover-product" alt="product image">
                             </a>
@@ -340,18 +340,18 @@
                         <div class="product-description">
                             <div class="manufacturer">
                                 <p>
-                                    <a href="{{route('front-shop.productDetail',$result->slug)}}">Fashion Manufacturer</a>
+                                    <a href="{{route('front-shop.index')}}">Fashion Manufacturer</a>
                                     <span style="float:right;">
                                         <a class="wishlist-list wish" href="#" title="" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path><use xlink:href="#wish"></use></svg></a>
                                     </span>
                                 </p>
                             </div>
                             <div class="product-name">
-                                <h3><a href="{{route('front-shop.productDetail',$result->slug)}}">Endeavor Daytrip</a></h3>
+                                <h3><a href="{{route('front-shop.index')}}">Endeavor Daytrip</a></h3>
                             </div>
                         </div>
                         <div class="product-thumb">
-                            <a href="{{route('front-shop.productDetail',$result->slug)}}">
+                            <a href="{{route('front-shop.index')}}">
                                 <img src="{{ asset('assets/front/img/product/product-j3.jpg')}}" class="simple-product" alt="product image">
                                 <img src="{{ asset('assets/front/img/product/product-j4.jpg')}}" class="hover-product" alt="product image">
                             </a>
@@ -384,18 +384,18 @@
                         <div class="product-description">
                             <div class="manufacturer">
                                 <p>
-                                    <a href="{{route('front-shop.productDetail',$result->slug)}}">Fashion Manufacturer</a>
+                                    <a href="{{route('front-shop.index')}}">Fashion Manufacturer</a>
                                     <span style="float:right;">
                                         <a class="wishlist-list wish" href="#" title="" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path><use xlink:href="#wish"></use></svg></a>
                                     </span>
                                 </p>
                             </div>
                             <div class="product-name">
-                                <h3><a href="{{route('front-shop.productDetail',$result->slug)}}">Endeavor Daytrip</a></h3>
+                                <h3><a href="{{route('front-shop.index')}}">Endeavor Daytrip</a></h3>
                             </div>
                         </div>
                         <div class="product-thumb">
-                            <a href="{{route('front-shop.productDetail',$result->slug)}}">
+                            <a href="{{route('front-shop.index')}}">
                                 <img src="{{ asset('assets/front/img/product/product-j5.jpg')}}" class="simple-product" alt="product image">
                                 <img src="{{ asset('assets/front/img/product/product-j6.jpg')}}" class="hover-product" alt="product image">
                             </a>
@@ -428,18 +428,18 @@
                         <div class="product-description">
                             <div class="manufacturer">
                                 <p>
-                                    <a href="{{route('front-shop.productDetail',$result->slug)}}">Fashion Manufacturer</a>
+                                    <a href="{{route('front-shop.index')}}">Fashion Manufacturer</a>
                                     <span style="float:right;">
                                         <a class="wishlist-list wish" href="#" title="" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path><use xlink:href="#wish"></use></svg></a>
                                     </span>
                                 </p>
                             </div>
                             <div class="product-name">
-                                <h3><a href="{{route('front-shop.productDetail',$result->slug)}}">Endeavor Daytrip</a></h3>
+                                <h3><a href="{{route('front-shop.index')}}">Endeavor Daytrip</a></h3>
                             </div>
                         </div>
                         <div class="product-thumb">
-                            <a href="{{route('front-shop.productDetail',$result->slug)}}">
+                            <a href="{{route('front-shop.index')}}">
                                 <img src="{{ asset('assets/front/img/product/product-j7.jpg')}}" class="simple-product" alt="product image">
                                 <img src="{{ asset('assets/front/img/product/product-j8.jpg')}}" class="hover-product" alt="product image">
                             </a>
@@ -472,18 +472,18 @@
                         <div class="product-description">
                             <div class="manufacturer">
                                 <p>
-                                    <a href="{{route('front-shop.productDetail',$result->slug)}}">Fashion Manufacturer</a>
+                                    <a href="{{route('front-shop.index')}}">Fashion Manufacturer</a>
                                     <span style="float:right;">
                                         <a class="wishlist-list wish" href="#" title="" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path><use xlink:href="#wish"></use></svg></a>
                                     </span>
                                 </p>
                             </div>
                             <div class="product-name">
-                                <h3><a href="{{route('front-shop.productDetail',$result->slug)}}">Endeavor Daytrip</a></h3>
+                                <h3><a href="{{route('front-shop.index')}}">Endeavor Daytrip</a></h3>
                             </div>
                         </div>
                         <div class="product-thumb">
-                            <a href="{{route('front-shop.productDetail',$result->slug)}}">
+                            <a href="{{route('front-shop.index')}}">
                                 <img src="{{ asset('assets/front/img/product/product-j9.jpg')}}" class="simple-product" alt="product image">
                                 <img src="{{ asset('assets/front/img/product/product-j10.jpg')}}" class="hover-product" alt="product image">
                             </a>
@@ -515,18 +515,18 @@
                         <div class="product-description">
                             <div class="manufacturer">
                                 <p>
-                                    <a href="{{route('front-shop.productDetail',$result->slug)}}">Fashion Manufacturer</a>
+                                    <a href="{{route('front-shop.index')}}">Fashion Manufacturer</a>
                                     <span style="float:right;">
                                         <a class="wishlist-list wish" href="#" title="" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path><use xlink:href="#wish"></use></svg></a>
                                     </span>
                                 </p>
                             </div>
                             <div class="product-name">
-                                <h3><a href="{{route('front-shop.productDetail',$result->slug)}}">Endeavor Daytrip</a></h3>
+                                <h3><a href="{{route('front-shop.index')}}">Endeavor Daytrip</a></h3>
                             </div>
                         </div>
                         <div class="product-thumb">
-                            <a href="{{route('front-shop.productDetail',$result->slug)}}">
+                            <a href="{{route('front-shop.index')}}">
                                 <img src="{{ asset('assets/front/img/product/product-j11.jpg')}}" class="simple-product" alt="product image">
                                 <img src="{{ asset('assets/front/img/product/product-j12.jpg')}}" class="hover-product" alt="product image">
                             </a>
@@ -558,18 +558,18 @@
                         <div class="product-description">
                             <div class="manufacturer">
                                 <p>
-                                    <a href="{{route('front-shop.productDetail',$result->slug)}}">Fashion Manufacturer</a>
+                                    <a href="{{route('front-shop.index')}}">Fashion Manufacturer</a>
                                     <span style="float:right;">
                                         <a class="wishlist-list wish" href="#" title="" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path><use xlink:href="#wish"></use></svg></a>
                                     </span>
                                 </p>
                             </div>
                             <div class="product-name">
-                                <h3><a href="{{route('front-shop.productDetail',$result->slug)}}">Endeavor Daytrip</a></h3>
+                                <h3><a href="{{route('front-shop.index')}}">Endeavor Daytrip</a></h3>
                             </div>
                         </div>
                         <div class="product-thumb">
-                            <a href="{{route('front-shop.productDetail',$result->slug)}}">
+                            <a href="{{route('front-shop.index')}}">
                                 <img src="{{ asset('assets/front/img/product/product-j2.jpg')}}" class="simple-product" alt="product image">
                                 <img src="{{ asset('assets/front/img/product/product-j5.jpg')}}" class="hover-product" alt="product image">
                             </a>
