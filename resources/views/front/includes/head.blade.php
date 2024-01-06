@@ -22,8 +22,11 @@
     <link href="{{ asset('assets/front/css/helper.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/front/css/plugins.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/front/css/style.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('assets/css/toastr.min.css') }}">
    
     @stack('styles')  
+
+    <script src="{{ asset('assets/front/js/vendor/jquery-3.3.1.min.js') }}"></script>
 
    
 </head>

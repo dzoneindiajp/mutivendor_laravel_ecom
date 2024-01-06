@@ -18,8 +18,9 @@ class CartController extends Controller
     public function index(Request $request) {
         try {
             $cartData = getCartData();
+            
             if(count($cartData) == 0){
-                return redirect()->back()->with('error','Cart is empty');
+                return redirect()->route('front-home.index')->with('error','Cart is empty');
             }
             return view('front.modules.cart.index',compact('cartData'));
         } catch (Exception $e) {

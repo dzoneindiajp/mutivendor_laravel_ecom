@@ -559,6 +559,21 @@ class ProductController extends Controller
                             $obj->bar_code = $productDetails->bar_code ?? Null;
                             $obj->product_number = $productDetails->product_number ?? Null;
                             $obj->save();
+                            $variantCombId = $obj->id;
+
+                            // Inserting main product Images entry in ProductVariantCombinationImages Table
+                            if(!empty($variantCombId)){
+                                $productImages = ProductImage::where('product_id',$productDetails->id)->get();
+                                if($productImages->isNotEmpty()){
+                                    foreach($productImages as $productImageData){
+                                        $obj = new ProductVariantCombinationImage;
+                                        $obj->product_variant_combination_id = $variantCombId;
+                                        $obj->product_image_id = $productImageData->id;
+                                        $obj->save();
+                                    }
+                                }
+                            }
+
 
                             foreach ($variantsDataArr as $key => $variantData) {
                                 if (!empty($variantData['variant_id']) && !empty($variantData['variant_values'][0])) {
@@ -617,7 +632,7 @@ class ProductController extends Controller
                     if (!empty($request->session()->has('currentProductId'))) {
                         $productDetails = Product::where('id', $request->session()->get('currentProductId'))->first();
                         $variantCombinationArr = $request->variantCombinationArr;
-                        // print_r($variantCombinationArr);die;
+                        
                         if (!empty($variantCombinationArr)) {
 
                             $getProductVariantCombinations = ProductVariantCombination::where('product_id', $request->session()->get('currentProductId'))->get();
@@ -713,8 +728,8 @@ class ProductController extends Controller
                                     return Response::json($response, 500);
                                 }
                             }
+                            DB::commit();
                         }
-                        DB::commit();
 
 
                         $response = array();

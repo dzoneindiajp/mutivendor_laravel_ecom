@@ -5228,8 +5228,15 @@ h4.details {
         text-transform: capitalize;
     }
 
-    .product-details-des .availability span {
+    .product-details-des .availability .inStock {
         color: #446e6f;
+        font-size: 14px;
+        font-weight: 500;
+        padding-left: 3px;
+        text-transform: capitalize;
+    }
+    .product-details-des .availability .outOfStock {
+        color: #dc1616;
         font-size: 14px;
         font-weight: 500;
         padding-left: 3px;

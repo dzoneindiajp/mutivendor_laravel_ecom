@@ -19,10 +19,11 @@ $(document).on('click','.cartIconAction',function(){
                 $(that).removeClass('added');
                 $('.cartDataContainer').html(response.data.htmlData);
                 $('.mainCartCounter').text(response.data.count);
-
+                show_message('Product has been removed from cart successfully','success');
             },
             error: function(error) {
-                console.error('Error adding product to cart');
+                show_message('Error removing product from cart','error');
+               
             }
         });
     }else{
@@ -43,10 +44,11 @@ $(document).on('click','.cartIconAction',function(){
                 $(that).addClass('added');
                 $('.cartDataContainer').html(response.data.htmlData);
                 $('.mainCartCounter').text(response.data.count);
-                console.log(response);
+                show_message('Product has been added to cart successfully','success');
+
             },
             error: function(error) {
-                console.error('Error adding product to cart');
+                show_message('Error adding product to cart','error');
             }
         });
     }
