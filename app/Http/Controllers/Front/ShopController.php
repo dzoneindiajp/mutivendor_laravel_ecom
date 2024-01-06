@@ -18,18 +18,26 @@ use App\Models\ProductVariantValue;
 
 class ShopController extends Controller
 {
-    public function index(Request $request,$categoryId = null,$subCategoryId = null,$childCategory = null) {
+    public function index(Request $request,$categorySlug = null,$subCategorySlug = null,$childCategorySlug = null) {
         // try {
             $DB = ProductVariantCombination::leftJoin('products','products.id','product_variant_combinations.product_id')->leftJoin('categories', 'products.category_id', '=', 'categories.id');
-
-            if(!empty($categoryId)){
+            $categoriesData = Category::whereNull('parent_id')->where('is_deleted', 0)->where('is_active',1)->get();
+            if(!empty($categorySlug)){
+                $categoryId = Category::where('slug',$categorySlug)->value('id');
                 $DB->where('products.category_id',$categoryId);
+                $categoriesData = Category::where('parent_id',$categoryId)->where('is_deleted', 0)->where('is_active',1)->get();
             }
-            if(!empty($subCategoryId)){
-                $DB->where('products.sub_category_id',$subCategoryId);
+            if(!empty($categorySlug) && !empty($subCategorySlug)){
+                $categoryId = Category::where('slug',$categorySlug)->value('id');
+                $subCategoryId = Category::where('parent_id',$categoryId)->where('slug',$subCategorySlug)->value('id');
+                $DB->where('products.category_id',$categoryId)->where('products.sub_category_id',$subCategoryId);
+                $categoriesData = Category::where('parent_id',$subCategoryId)->where('is_deleted', 0)->where('is_active',1)->get();
             }
-            if(!empty($childCategory)){
-                $DB->where('products.child_category_id',$childCategory);
+            if(!empty($categorySlug) && !empty($subCategorySlug) && !empty($childCategorySlug)){
+                $categoryId = Category::where('slug',$categorySlug)->value('id');
+                $subCategoryId = Category::where('parent_id',$categoryId)->where('slug',$subCategorySlug)->value('id');
+                $childCategoryId = Category::where('parent_id',$subCategoryId)->where('slug',$childCategorySlug)->value('id');
+                $DB->where('products.category_id',$categoryId)->where('products.sub_category_id',$subCategoryId)->where('products.child_category_id',$childCategoryId);
             }
             $offset = !empty($request->input('offset')) ? $request->input('offset') : 0;
             $limit = !empty($request->input('limit')) ? $request->input('limit') : Config("Reading.records_per_page");
@@ -78,9 +86,8 @@ class ShopController extends Controller
 
                 return View("front.modules.shop.load_more_data", compact('results', 'totalResults'));
             } else {
-
-                $categories = Category::whereNull('parent_id')->where('is_deleted', 0)->get();
-                return view('front.modules.shop.index', compact('results', 'categories', 'totalResults'));
+                
+                return view('front.modules.shop.index', compact('results', 'categoriesData', 'totalResults','categorySlug','subCategorySlug','childCategorySlug'));
 
             }
 

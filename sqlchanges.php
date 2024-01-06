@@ -32,3 +32,9 @@ ALTER TABLE `product_variant_combinations` CHANGE `bar_code` `bar_code` VARCHAR(
 ALTER TABLE `product_variant_combinations` CHANGE `variant1_value_id` `variant1_value_id` BIGINT NULL DEFAULT NULL;
 
 ALTER TABLE `banners` ADD `order_number` INT NULL DEFAULT NULL AFTER `width`;
+
+
+
+
+
+ALTER TABLE `product_variant_combinations` ADD `is_main_product` SMALLINT NOT NULL DEFAULT '0' AFTER `product_number`;

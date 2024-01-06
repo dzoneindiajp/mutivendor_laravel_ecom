@@ -41,6 +41,7 @@
         <div class="shop-main-wrapper pt-50 pb-50 pt-sm-58 pb-sm-58">
             <div class="container">
                 <div class="row">
+                    @if($categoriesData->isNotEmpty())
                     <div class="col-xl-3 col-lg-4 hidden-xs">
                         <div class="sidebar-wrapper mt-md-100 mt-sm-48 mobile-none">
                             <div class="sidebar-body">
@@ -57,63 +58,25 @@
                                         <div id="collapseOne" class="collapse custom-list open-1" aria-labelledby="headingOne" data-bs-parent="#general-question">
                                             <div class="card-body">
                                                 <div class="filter-check">
-                                                    <label class="container">
-                                                        Earrings
+                                                    @foreach($categoriesData as $category)
+                                                    <label class="container categoriesCheck" onclick = "window.open('{{ 
+                                                        !empty($childCategorySlug) ? 
+                                                            route('front-shop.index', [$categorySlug, $subCategorySlug, $childCategorySlug]) : 
+                                                            (!empty($subCategorySlug) ? 
+                                                                route('front-shop.index', [$categorySlug, $subCategorySlug,$category->slug]) : 
+                                                                (!empty($categorySlug) ? 
+                                                                    route('front-shop.index', [$categorySlug,$category->slug]) : 
+                                                                    route('front-shop.index',$category->slug)
+                                                                )
+                                                            )
+                                                    }}','_self')">
+                                                        {{$category->name ?? ''}}
                                                         <input type="checkbox">
                                                         <span class="checkmark"></span>
-                                                        <div class="filter-check">
-                                                            <label class="container">
-                                                            Bangles
-                                                                <input type="checkbox">
-                                                                <span class="checkmark"></span>
-                                                            </label>
-                                                            <label class="container">
-                                                                Earrings & Mangtikka Sets
-                                                                <input type="checkbox">
-                                                                <span class="checkmark"></span>
-                                                            </label>
-                                                        </div>
+                                                        
                                                     </label>
-                                                    <label class="container">
-                                                        Necklace
-                                                        <input type="checkbox">
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                    <label class="container">
-                                                        Rings
-                                                        <input type="checkbox">
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                    <label class="container">
-                                                        Bangles
-                                                        <input type="checkbox">
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                    <label class="container">
-                                                        Earrings & Mangtikka Sets
-                                                        <input type="checkbox">
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                    <label class="container">
-                                                        Maang Tikka
-                                                        <input type="checkbox">
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                    <label class="container">
-                                                        Nose Pin
-                                                        <input type="checkbox">
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                    <label class="container">
-                                                        Hair Accessories
-                                                        <input type="checkbox">
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                    <label class="container">
-                                                        Kaanchain
-                                                        <input type="checkbox">
-                                                        <span class="checkmark"></span>
-                                                    </label>
+                                                    @endforeach
+                                                    
                                                 </div>
                                             </div>
                                         </div>
@@ -123,6 +86,7 @@
                             <!-- single sidebar end -->
                         </div>
                     </div>
+                    @endif
                     <div class="col-xl-3 col-lg-4 hidden-xs">
                         <div class="sidebar-wrapper mt-md-100 mt-sm-48 mobile-none">
                             <div class="sidebar-body">
@@ -346,4 +310,5 @@
             </div>
         </div>
     </div>
+    
 @endsection
