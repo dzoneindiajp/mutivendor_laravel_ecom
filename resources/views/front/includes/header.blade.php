@@ -29,6 +29,10 @@
                             </a>
                         </div>
                     </div>
+                    @php
+                        $categories = \App\Models\Category::where('categories.parent_id', null)->where('categories.is_active', 1)->where('categories.is_deleted', 0)
+                                            ->select('categories.id','categories.parent_id','categories.name','categories.slug','categories.description','categories.image','categories.thumbnail_image','categories.video','categories.category_order')->orderBy('category_order', 'ASC')->get()->toArray();
+                    @endphp
                     <div class="col-lg-5 d-none d-lg-block">
                         <div class="main-header-inner">
                             <div class="main-menu">
@@ -37,31 +41,21 @@
                                         <li class="active"><a href="{{route('front-home.index')}}">Home</a></li>
                                         <li><a href="javascript:void(0)">About Us</a></li>
                                         <li><a href="{{route('front-shop.index')}}">Shop</a></li>
-                                        <li class="static">
-                                            <a href="javascript:void(0)">Categories <i class="fa fa-angle-down"></i></a>
-                                            <ul class="megamenu dropdown">
-                                                <li class="mega-title">
-                                                    <a href="javascript:void(0)">
-                                                        ravi
-                                                    </a>
-                                                </li>
-                                                <li class="mega-title">
-                                                    <a href="javascript:void(0)">
-                                                        Bangles
-                                                    </a>
-                                                </li>
-                                                <li class="mega-title">
-                                                    <a href="javascript:void(0)">
-                                                        Earings
-                                                    </a>
-                                                </li>
-                                                <li class="mega-title">
-                                                    <a href="javascript:void(0)">
-                                                        Neckleas
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </li>
+                                        @if(!empty($categories))
+                                            <li class="static">
+                                                <a href="javascript:void(0)">Categories <i class="fa fa-angle-down"></i></a>
+                                                <ul class="megamenu dropdown">
+                                                    @foreach ($categories as $item)
+                                                    <li class="mega-title">
+                                                        <a href="{{route('front-shop.index', $item['slug'])}}">
+                                                            {{$item['name']}}
+                                                        </a>
+                                                    </li>
+                                                    @endforeach
+                                                </ul>
+                                            </li>
+
+                                        @endif
                                     </ul>
                                 </nav>
                             </div>

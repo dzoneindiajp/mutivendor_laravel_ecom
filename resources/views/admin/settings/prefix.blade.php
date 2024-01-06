@@ -24,7 +24,7 @@
 <!-- Page Header Close -->
 <div class="row">
     <div class="col-xl-12">
-        <form action="{{URL('admin/settings/prefix')}}/{{$prefix}}" method="post" enctype="multipart/form-data"
+        <form action="{{URL('/settings/prefix')}}/{{$prefix}}" method="post" enctype="multipart/form-data"
             id="settingsForm">
             @csrf
             <div class="card custom-card">
