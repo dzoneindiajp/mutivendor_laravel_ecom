@@ -1,5 +1,5 @@
 @extends('front.layouts.app')
-@section('content')   
+@section('content')
 <div class="breadcrumb-area pb-60 pt-60" style="background-image: url({{ asset('assets/front/img/slider/bg-about.png')}}); background-size: 100%; background-repeat: no-repeat; ">
         <div class="container">
             <div class="row">
@@ -20,18 +20,18 @@
                     <div class="col-lg-12">
                         <!-- product details inner end -->
                         <div class="product-details-inner">
-                            <div class="row">   
+                            <div class="row">
                                 @if(!empty($productDetails->productImages))
                                 <div class="col-lg-1">
-                                    
+
                                     <div class="pro-nav slick-padding2 slider-arrow-style slider-arrow-style__style-2">
                                         @foreach($productDetails->productImages as $productImageVal)
                                         <div class="pro-nav-thumb"><img src="{{$productImageVal['image'] ?? '' }}" alt="" /></div>
                                         @endforeach
-                                       
+
                                     </div>
-                                    
-                                    
+
+
                                 </div>
                                 <div class="col-lg-5">
                                     <div class="product-img-space">
@@ -40,10 +40,10 @@
                                             <div class="pro-large-img img-zoom" id="img1">
                                                 <img src="{{$productImageVal['image'] ?? '' }}" alt="" />
                                             </div>
-                                           
+
                                             @endforeach
-                                            
-                                          
+
+
                                         </div>
                                     </div>
                                 </div>
@@ -82,7 +82,7 @@
                                         @endif
                                         @endforeach
                                         @endif
-                                        
+
 
 
                                         <div class="pricebox">
@@ -120,7 +120,7 @@
                                             </select>
                                             @endforeach
                                             @endif
-                                            
+
                                             <select class="size-input">
                                                 <option>Qty</option>
                                                 <option>1</option>
@@ -173,14 +173,14 @@
                                         @if($productDetails->productDescriptions->isNotEmpty())
                                         @foreach($productDetails->productDescriptions as $productDescriptionKey =>  $productDescription)
                                         @if(strtolower($productDescription->name) != 'short description')
-                                        
+
                                         <li>
                                             <a class="{{($productDescriptionKey == 0) ? 'active' : ''}}" data-bs-toggle="tab" href="#tab_{{str_replace(' ','_',$productDescription->name)}}" aria-selected="true" role="tab">{{ucfirst($productDescription->name) ?? ''}}</a>
                                         </li>
                                         @endif
                                         @endforeach
                                         @endif
-                                           
+
                                             <li>
                                                 <a class="{{($productDetails->productDescriptions->isEmpty()) ? 'active' : ''}}" data-bs-toggle="tab" href="#tab_two" aria-selected="false" role="tab" class="" tabindex="-1">information</a>
                                             </li>
@@ -192,7 +192,7 @@
                                             @if($productDetails->productDescriptions->isNotEmpty())
                                             @foreach($productDetails->productDescriptions as $productDescriptionKey => $productDescription)
                                             @if(strtolower($productDescription->name) != 'short description')
-                                           
+
                                             <div class="tab-pane fade {{($productDescriptionKey == 0) ? 'active show' : ''}}" id="tab_{{str_replace(' ','_',$productDescription->name)}}" role="tabpanel">
                                                 <div class="tab-one">
                                                    {!!$productDescription->value ?? ''!!}
@@ -201,11 +201,11 @@
                                             @endif
                                             @endforeach
                                             @endif
-                                            
+
                                             <div class="tab-pane fade {{($productDetails->productDescriptions->isEmpty()) ? 'active show' : ''}}" id="tab_two" role="tabpanel">
                                                 <div class="product-detail-table">
                                                     <table class="table">
-                                                        @if($productDetails->productSpecifications->isNotEmpty()) 
+                                                        @if($productDetails->productSpecifications->isNotEmpty())
                                                         @foreach($productDetails->productSpecifications as $productSpecification)
                                                         <tr>
                                                             <td>{{$productSpecification->name ?? ''}}:</td>
@@ -214,16 +214,16 @@
                                                         @endforeach
                                                         @else
                                                         <h6 class="text-center">
-                                                            No Information Available 
+                                                            No Information Available
                                                         </h6>
                                                         @endif
-                                                        
+
                                                     </table>
                                                 </div>
                                             </div>
                                             <div class="tab-pane fade" id="tab_three" role="tabpanel">
                                                 <h6 class="text-center">
-                                                            No Reviews Available 
+                                                            No Reviews Available
                                                         </h6>
                                                 <!-- <form action="#" class="review-form">
                                                     <h5>1 review for <span>Chaz Kangeroo Hoodies</span></h5>
