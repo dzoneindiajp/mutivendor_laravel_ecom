@@ -17,19 +17,19 @@ class SeoPageController extends Controller {
 
 	public $model      =   'SeoPage';
     public function __construct(Request $request)
-    {   
+    {
         parent::__construct();
         View()->share('model', $this->model);
         $this->request = $request;
     }
 /**
-* Function for display all Document 
+* Function for display all Document
 *
 * @param null
 *
-* @return view page. 
+* @return view page.
 */
-public function index(Request $request){	
+public function index(Request $request){
 	$DB							=	SeoPage::query();
 	 $searchVariable = array();
         $inputGet = $request->all();
@@ -47,13 +47,13 @@ public function index(Request $request){
             if (isset($searchData['page'])) {
                 unset($searchData['page']);
             }
-            
+
             foreach ($searchData as $fieldName => $fieldValue) {
                 if ($fieldValue != "") {
                     if ($fieldName == "title") {
                         $DB->where("seo_pages.title", 'like', '%' . $fieldValue . '%');
                     }
-                    
+
                 }
                 $searchVariable = array_merge($searchVariable, array($fieldName => $fieldValue));
             }
@@ -62,7 +62,7 @@ public function index(Request $request){
         $sortBy = ($request->input('sortBy')) ? $request->input('sortBy') : 'created_at';
         $order = ($request->input('order')) ? $request->input('order') : 'DESC';
         $records_per_page = ($request->input('per_page')) ? $request->input('per_page') : Config::get("Reading.records_per_page");
-        $results = $DB->orderBy($sortBy, $order)->paginate($records_per_page);       
+        $results = $DB->orderBy($sortBy, $order)->paginate($records_per_page);
         $complete_string = $request->query();
         unset($complete_string["sortBy"]);
         unset($complete_string["order"]);
@@ -75,11 +75,11 @@ public function index(Request $request){
 *
 * @param null
 *
-* @return view page. 
+* @return view page.
 */
 public function addDoc(){
-    	
-	
+
+
 	return  View::make('admin.SeoPage.add');
 	} //end addDoc()
 /**
@@ -87,7 +87,7 @@ public function addDoc(){
 *
 * @param null
 *
-* @return redirect page. 
+* @return redirect page.
 */
 function saveDoc(Request $request){
 	$request->replace($this->arrayStripTags($request->all()));
@@ -101,16 +101,16 @@ function saveDoc(Request $request){
 			'page_id' 			=> 'required',
 			'title' 			=> 'required',
 			'page_name' 		=> 'required',
-			
+
 		),
 		array(
 			"page_id.required"				=>	trans("The page id field is required."),
-			"title.required"				=>	trans("The title field is required."),				
+			"title.required"				=>	trans("The title field is required."),
 			"page_name.required"			=>	trans("The page name field is required."),
 		)
 	);
     if($validator->fails()){
-  
+
         return Redirect::back()->withErrors($validator)->withInput();
       }else{
 		DB::beginTransaction();
@@ -129,13 +129,13 @@ function saveDoc(Request $request){
 		$seo->og_title   		= $request->input('og_title');
 		$seo->og_description   	= $request->input('og_description');
         $seo->chronological_tag   	= $request->input('chronological_tag');
-        
-		
+
+
 
 		/* if($request->hasFile('og_image')){
 			$extension 				=	$request->file('og_image')->getClientOriginalExtension();
 			$fileName				=	time().'-og_image.'.$extension;
-			
+
 			$folderName     		= 	strtoupper(date('M'). date('Y'))."/";
 			$folderPath				=	Config('constants.SEO_PAGE_IMAGE_ROOT_PATH').$folderName;
 			if(!File::exists($folderPath)) {
@@ -143,48 +143,48 @@ function saveDoc(Request $request){
 			}
 			if($request->file('og_image')->move($folderPath, $fileName)){
 				$seo->og_image					=	$folderName.$fileName;
-			   
+
 			}
 		} */
         	$seopags				= $seo->save();
-		
+
 			if(!$seopags) {
 			DB::rollback();
-			Session::flash('error', trans("Something went wrong.")); 
+			Session::flash('error', trans("Something went wrong."));
 			return Redirect::back()->withInput();
 		}
 			DB::commit();
-			Session::flash('flash_notice', trans("Seo page added successfully")); 
-			return Redirect::to('admin/seo-page-manager');
+			Session::flash('flash_notice', trans("Seo page added successfully"));
+			return Redirect::to('/seo-page-manager');
 		}
       }
 	}//end saveBlock()
 /**
 * Function for display page  for edit seo
 *
-* @param $Id ad id 
+* @param $Id ad id
 *
-* @return view page. 
-*/	
+* @return view page.
+*/
 public function editDoc($Id){
-	$ids	= base64_decode($Id); 
+	$ids	= base64_decode($Id);
 	$docs				=	SeoPage::where('id',$ids)->first();
 	if(empty($docs)) {
-		return Redirect::to('admin/seo-page-manager');
+		return Redirect::to('/seo-page-manager');
 	}
 	 return  View::make('admin.SeoPage.edit',array('doc'=>$docs));
 	}// end editBlock()
 /**
-* Function for update seo 
+* Function for update seo
 *
-* @param $Id ad id of seo 
+* @param $Id ad id of seo
 *
-* @return redirect page. 
+* @return redirect page.
 */
 function updateDoc($Id,Request $request){
 $docs				=	SeoPage::find($Id);
 	if(empty($docs)) {
-		return Redirect::to('admin/no-cms-manager');
+		return Redirect::to('/no-cms-manager');
 	}
 	$request->replace($this->arrayStripTags($request->all()));
 	$this_data				=	$request->all();
@@ -198,11 +198,11 @@ $docs				=	SeoPage::find($Id);
 			),
 		array(
 			"page_id.required"				=>	trans("The page id field is required."),
-			"title.required"				=>	trans("The title field is required."),				
+			"title.required"				=>	trans("The title field is required."),
 			"page_name.required"			=>	trans("The page name field is required."),
 		)
 	);
-	if ($validator->fails()){	
+	if ($validator->fails()){
 		return Redirect::back()
 		->withErrors($validator)->withInput();
 	}else{
@@ -213,7 +213,7 @@ $docs				=	SeoPage::find($Id);
 			$fileName			=	time().'-og-image.'.$extension;
 			if($request->file('og_image')->move(Config('constants.SEO_PAGE_IMAGE_ROOT_PATH'), $fileName)){
 				$og_image   =  	$fileName;
-			} 
+			}
 		} */
 
 		$Seo_response		=	SeoPage::where('id', $Id)->update(array(
@@ -237,22 +237,22 @@ $docs				=	SeoPage::find($Id);
 
 		if(!$Seo_response) {
 			DB::rollback();
-			Session::flash('error', trans("Something went wrong.")); 
+			Session::flash('error', trans("Something went wrong."));
 			return Redirect::back()->withInput();
-		}		
+		}
 			DB::commit();
-			Session::flash('flash_notice',  trans("Seo page updated successfully")); 
-			return Redirect::intended('admin/seo-page-manager');
+			Session::flash('flash_notice',  trans("Seo page updated successfully"));
+			return Redirect::intended('/seo-page-manager');
       }
 	}// end updateSeoPage()
 /**
 * Function for update seo  status
 *
-* @param $Id as id of seo 
-* @param $Status as status of seo 
+* @param $Id as id of seo
+* @param $Status as status of seo
 *
-* @return redirect page. 
-*/	
+* @return redirect page.
+*/
 public function updateDocStatus($Id = 0, $Status = 0){
 		/* $model					=	SeoPage::find($Id);
 		$model->is_active		=	$Status;
@@ -263,32 +263,32 @@ public function updateDocStatus($Id = 0, $Status = 0){
 			$statusMessage	=	trans("Seo page activated successfully");
 		}
 		$this->_update_all_status('seos',$Id,$Status);
-		Session::flash('flash_notice', $statusMessage); 
-		return Redirect::to('admin/no-cms-manager');
+		Session::flash('flash_notice', $statusMessage);
+		return Redirect::to('/no-cms-manager');
 	}// end updateSeoPageStatus()
 /**
-* Function for delete seo 
+* Function for delete seo
 *
-* @param $Id as id of seo 
+* @param $Id as id of seo
 *
-* @return redirect page. 
-*/	
+* @return redirect page.
+*/
 public function deletePage($modelId, Request $request){
-	
+
 	$ids	= base64_decode($modelId);
 		$delete_item = SeoPage::where('id',$ids)->update(array('is_deleted' => 1,));
       Session::flash('flash_notice', trans("Seo page has been removed successfully"));
-	  return Redirect::to('admin/seo-page-manager');
+	  return Redirect::to('/seo-page-manager');
 	}// end deleteSeoPage()
 /**
 * Function for delete multiple seo
 *
 * @param null
 *
-* @return view page. 
+* @return view page.
 */
 
 
 
-	
-}// end BlockController	
+
+}// end BlockController

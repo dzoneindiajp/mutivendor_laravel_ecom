@@ -297,7 +297,7 @@
 
 
 	function del_row(row_id,record_id) {
-		
+
 		var data =	$('#input_'+record_id).val()
 
 		Swal.fire({
@@ -313,10 +313,10 @@
 				$('.delete_add_more_accor_' + row_id).remove();
 
 				$.ajax({
-                
-                url: "{{URL::to('admin/acl/delete-function')}}"+'/'+data,
+
+                url: "{{URL::to('/acl/delete-function')}}"+'/'+data,
                     'type': 'GET',
-               
+
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },

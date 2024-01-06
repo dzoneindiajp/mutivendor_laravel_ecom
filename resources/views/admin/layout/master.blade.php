@@ -28,13 +28,13 @@ $fav_icon = Config('constant.SETTINGS_IMAGE_URL').Config('Site.fav_icon');
     <script src="{{ asset('assets/js/main.js') }}"></script>
 
     <!-- Bootstrap Css -->
-    <link id="style" href="https://jaipurjewelleryhouse.com/assets/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link id="style" href="https://admin.jaipurjewelleryhouse.com/assets/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Style Css -->
-    <link href="https://jaipurjewelleryhouse.com/assets/css/styles.min.css" rel="stylesheet">
+    <link href="https://admin.jaipurjewelleryhouse.com/assets/css/styles.min.css" rel="stylesheet">
 
     <!-- Icons Css -->
-    <link href="{{ asset('assets/css/icons.css') }}" rel="stylesheet">
+    <link href="https://admin.jaipurjewelleryhouse.com/assets/css/icons.css" rel="stylesheet">
 
     <!-- Node Waves Css -->
     <link href="{{ asset('assets/libs/node-waves/waves.min.css') }}" rel="stylesheet">

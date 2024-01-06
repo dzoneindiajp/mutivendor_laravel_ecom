@@ -36,7 +36,7 @@
                             <div class="border-category">
                                 <!--<h5>Category</h5>-->
                                 <h2>{{ $all_category['name']}}</h2>
-                                <a href="{{route('front-shop.index')}}" class="home-btn btn" tabindex="0">
+                                <a href="{{route('front-shop.index', $all_category['slug'])}}" class="home-btn btn" tabindex="0">
                                     Check more products &nbsp;&nbsp;&nbsp;
                                     <svg class="right-arrow" width="30" height="9" viewBox="0 0 30 9" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M1 4C0.723858 4 0.5 4.22386 0.5 4.5C0.5 4.77614 0.723858 5 1 5V4ZM29.3536 4.85355C29.5488 4.65829 29.5488 4.34171 29.3536 4.14645L26.1716 0.964466C25.9763 0.769204 25.6597 0.769204 25.4645 0.964466C25.2692 1.15973 25.2692 1.47631 25.4645 1.67157L28.2929 4.5L25.4645 7.32843C25.2692 7.52369 25.2692 7.84027 25.4645 8.03553C25.6597 8.2308 25.9763 8.2308 26.1716 8.03553L29.3536 4.85355ZM1 5H29V4H1V5Z"></path>

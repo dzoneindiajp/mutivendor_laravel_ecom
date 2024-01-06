@@ -21,7 +21,7 @@
 							<a href="{{ route(dashboard)}}" class="text-muted">Dashboard</a>
 						</li>
 						<li class="breadcrumb-item">
-							<a href="{{URL::to('admin/seo-page-manager')}}" class="text-muted"> {{Config('constants.SEO.SEO_TITLE')}} </a>
+							<a href="{{URL::to('/seo-page-manager')}}" class="text-muted"> {{Config('constants.SEO.SEO_TITLE')}} </a>
 						</li>
 					</ul>
 					<!--end::Breadcrumb-->
@@ -40,15 +40,15 @@
 		<!--begin::Container-->
 		<div class=" container ">
 
-			{{ Form::open(['role' => 'form','url' => 'admin/seo-page-manager/add-doc','class' => 'mws-form','enctype'=> 'multipart/form-data',"autocomplete"=>"off"]) }}
+			{{ Form::open(['role' => 'form','url' => '/seo-page-manager/add-doc','class' => 'mws-form','enctype'=> 'multipart/form-data',"autocomplete"=>"off"]) }}
 
 			<div class="card card-custom gutter-b">
-				
+
 				<div class="card-body">
 					<div class="tab-content">
 						<div class="row">
 
-							<div class="col-xl-12">	
+							<div class="col-xl-12">
 								<div class="row">
 									<div class="col-xl-6">
 										<!--begin::Input-->
@@ -76,18 +76,18 @@
 										</div>
 										<!--end::Input-->
 									</div>
-								
+
 
 										<div class="col-xl-6">
 											<!--begin::Input-->
 											<div class="form-group">
-												
+
 												{!! HTML::decode( Form::label('title',trans("Title").'<span class="text-danger"> * </span>')) !!}
 
 												{{ Form::text("title",'', ['class' => 'form-control form-control-solid form-control-lg '.($errors->has('title') ? 'is-invalid':'')]) }}
 												<div class="invalid-feedback"><?php echo  $errors->first('title') ; ?></div>
 
-											
+
 											</div>
 											<!--end::Input-->
 										</div>
@@ -95,13 +95,13 @@
 										<div class="col-xl-6">
 											<!--begin::Input-->
 											<div class="form-group">
-											
+
 												{!! HTML::decode( Form::label('meta_description',trans("Meta Description").'<span class="text-danger">  </span>')) !!}
 
 												{{ Form::textarea("meta_description",isset($doc->meta_description)?$doc->meta_description:'', ['class' => 'form-control form-control-solid form-control-lg '.($errors->has('meta_description') ? 'is-invalid':''),"rows"=>false,"cols"=>false]) }}
 												<div class="invalid-feedback"><?php echo  $errors->first('meta_description'); ?></div>
 
-												
+
 
 											</div>
 											<!--end::Input-->
@@ -110,13 +110,13 @@
 										<div class="col-xl-6">
 											<!--begin::Input-->
 											<div class="form-group">
-												
+
 												{!! HTML::decode( Form::label('meta_keywords',trans("Meta Keywords").'<span class="text-danger">  </span>')) !!}
 
 												{{ Form::textarea("meta_keywords",'', ['class' => 'form-control form-control-solid form-control-lg '.($errors->has('meta_keywords') ? 'is-invalid':''),"rows"=>false,"cols"=>false]) }}
 												<div class="invalid-feedback"><?php echo  $errors->first('meta_keywords') ; ?></div>
 
-												
+
 
 											</div>
 											<!--end::Input-->
@@ -125,13 +125,13 @@
 										<div class="col-xl-6">
 											<!--begin::Input-->
 											<div class="form-group">
-												
+
 												{!! HTML::decode( Form::label('twitter_card',trans("Twitter Card").'<span class="text-danger">  </span>')) !!}
 
 												{{ Form::textarea("twitter_card",'', ['class' => 'form-control form-control-solid form-control-lg '.($errors->has('twitter_card') ? 'is-invalid':''),"rows"=>false,"cols"=>false]) }}
 												<div class="invalid-feedback"><?php echo  $errors->first('twitter_card') ; ?></div>
 
-											
+
 
 											</div>
 											<!--end::Input-->
@@ -140,13 +140,13 @@
 										<div class="col-xl-6">
 											<!--begin::Input-->
 											<div class="form-group">
-												
+
 												{!! HTML::decode( Form::label('twitter_site',trans("Twitter Site").'<span class="text-danger">  </span>')) !!}
 
 												{{ Form::textarea("twitter_site",'', ['class' => 'form-control form-control-solid form-control-lg '.($errors->has('twitter_site') ? 'is-invalid':''),"rows"=>false,"cols"=>false]) }}
 												<div class="invalid-feedback"><?php echo $errors->first('twitter_site') ; ?></div>
 
-											
+
 
 											</div>
 											<!--end::Input-->
@@ -154,13 +154,13 @@
 										<div class="col-xl-6">
 											<!--begin::Input-->
 											<div class="form-group">
-												
+
 												{!! HTML::decode( Form::label('twitter_description',trans("Twitter Description").'<span class="text-danger">  </span>')) !!}
 
 												{{ Form::textarea("twitter_description",'', ['class' => 'form-control form-control-solid form-control-lg '.($errors->has('twitter_description') ? 'is-invalid':''),"rows"=>false,"cols"=>false]) }}
 												<div class="invalid-feedback"><?php echo $errors->first('twitter_description') ; ?></div>
 
-											
+
 
 											</div>
 											<!--end::Input-->
@@ -169,13 +169,13 @@
 										<div class="col-xl-6">
 											<!--begin::Input-->
 											<div class="form-group">
-											
+
 												{!! HTML::decode( Form::label('og_url',trans("Og Url").'<span class="text-danger">  </span>')) !!}
 
 												{{ Form::textarea("og_url",'', ['class' => 'form-control form-control-solid form-control-lg '.($errors->has('og_url') ? 'is-invalid':''),"rows"=>false,"cols"=>false]) }}
 												<div class="invalid-feedback"><?php echo  $errors->first('og_url') ; ?></div>
 
-												
+
 
 											</div>
 											<!--end::Input-->
@@ -183,13 +183,13 @@
 										<div class="col-xl-6">
 											<!--begin::Input-->
 											<div class="form-group">
-												
+
 												{!! HTML::decode( Form::label('og_type',trans("Og Type").'<span class="text-danger">  </span>')) !!}
 
 												{{ Form::textarea("og_type",'', ['class' => 'form-control form-control-solid form-control-lg '.($errors->has('og_type') ? 'is-invalid':''),"rows"=>false,"cols"=>false]) }}
 												<div class="invalid-feedback"><?php echo  $errors->first('og_type') ; ?></div>
 
-												
+
 
 											</div>
 											<!--end::Input-->
@@ -197,13 +197,13 @@
 										<div class="col-xl-6">
 											<!--begin::Input-->
 											<div class="form-group">
-												
+
 												{!! HTML::decode( Form::label('og_title',trans("Og Title").'<span class="text-danger">  </span>')) !!}
 
 												{{ Form::textarea("og_title",'', ['class' => 'form-control form-control-solid form-control-lg '.($errors->has('og_title') ? 'is-invalid':''),"rows"=>false,"cols"=>false]) }}
 												<div class="invalid-feedback"><?php echo  $errors->first('og_title') ; ?></div>
 
-												
+
 
 											</div>
 											<!--end::Input-->
@@ -211,13 +211,13 @@
 										<div class="col-xl-6">
 											<!--begin::Input-->
 											<div class="form-group">
-												
+
 												{!! HTML::decode( Form::label('og_description',trans("Og Description").'<span class="text-danger">  </span>')) !!}
 
 												{{ Form::textarea("og_description",'', ['class' => 'form-control form-control-solid form-control-lg '.($errors->has('og_description') ? 'is-invalid':''),"rows"=>false,"cols"=>false]) }}
 												<div class="invalid-feedback"><?php echo $errors->first('og_description') ; ?></div>
 
-												
+
 
 											</div>
 											<!--end::Input-->
@@ -225,7 +225,7 @@
                                         <div class="col-xl-6">
                                             <!--begin::Input-->
                                                 <div class="form-group">
-                                                    
+
                                                     {!! HTML::decode( Form::label('chronological_tag ',trans("Chronological Tag").'<span class="text-danger">  </span>')) !!}
 
                                                     {{ Form::text("chronological_tag",'', ['class' => 'form-control form-control-solid form-control-lg '.($errors->has('meta_keywords') ? 'is-invalid':'')]) }}
@@ -237,7 +237,7 @@
 								</div>
 							</div>
 						</div>
-                            
+
 						<div class="col-xl-6">
 							<!--begin::Input-->
 							<div class="form-group">
@@ -246,7 +246,7 @@
 
 								{{ Form::file('og_image',['class'=>'form-control form-control-solid form-control-lg']) }}
 								<div class="invalid-feedback"><?php echo  $errors->first('og_image') ; ?></div>
-								
+
 
 
 							</div>
@@ -268,5 +268,5 @@
 			{{ Form::close() }}
 		</div>
 	</div>
-	
+
 @stop
