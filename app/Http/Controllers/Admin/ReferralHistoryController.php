@@ -155,10 +155,10 @@ class ReferralHistoryController extends Controller
             foreach($getUsersData as $user){
                 $userData = User::where('id',$user->referral_to)->first();
 
-                $userData->name = Lookup::getLookupCode($userData->name_title)." ".$userData->name;
+                $userData->name = $userData->name;
 				$usersCount = ReferralHistory::where('referral_by',$userData->id)->count();
 				$itemClass =( !empty($usersCount) && $usersCount > 0 ) ? 'hasItem' : '';
-				$html.= '<li><span class="d-inline-flex '.$itemClass.'"><i class="fa fa-minus-square mr-2 text-white"></i> <img class="avatar-img rounded-circle mr-3" src="'.$userData->profile_pic.'" height="35" width="35" alt="avatar"><span class="align-self-center mr-3">'.$userData->name.(!empty($userData->email) ? '('.$userData->email.')' : '').'</span> <span class="mr-3">'.date(config("Reading.date_format"),strtotime($userData->created_at)).'</span> <span class="badge badge-light align-self-center">'.$usersCount.'</span> &nbsp;</span><ul> ';
+				$html.= '<li><span class="d-inline-flex '.$itemClass.'"><i class="fa fa-minus-square mr-2 text-white"></i> <span class="align-self-center mr-3">'.$userData->name.(!empty($userData->email) ? '('.$userData->email.')' : '').'</span> <span class="mr-3">'.date(config("Reading.date_format"),strtotime($userData->created_at)).'</span> <span class="badge badge-light align-self-center">'.$usersCount.'</span> &nbsp;</span><ul> ';
 				$html.=	 $this->createSubTree($userData->id,$referral_by);
 				$html.=		'</ul>
 						</li>';

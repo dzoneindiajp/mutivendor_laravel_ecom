@@ -148,10 +148,11 @@
 </div>
 
 <script src="{{ asset('assets/front/js/vendor/modernizr-3.6.0.min.js') }}"></script>
-<script src="{{ asset('assets/front/js/vendor/jquery-3.3.1.min.js') }}"></script>
+
 <script src="{{ asset('assets/front/js/vendor/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('assets/front/js/plugins.js') }}"></script>
 <script src="{{ asset('assets/front/js/main.js') }}"></script>
+<script src="{{ asset('assets/js/toastr.min.js') }}"></script>
 
 
 <script src="{{ asset('assets/front/js/ajax_request.js') }}"></script>

@@ -3,6 +3,11 @@
 @push('styles')
 <link href="{{ asset('assets/plugin/tagify/tagify.css') }}" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css"/> 
+
+<!-- Include Pickr JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
 @endpush
 
 @section('content')
@@ -85,15 +90,18 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-3 mb-3 colorPickerIn" style="display: {{ (!empty($recordDetails->name) && (strtolower($recordDetails->name) == 'color')) ? 'block' : 'none' }}">
+                                    <div class="col-md-3 mb-3" style="display: {{ (!empty($recordDetails->name) && (strtolower($recordDetails->name) == 'color')) ? 'block' : 'none' }}">
                                         <div class="form-group">
                                             <label for="color">Color</label><span class="text-danger">
                                                  </span>
-                                            <input type="color" name="color_code" id="color_code"
-                                                class="form-control form-control-color border-0 @error('color_code') is-invalid @enderror" value="{{!empty($dataVal['color_code']) ? $dataVal['color_code'] : ''}}">
+                                            <input type="color" name="color_code" 
+                                                class="form-control form-control-color border-0  @error('color_code') is-invalid @enderror" value="{{!empty($dataVal['color_code']) ? $dataVal['color_code'] : ''}}">
+                                                <input type="hidden" class="colorCodeInputHidden" name="color_code_hidden" value="{{!empty($dataVal['color_code']) ? $dataVal['color_code'] : '#000000'}}">
 
                                         </div>
                                     </div>
+
+                                   
 
                                     <div class="col-md-2">
                                         @if($iterationCount == 0)
@@ -148,8 +156,10 @@
                                         <div class="form-group">
                                             <label for="color">Color</label><span class="text-danger">
                                                  </span>
-                                            <input type="color" name="color_code" id="color_code"
+                                            <input type="color" name="color_code" 
                                                 class="form-control form-control-color border-0 @error('color_code') is-invalid @enderror" value="#136ad0">
+                                            
+                                            <input type="hidden" name="color_code_hidden" class="colorCodeInputHidden" value="#000000" >
 
                                         </div>
                                     </div>
@@ -214,20 +224,8 @@
             }
         });
 
-        // // Event listener for the color picker
-        // $(document).on('change', 'input[name="color_code"]', function() {
-        //     var selectedColor = $(this).val();
-            
-        //     // Find the corresponding "Name" input field within the same block
-        //     var nameInput = $(this).closest('.form-group').find('.variant-value');
-
-        //     // Set the value of the "Name" field to the selected color
-        //     nameInput.val(selectedColor);
-
-        //     // Check if the value was updated
-        //     alert(nameInput.val());
-        // });
         
     });
 </script>
+
 @endpush
