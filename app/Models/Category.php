@@ -21,7 +21,7 @@ class Category extends Model
     function getActiveCategories(){
 
         $all_categories 			=   Category::where('categories.parent_id', null)->where('categories.is_active', 1)->where('categories.is_deleted', 0)
-                                            ->select('categories.id','categories.parent_id','categories.name','categories.slug','categories.description','categories.image','categories.thumbnail_image','categories.video','categories.category_order')->orderBy('category_order', 'ASC')->get()->toArray();
+                                            ->select('categories.id','categories.parent_id','categories.name','categories.slug','categories.description','categories.image','categories.thumbnail_image','categories.video','categories.category_order')->limit(4)->orderBy('category_order', 'ASC')->get()->toArray();
         return $all_categories;
     }
 

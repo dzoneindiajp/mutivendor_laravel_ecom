@@ -22,6 +22,7 @@ class ShopController extends Controller
         // try {
             $DB = ProductVariantCombination::leftJoin('products','products.id','product_variant_combinations.product_id')->leftJoin('categories', 'products.category_id', '=', 'categories.id');
             $categoriesData = Category::whereNull('parent_id')->where('is_deleted', 0)->where('is_active',1)->get();
+
             if(!empty($categorySlug)){
                 $categoryId = Category::where('slug',$categorySlug)->value('id');
                 $DB->where('products.category_id',$categoryId);
@@ -86,7 +87,7 @@ class ShopController extends Controller
 
                 return View("front.modules.shop.load_more_data", compact('results', 'totalResults'));
             } else {
-                
+
                 return view('front.modules.shop.index', compact('results', 'categoriesData', 'totalResults','categorySlug','subCategorySlug','childCategorySlug'));
 
             }
@@ -100,7 +101,7 @@ class ShopController extends Controller
     public function productDetail(Request $request,$productSlug) {
         // try {
             $productDetails = ProductVariantCombination::where('product_variant_combinations.slug',$productSlug)->leftJoin('products','products.id','product_variant_combinations.product_id')->leftJoin('categories', 'products.category_id', '=', 'categories.id')->select('product_variant_combinations.*','products.name','products.is_including_taxes','products.in_stock','categories.name as category_name')->groupBy('product_variant_combinations.id')->first();
-          
+
             if(!empty($productDetails)){
 
                 $productDetails->productImages = ProductVariantCombinationImage::where('product_variant_combination_images.product_variant_combination_id',$productDetails->id)->leftJoin('product_images','product_images.id','product_variant_combination_images.product_image_id')->select('product_images.*')->get()->toArray();
@@ -125,13 +126,13 @@ class ShopController extends Controller
                         $productVariant->variantValuesData = ProductVariantValue::where('product_variant_values.product_veriant_id',$productVariant->id)->leftJoin('variant_values','variant_values.id','product_variant_values.veriant_value_id')->select('product_variant_values.*','variant_values.name')->get();
                     }
                 }
-                
+
             }
             // echo "<pre>";
             // print_r($productDetails);die;
-          
+
             return View("front.modules.shop.product-detail", compact('productDetails'));
-            
+
         // } catch (Exception $e) {
         //     Log::error($e);
         //     return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);
