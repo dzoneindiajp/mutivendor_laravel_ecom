@@ -272,6 +272,10 @@ Route::prefix('admin')->name('admin-')->group(function () {
         Route::get('users/destroy/{enuserid?}', [App\Http\Controllers\Admin\UsersController::class, 'destroy'])->name('admin_users.delete');
         Route::get('users/update-status/{id}/{status}', [App\Http\Controllers\Admin\UsersController::class, 'changeStatus'])->name('admin_users.status');
         Route::match(['get', 'post'], 'users/changed-password/{enuserid?}', [App\Http\Controllers\Admin\UsersController::class, 'changedPassword'])->name('admin_users.changedPassword');
+        Route::get('/export-users', [App\Http\Controllers\Admin\UsersController::class, 'exportUsers'])->name('admin_users.export-users');
+        Route::get('/import-users', [App\Http\Controllers\Admin\UsersController::class, 'importUsers'])->name('admin_users.import-users');
+        Route::post('/import-users', [App\Http\Controllers\Admin\UsersController::class, 'importUsersSave'])->name('admin_users.import-users-save');
+
 
         /* users routes */
 
@@ -358,6 +362,17 @@ Route::prefix('admin')->name('admin-')->group(function () {
         Route::get('currencies/mark-default/{ensetid?}', [App\Http\Controllers\Admin\CurrencyController::class, 'makeDefault'])->name('currencies.makeDefault');
         /** currencies routing**/
 
+        /** price-drops routing**/
+        Route::match(['get', 'post'], '/price-drops', [App\Http\Controllers\Admin\PriceDropController::class, 'index'])->name('price-drops.index');
+        Route::match(['get', 'post'], '/price-drops/create', [App\Http\Controllers\Admin\PriceDropController::class, 'create'])->name('price-drops.create');
+        Route::match(['get', 'post'], '/price-drops/save', [App\Http\Controllers\Admin\PriceDropController::class, 'save'])->name('price-drops.save');
+        Route::match(['get', 'post'], '/price-drops/edit/{enuserid}', [App\Http\Controllers\Admin\PriceDropController::class, 'edit'])->name('price-drops.edit');
+        Route::match(['get', 'post'], '/price-drops/update/{enuserid}', [App\Http\Controllers\Admin\PriceDropController::class, 'update'])->name('price-drops.update');
+        Route::get('price-drops/show/{enuserid}', [App\Http\Controllers\Admin\PriceDropController::class, 'show'])->name('cms-manager.show');
+        Route::get('price-drops/update-status/{id}/{status}', [App\Http\Controllers\Admin\PriceDropController::class, 'changeStatus'])->name('price-drops.status');
+        Route::get('price-drops/destroy/{ensetid?}', [App\Http\Controllers\Admin\PriceDropController::class, 'destroy'])->name('price-drops.delete');
+        /** price-drops routing**/
+
         /* cms manager routes */
       //   Route::resource('cms-manager', App\Http\Controllers\Admin\CmspagesController::class);
         Route::match(['get', 'post'], '/cms-manager', [App\Http\Controllers\Admin\CmspagesController::class, 'index'])->name('cms-manager.index');
@@ -440,13 +455,13 @@ Route::name('front-')->group(function () {
       Route::match(['get', 'post'], 'reset-password/{validstring}', [App\Http\Controllers\Front\Auth\AuthController::class, 'resetPassword'])->name('user.resetPassword');
       Route::match(['get', 'post'], 'reset-password-save/{validstring}', [App\Http\Controllers\Front\Auth\AuthController::class, 'resetPasswordSave'])->name('user.resetPasswordSave');
     });
-    
+
     Route::get('/shop/{categoryId?}/{subCategoryId?}/{childCategoryId?}', [App\Http\Controllers\Front\ShopController::class, 'index'])->name('shop.index');
     Route::get('/cart', [App\Http\Controllers\Front\CartController::class, 'index'])->name('cart.index');
     Route::get('/product-detail/{productSlug}', [App\Http\Controllers\Front\ShopController::class, 'productDetail'])->name('shop.productDetail');
     Route::post('/add-to-cart', [App\Http\Controllers\Front\CartController::class, 'addToCart'])->name('user.addToCart');
     Route::match(['get', 'post'],'/remove-from-cart', [App\Http\Controllers\Front\CartController::class, 'removeFromCart'])->name('user.removeFromCart');
-    
+
     Route::middleware(['AuthCustomer'])->group(function () {
       Route::get('/dashboard', [App\Http\Controllers\Front\DashboardController::class, 'index'])->name('user.dashboard');
       Route::get('/logout', [App\Http\Controllers\Front\Auth\AuthController::class, 'logout'])->name('user.logout');

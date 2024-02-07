@@ -32,8 +32,8 @@ class Controller extends BaseController
 			$elements = DB::table("acls")
 							->where("parent_id",$parentId)
 							->orderBy('acls.module_order','ASC')
-							->get(); 
-          
+							->get();
+
 		}else {
 			if($parentId == 0){
 				$elements = DB::table("acls")
@@ -41,12 +41,12 @@ class Controller extends BaseController
 							->where("acls.id",DB::raw("(select admin_module_id from user_permissions where user_permissions.admin_module_id = acls.id AND is_active = 1 AND user_id = $user_id LIMIT 1)"))
 							->orderBy('acls.module_order','ASC')
 							->get();
-			}else{ 
+			}else{
 				$elements = 	DB::table("acls")
 								->where("parent_id",$parentId)
 								->where("acls.id",DB::raw("(select admin_sub_module_id from user_permission_actions where user_permission_actions.admin_sub_module_id = acls.id AND is_active = 1 AND user_id = $user_id LIMIT 1)"))
 								->orderBy('acls.module_order','ASC')
-								->get();  
+								->get();
 			}
 		}
 
@@ -64,7 +64,7 @@ class Controller extends BaseController
 	}
 
 	public function generateRandomPassword(){
-		
+
 		$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*_";
 		$password = substr( str_shuffle( $chars ), 0, 9 );
 		return $password;
@@ -80,7 +80,7 @@ class Controller extends BaseController
 		}else {
 			return $slug;
 		}
-		
+
 	}//end getSlug()
 
 	public function arrayStripTags($array)
@@ -142,5 +142,35 @@ class Controller extends BaseController
         $response["data"] = array();
         $response["errors"] = $errors;
         return $response;
+    }
+
+    public function sendMail($to, $fullName, $subject, $messageBody, $from = '', $files = false, $path = '', $attachmentName = '')
+    {
+
+        $from = Config::get("Site.from_email");
+
+        $data = array();
+        $data['to'] = $to;
+        $data['from'] = (!empty($from) ? $from : Config::get("Site.from_email"));
+        $data['fullName'] = $fullName;
+        $data['subject'] = $subject;
+        $data['filepath'] = $path;
+        $data['attachmentName'] = $attachmentName;
+        if ($files === false) {
+            Mail::send('emails.template', array('messageBody' => $messageBody), function ($message) use ($data) {
+                $message->to($data['to'], $data['fullName'])->from($data['from'])->subject($data['subject']);
+
+            });
+        } else {
+            if ($attachmentName != '') {
+                Mail::send('emails.template', array('messageBody' => $messageBody), function ($message) use ($data) {
+                    $message->to($data['to'], $data['fullName'])->from($data['from'])->subject($data['subject'])->attach($data['filepath'], array('as' => $data['attachmentName']));
+                });
+            } else {
+                Mail::send('emails.template', array('messageBody' => $messageBody), function ($message) use ($data) {
+                    $message->to($data['to'], $data['fullName'])->from($data['from'])->subject($data['subject'])->attach($data['filepath']);
+                });
+            }
+        }
     }
 }
