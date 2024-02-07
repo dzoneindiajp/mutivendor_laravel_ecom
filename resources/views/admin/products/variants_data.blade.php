@@ -88,6 +88,11 @@
         $('.variantSelect').trigger('change');
 
     }, 200); 
+});
+</script>
+@if(!empty($hasProductVariantCombinationsOtherThanMainProductOnEditPage))
+<script>
+    jQuery(document).ready(function() {
     setTimeout(() => {
         
         $('.createVariantBtn').trigger('click');
@@ -95,6 +100,7 @@
     }, 1200);
 });
 </script>
+@endif
 @endif
 <script>
 var KTFormRepeater = function() {

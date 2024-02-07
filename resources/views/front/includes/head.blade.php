@@ -31,7 +31,6 @@
 
     <link rel="stylesheet" href="{{ asset('assets/css/toastr.min.css') }}">
 
-    @stack('styles')
 
     <script src="{{ asset('assets/front/js/vendor/jquery-3.3.1.min.js') }}"></script>
 

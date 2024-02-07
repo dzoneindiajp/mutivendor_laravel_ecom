@@ -46,8 +46,8 @@ class User extends Authenticatable
     ];
 
     public static function getImageAttribute($value = ""){    
-        if($value != "" && File::exists(Config('constants.USER_IMAGE_ROOT_PATH').$value)){
-        $value = Config('constants.USER_IMAGE_PATH').$value;
+        if($value != "" && File::exists(Config('constant.USER_IMAGE_ROOT_PATH').$value)){
+        $value = Config('constant.USER_IMAGE_PATH').$value;
         }
         return $value;
     }
