@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Cart;
+use App\Models\Wishlist;
 
   function sideBarNavigation($menus, $children2Data = ""){
  
@@ -257,6 +258,26 @@ if(!function_exists('isProductAddedInCart'))
       foreach($cartData as $cartVal){
         if($productId == $cartVal['product_id']){
           return true;
+        }
+      }
+    }
+    
+    return false;
+  }
+}
+
+if(!function_exists('isProductAddedInWishlist'))
+{
+  function isProductAddedInWishlist($productId){
+    if(auth()->guard('customer')->check()){
+      
+      $cartData = Wishlist::where('user_id',auth()->guard('customer')->user()->id)->select('product_id')->get()->toArray();
+      
+      if(!empty($cartData)){
+        foreach($cartData as $cartVal){
+          if($productId == $cartVal['product_id']){
+            return true;
+          }
         }
       }
     }

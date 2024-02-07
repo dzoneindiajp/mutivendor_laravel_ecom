@@ -88,7 +88,7 @@
                                         <p>
                                             <a href="{{route('front-shop.productDetail',$result->slug)}}">{{$result->category_name ?? ''}}</a>
                                             <span style="float:right;">
-                                                <a class="wishlist-list wish" href="javascript:void(0)" title="" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path><use xlink:href="#wish"></use></svg></a>
+                                                <a class="wishlist-list wish wishlistIconAction {{!empty($result->isProductAddedIntoWishlist) ? 'added' : ''}}" data-id = "{{$result->id}}" href="javascript:void(0)" title="" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="{{!empty($result->isProductAddedIntoWishlist) ? 'red' : 'none'}}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path><use xlink:href="#wish"></use></svg></a>
                                             </span>
                                         </p>
                                     </div>
@@ -182,12 +182,12 @@
                                             <p>
                                                 <a href="{{route('front-shop.productDetail',$result->slug)}}">{{$result->category_name ?? ''}}</a>
                                                 <span style="float:right;">
-                                                    <a class="wishlist-list wish" href="javascript:void(0)" title="" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path><use xlink:href="#wish"></use></svg></a>
+                                                    <a class="wishlist-list wish wishlistIconAction {{!empty($result->isProductAddedIntoWishlist) ? 'added' : ''}}" data-id = "{{$result->id}}" href="javascript:void(0)" title="" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="{{!empty($result->isProductAddedIntoWishlist) ? 'red' : 'none'}}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path><use xlink:href="#wish"></use></svg></a>
                                                 </span>
                                             </p>
                                         </div>
                                         <div class="product-name">
-                                            <h3><a href="{{route('front-shop.productDetail',$result->slug)}}">{{$result->name ?? ''}}</a></h3>
+                                            <h3><a href="{{route('front-shop.productDetail',$result->slug)}}">{{$result->name ?? ''}} {{$result->variant_value1_name ?? ''}} {{$result->variant_value2_name ?? ''}}</a></h3>
                                         </div>
                                     </div>
                                     <div class="product-thumb">

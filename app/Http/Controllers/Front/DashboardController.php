@@ -15,6 +15,9 @@ use Illuminate\Validation\Rules\Password;
 use Redirect,Session,Config,DB,Response,Str;
 use App\Models\User;
 use App\Models\UserAddress;
+use App\Models\Wishlist;
+use App\Models\ProductVariantCombination;
+use App\Models\ProductVariantCombinationImage;
 use Illuminate\Validation\Rule;
 use Carbon\Carbon;
 class DashboardController extends Controller
@@ -51,12 +54,37 @@ class DashboardController extends Controller
     }
     public function wishlist(Request $request)
     {
-        try {
-            return view('front.modules.dashboard.wishlist');
-        } catch (Exception $e) {
-            Log::error($e);
-            return redirect()->back()->with(['error' => 'Somethig went wrong', 'error_msg' => $e->getMessage()]);
-        }
+        // try {
+            $wishlistData = Wishlist::where('user_id',auth()->guard('customer')->user()->id)->select('product_id')->get()->toArray();
+            if(!empty($wishlistData)){
+                foreach($wishlistData as &$cartVal){
+                  $productDetails = ProductVariantCombination::leftJoin('products','products.id','product_variant_combinations.product_id')->leftJoin('categories', 'products.category_id', '=', 'categories.id')->where('product_variant_combinations.id',$cartVal['product_id'] ?? 0)->select('product_variant_combinations.*','products.name','categories.name as category_name')->first();
+                  $cartVal['product_name'] = $productDetails->name ?? '';
+                  $cartVal['product_price'] = ($productDetails->selling_price?? 0)  ;
+                  $cartVal['buying_price'] = ($productDetails->buying_price?? 0) ;
+                  $cartVal['category_name'] = ($productDetails->category_name?? '') ;
+                  $cartVal['slug'] = ($productDetails->slug?? '') ;
+                  $cartVal['product_image'] = ProductVariantCombinationImage::where('product_variant_combination_images.product_variant_combination_id',$productDetails->id)->leftJoin('product_images','product_images.id','product_variant_combination_images.product_image_id')->limit(2)->pluck('product_images.image')->toArray();
+                    if(!empty($cartVal['product_image'])){
+                        $tempProductImages = [];
+
+                        foreach ($cartVal['product_image'] as $productImageKey => $productImage) {
+                            $productImage = (!empty($productImage)) ? Config('constant.PRODUCT_IMAGE_URL') . $productImage : Config('constant.IMAGE_URL') . "noimage.png";
+                            $tempProductImages[$productImageKey] = $productImage;
+                        }
+                        $cartVal['product_image'] = $tempProductImages;
+                    }
+
+                    $cartVal['isProductAddedIntoCart'] = isProductAddedInCart($productDetails->id) ? 1 : 0;
+                    $cartVal['isProductAddedIntoWishlist'] = isProductAddedInWishlist($productDetails->id) ? 1 : 0;
+                 
+                }
+            }
+            return view('front.modules.dashboard.wishlist',compact('wishlistData'));
+        // } catch (Exception $e) {
+        //     Log::error($e);
+        //     return redirect()->back()->with(['error' => 'Somethig went wrong', 'error_msg' => $e->getMessage()]);
+        // }
     }
 
     public function updateProfile(Request $request)
