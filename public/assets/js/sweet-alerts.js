@@ -51,7 +51,7 @@
             buttonsStyling: false
         })
 
-        swalWithBootstrapButtons.fire({ 
+        swalWithBootstrapButtons.fire({
             title: 'Are you sure?',
             text: "want to deactivate it!",
             icon: 'warning',
@@ -72,9 +72,48 @@
                     'error'
                 )
             }
-            
+
         })
     });
+
+    $(document).on('click', '#mark-default', function (e) {
+        e.preventDefault();
+
+        var url = $(this).attr("href");
+
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success ms-2',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
+
+        swalWithBootstrapButtons.fire({
+            title: 'Are you sure?',
+            text: "want to make it default currency!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, make it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelled',
+                    'Your imaginary file is safe :)',
+                    'error'
+                )
+            }
+
+        })
+    });
+
     $(document).on('click', '#activate-button', function (e) {
         e.preventDefault();
 

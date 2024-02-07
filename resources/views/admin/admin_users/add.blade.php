@@ -68,7 +68,7 @@
                                                     </div>
                                                 @endif
                                             </div>
-                                            
+
                                             <div class="col-xl-6">
                                                 <label for="gender" class="form-label"><span class="text-danger">*
                                                     </span>Gender</label>
@@ -129,7 +129,7 @@
                                                     </div>
                                                 @endif
                                             </div>
-                                            
+
 
                                         </div>
                                     </div>
@@ -142,7 +142,7 @@
                     </div>
                 </div>
             </div>
-            
+
         </form>
     </div>
 </div>

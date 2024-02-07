@@ -289,6 +289,20 @@ Route::prefix('admin')->name('admin-')->group(function () {
         Route::get('partners/fetch-plan-details/{planId}', [App\Http\Controllers\Admin\PartnerController::class, 'fetchPlanDetails'])->name('partners.fetchPlanDetails');
         /* partners routes */
 
+
+        /* coupons routes */
+        Route::match(['get', 'post'], '/coupons', [App\Http\Controllers\Admin\CouponController::class, 'index'])->name('coupons.index');
+        Route::match(['get', 'post'], '/coupons/create', [App\Http\Controllers\Admin\CouponController::class, 'create'])->name('coupons.create');
+        Route::match(['get', 'post'], '/coupons/save', [App\Http\Controllers\Admin\CouponController::class, 'save'])->name('coupons.save');
+        Route::match(['get', 'post'], '/coupons/edit/{enuserid}', [App\Http\Controllers\Admin\CouponController::class, 'edit'])->name('coupons.edit');
+        Route::match(['get', 'post'], '/coupons/update/{enuserid}', [App\Http\Controllers\Admin\CouponController::class, 'update'])->name('coupons.update');
+        Route::get('coupons/show/{enuserid}', [App\Http\Controllers\Admin\CouponController::class, 'show'])->name('coupons.show');
+        Route::get('coupons/destroy/{enuserid?}', [App\Http\Controllers\Admin\CouponController::class, 'destroy'])->name('coupons.delete');
+        Route::get('coupons/update-status/{id}/{status}', [App\Http\Controllers\Admin\CouponController::class, 'changeStatus'])->name('coupons.status');
+        Route::match(['get', 'post'], 'coupons/changed-password/{enuserid?}', [App\Http\Controllers\Admin\CouponController::class, 'changedPassword'])->name('coupons.changedPassword');
+        Route::get('coupons/fetch-plan-details/{planId}', [App\Http\Controllers\Admin\CouponController::class, 'fetchPlanDetails'])->name('coupons.fetchPlanDetails');
+        /* coupons routes */
+
         /** FooterCategory routes **/
        Route::resource('footer-category', App\Http\Controllers\Admin\FooterCategoryController::class);
        Route::get('footer-category/update-status/{id}/{status}', [App\Http\Controllers\Admin\FooterCategoryController::class, 'changeStatus'])->name('footer-category.status');
@@ -332,6 +346,18 @@ Route::prefix('admin')->name('admin-')->group(function () {
         Route::get('settings/destroy/{ensetid?}', [App\Http\Controllers\Admin\SettingsController::class, 'destroy'])->name('settings.delete');
         /** settings routing**/
 
+        /** currencies routing**/
+        Route::match(['get', 'post'], '/currencies', [App\Http\Controllers\Admin\CurrencyController::class, 'index'])->name('currencies.index');
+        Route::match(['get', 'post'], '/currencies/create', [App\Http\Controllers\Admin\CurrencyController::class, 'create'])->name('currencies.create');
+        Route::match(['get', 'post'], '/currencies/save', [App\Http\Controllers\Admin\CurrencyController::class, 'save'])->name('currencies.save');
+        Route::match(['get', 'post'], '/currencies/edit/{enuserid}', [App\Http\Controllers\Admin\CurrencyController::class, 'edit'])->name('currencies.edit');
+        Route::match(['get', 'post'], '/currencies/update/{enuserid}', [App\Http\Controllers\Admin\CurrencyController::class, 'update'])->name('currencies.update');
+        Route::get('currencies/show/{enuserid}', [App\Http\Controllers\Admin\CurrencyController::class, 'show'])->name('cms-manager.show');
+        Route::get('currencies/update-status/{id}/{status}', [App\Http\Controllers\Admin\CurrencyController::class, 'changeStatus'])->name('currencies.status');
+        Route::get('currencies/destroy/{ensetid?}', [App\Http\Controllers\Admin\CurrencyController::class, 'destroy'])->name('currencies.delete');
+        Route::get('currencies/mark-default/{ensetid?}', [App\Http\Controllers\Admin\CurrencyController::class, 'makeDefault'])->name('currencies.makeDefault');
+        /** currencies routing**/
+
         /* cms manager routes */
       //   Route::resource('cms-manager', App\Http\Controllers\Admin\CmspagesController::class);
         Route::match(['get', 'post'], '/cms-manager', [App\Http\Controllers\Admin\CmspagesController::class, 'index'])->name('cms-manager.index');
@@ -364,6 +390,11 @@ Route::prefix('admin')->name('admin-')->group(function () {
         Route::get('testimonials/destroy/{enuserid?}', [App\Http\Controllers\Admin\TestimonialController::class, 'destroy'])->name('testimonials.delete');
         Route::get('testimonials/update-status/{id}/{status}', [App\Http\Controllers\Admin\TestimonialController::class, 'changeStatus'])->name('testimonials.status');
         /* Testimonial routes */
+
+        /** email templates routing**/
+        Route::resource('email-templates', App\Http\Controllers\Admin\EmailtemplateController::class);
+        Route::match(['get', 'post'], 'email-templates/get-constant', [App\Http\Controllers\Admin\EmailtemplateController::class, 'getConstant'])->name('email-templates.getConstant');
+        /** email templates routing**/
 
       /** Variant routes **/
       Route::match(['get', 'post'],'/variants', [App\Http\Controllers\Admin\VariantController::class, 'index'])->name('variants.index');

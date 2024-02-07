@@ -508,7 +508,7 @@ class ProductController extends Controller
 
                     if (!empty($request->session()->has('currentProductId'))) {
                         $productDetails = Product::where('id', $request->session()->get('currentProductId'))->first();
-                        
+
                        $response =  $this->variantsFirstStepAction($request,$productDetails);
                        return $response;
                     } else {
@@ -527,7 +527,7 @@ class ProductController extends Controller
                         $this->variantsFirstStepAction($request,$productDetails);
 
                         $variantCombinationArr = $request->variantCombinationArr;
-                        
+
                         if (!empty($variantCombinationArr)) {
 
                             $getProductVariantCombinations = ProductVariantCombination::where('product_id', $request->session()->get('currentProductId'))->get();
@@ -547,10 +547,10 @@ class ProductController extends Controller
                                             $originalString = $getVariantValueName ?? "";
                                             $lowercaseString = Str::lower($originalString);
                                             $slug = Str::slug($lowercaseString, '-');
-                                            
+
                                             $obj = new ProductVariantCombination;
                                             if(!empty($variantValIdData['value_id'])){
-                                                
+
                                                 $getVariantValueName2 = VariantValue::where('id', $variantValIdData['value_id'])->first()->name;
                                                 $originalString2 = $getVariantValueName2 ?? "";
                                                 $lowercaseString2 = Str::lower($originalString2);

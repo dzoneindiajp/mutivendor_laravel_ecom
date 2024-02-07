@@ -13,12 +13,12 @@
 
 <!-- Page Header -->
 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
-    <h1 class="page-title fw-semibold fs-18 mb-0">SEO Page Manager</h1>
+    <h1 class="page-title fw-semibold fs-18 mb-0">Coupons</h1>
     <div class="ms-md-1 ms-0">
         <nav>
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('admin-dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">SEO Page Manager</li>
+                <li class="breadcrumb-item active" aria-current="page">Coupons</li>
             </ol>
         </nav>
     </div>
@@ -29,17 +29,17 @@
         <div class="card custom-card">
             <div class="card-header justify-content-between">
                 <div class="card-title">
-                    SEO Page Manager
+                    Coupons
                 </div>
                 <div class="prism-toggle">
                     <a href="javascript:void(0);" class="btn btn-primary dropdown-toggle mr-2" data-bs-toggle="collapse"
                         data-bs-target="#collapseOne6">
                         Search
                     </a>
-                    <a href="{{ route('admin-SeoPage.create') }}" class="btn btn-primary"
+                    <a href="{{ route('admin-coupons.create') }}" class="btn btn-primary"
                         style="margin-right: 10px;">
                         <!-- Adjust the margin-right as needed -->
-                        Add SEO Page
+                        Add New Coupons
                     </a>
                 </div>
             </div>
@@ -48,10 +48,20 @@
                     data-parent="#accordionExample6">
                     <div>
                         <form id="listSearchForm" class="row mb-6">
+                            <div class="col-lg-3  mb-lg-5 mb-6">
+
+                                <label>Status</label>
+                                <select name="is_active" class="form-control select2init"
+                                    value="{{$searchVariable['is_active'] ?? ''}}">
+                                    <option value="">All</option>
+                                    <option value="1">Activate</option>
+                                    <option value="0">Deactivate</option>
+                                </select>
+                            </div>
                             <div class="col-lg-3 mb-lg-5 mb-6">
-                                <label class="form-label">Title</label>
-                                <input type="text" class="form-control" name="title" placeholder="Title"
-                                    value="{{$searchVariable['title'] ?? '' }}">
+                                <label>Name</label>
+                                <input type="text" class="form-control" name="name" placeholder=" Name"
+                                    value="{{$searchVariable['name'] ?? '' }}">
                             </div>
                             <div class="col-lg-3 mb-lg-5 mb-6">
                                 <label for="date_from" class="form-label"><span class="text-danger">* </span>Date
@@ -67,6 +77,7 @@
                                     id="date_to" name="date_to" placeholder="Date To">
 
                             </div>
+
 
                         </form>
                         <div class="row mt-8">
@@ -93,7 +104,7 @@
             </div>
 
             <div class="container mt-4">
-                <button type="button" class="btn btn-outline-primary my-1 me-2" fdprocessedid="g9dg58f"> Total Records:
+                <button type="button" class="btn btn-outline-primary my-1 me-2" fdprocessedid="g9dg58f"> Total Coupons:
                     <span class="badge ms-2 totalDataCount">{{ $totalResults }}</span> </button>
 
             </div>
@@ -101,12 +112,15 @@
                 style="width:100%">
                 <thead>
                     <tr id="tableHeaders">
-                        <th class="sortable" data-column="title">Title <i class="sort-icon ri-sort-asc"></i></th>
-                        <th class="sortable" data-column="page_id">Page id <i class="sort-icon ri-sort-asc"></i></th>
-                        <th class="sortable" data-column="page_name">Page name <i class="sort-icon ri-sort-asc"></i></th>
-                        <th class="sortable" data-column="meta_description">Meta description <i class="sort-icon ri-sort-asc"></i></th>
-                        <th class="sortable" data-column="meta_keywords">Meta keywords <i class="sort-icon ri-sort-asc"></i></th>
-                        <th class="sortable" data-column="created_at">Created On <i class="sort-icon ri-sort-asc"></i></th>
+                        <th class="sortable" data-column="name">Name <i class="sort-icon ri-sort-asc"></i></th>
+                        <th class="sortable" data-column="coupon_type">Coupon Type <i
+                            class="sort-icon ri-sort-asc"></i></th>
+                        <th class="sortable" data-column="amount">Amount <i
+                                class="sort-icon ri-sort-asc"></i></th>
+                        <th class="sortable" data-column="gender">Start Date <i class="sort-icon ri-sort-asc"></i></th>
+                        <th class="sortable" data-column="gender">End Date <i class="sort-icon ri-sort-asc"></i></th>
+                        <th class="sortable" data-column="is_active">Status <i class="sort-icon ri-sort-asc"></i>
+                        </th>
                         <th>Action </th>
                     </tr>
                 </thead>
@@ -120,7 +134,7 @@
                         </td>
                     </tr>
                     @if($results->isNotEmpty())
-                    @include('admin.SeoPage.load_more_data', ['results' => $results])
+                    @include('admin.coupons.load_more_data', ['results' => $results])
                     @else
                     <tr>
                         <td colspan="7" style="text-align: center;">No results found.</td>

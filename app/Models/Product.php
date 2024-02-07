@@ -90,7 +90,7 @@ class Product extends Model
             $limit = Config("Reading.records_per_page");
             // print_r($limit);die;
             // print_r($totalResults);die;
-            $results = $DB->where('products.is_featured', 1)->select('product_variant_combinations.*','products.name','categories.name as category_name', 'products.is_featured')->groupBy('product_variant_combinations.id')->limit($limit)->get();
+            $results = $DB->select('product_variant_combinations.*','products.name','categories.name as category_name', 'products.is_featured')->groupBy('product_variant_combinations.id')->limit($limit)->get();
             if($results->isNotEmpty()){
                 foreach($results as $result){
                     $result->productImages = ProductVariantCombinationImage::where('product_variant_combination_images.product_variant_combination_id',$result->id)->leftJoin('product_images','product_images.id','product_variant_combination_images.product_image_id')->limit(2)->pluck('product_images.image')->toArray();
