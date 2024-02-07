@@ -98,6 +98,26 @@
                                             </div>
 
                                             <div class="col-xl-6">
+                                                <label for="gain_type" class="form-label"><span class="text-danger">*
+                                                    </span>Gain Type</label>
+                                                <select class="js-example-placeholder-single form-control @error('gain_type') is-invalid @enderror"
+                                                    name="gain_type" id="gain_type">
+                                                    <option value="" selected>Select Gain Type</option>
+                                                    <option value="gain"
+                                                        {{(!empty($userDetails->gain_type) && $userDetails->gain_type == 'gain') ? 'selected' : '' }}>
+                                                        Gain</option>
+                                                    <option value="drop"
+                                                        {{(!empty($userDetails->gain_type) && $userDetails->gain_type == 'drop') ? 'selected' : '' }}>
+                                                        Drop</option>
+                                                </select>
+                                                @if ($errors->has('gain_type'))
+                                                <div class="invalid-feedback">
+                                                    {{ $errors->first('gain_type') }}
+                                                </div>
+                                                @endif
+                                            </div>
+
+                                            <div class="col-xl-6">
                                                 <label for="amount" class="form-label"><span class="text-danger">*
                                                     </span>Amount</label>
                                                 <input type="text"
