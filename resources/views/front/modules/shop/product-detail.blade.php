@@ -73,7 +73,7 @@
                                             <i class="fa fa-star fill"></i>
                                             <i class="fa fa-star fill"></i>
                                             <i class="fa fa-star-o"></i>
-                                            Write a review
+                                            <!-- Write a review -->
                                         </p>
                                         @if($productDetails->productDescriptions->isNotEmpty())
                                         @foreach($productDetails->productDescriptions as $productDescription)
@@ -87,7 +87,7 @@
 
                                         <div class="pricebox">
                                             Offer Price &nbsp;&nbsp;<span class="regular-price"> {{config('Reading.default_currency').number_format($productDetails->selling_price,2)}} </span>&nbsp;&nbsp; <del>{{config('Reading.default_currency').number_format($productDetails->buying_price,2)}}</del>
-                                            <div class="toggle-button-cover">
+                                            <!-- <div class="toggle-button-cover">
                                                 <div class="button-cover">
                                                     <div class="button b2" id="button-10">
                                                         <input type="checkbox" class="checkbox" />
@@ -97,7 +97,7 @@
                                                         <div class="layer"></div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> -->
                                         </div>
 
                                         <!-- <div class="ribbon-bookmark-h mt-10">
@@ -109,21 +109,25 @@
 
                                         <div class="quantity-cart-box d-flex align-items-center mb-10">
                                             @if($productDetails->productVariants->isNotEmpty())
-                                            @foreach($productDetails->productVariants as $productVariant)
-                                            <select class="size-input">
-                                                <option>{{$productVariant->name ?? ''}}</option>
+                                            @foreach($productDetails->productVariants as $productVariantKey => $productVariant)
+                                            <select class="size-input variant{{$productVariantKey + 1}}Input">
+                                                <option value="">{{$productVariant->name ?? ''}}</option>
                                                 @if($productVariant->variantValuesData->isNotEmpty())
                                                 @foreach($productVariant->variantValuesData as $variantValue)
-                                                <option {{in_array($variantValue->veriant_value_id,[$productDetails->variant1_value_id,$productDetails->variant2_value_id]) ? 'selected' : ''}}>{{$variantValue->name ?? ''}}</option>
+                                                <option value="{{$variantValue->veriant_value_id}}" {{in_array($variantValue->veriant_value_id,[$productDetails->variant1_value_id,$productDetails->variant2_value_id]) ? 'selected' : ''}}>{{$variantValue->name ?? ''}}</option>
                                                 @endforeach
                                                 @endif
                                             </select>
                                             @endforeach
                                             @endif
 
-                                            <select class="size-input">
-                                                <option>Qty</option>
-                                                <option>1</option>
+                                            <select class="size-input quantityInput">
+                                                <option value="">Qty</option>
+                                                <option  value="1" selected>1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
                                             </select>
                                         </div>
                                         <div class="availability mt-0 mb-10 ">
@@ -132,8 +136,8 @@
                                         </div>
                                         @if($productDetails->in_stock == 1)
                                         <div class="product-btn details-section">
-                                            <a href="#" tabindex="0" class="add-to-cart" style="margin-right:30px;" {{(!empty($productDetails->isProductAddedIntoCart)) ? 'disabled' : ''}}>
-                                            {{(!empty($productDetails->isProductAddedIntoCart)) ? 'Added to cart' : 'Add to Cart'}}
+                                            <a tabindex="0" class="add-to-cart addToCartBtn" style="margin-right:30px;" {{(!empty($productDetails->isProductAddedIntoCart)) ? 'disabled' : ''}}>
+                                            {{(!empty($productDetails->isProductAddedIntoCart)) ? 'Go to cart' : 'Add to Cart'}}
                                             </a>
                                             <a href="#" class="buy-now" tabindex="0">
                                                 Buy Now
@@ -629,4 +633,37 @@
         <!-- featured product area end -->
     </main>
     <!-- page main wrapper end -->
+    <script>
+        $('.addToCartBtn').on('click',function(e){
+            e.preventDefault();
+            if($(this).hasClass('add-to-cart')){
+                let url = "{{route('front-user.addToCart',['product_id' =>$productDetails->id,'quantity' => ':quantity'])}}";
+                let quantity = $('.quantityInput').val();
+                url = url.replace(':quantity',quantity);
+                window.location.href = url;
+            }else{
+                window.location.href = "{{route('front-cart.index')}}";
+            }
+        })
+        </script>
+        <script>
+        $('.variant1Input').on('change',function(e){
+            e.preventDefault();
+            if($(this).val() && $(this).val() != ''){
+
+                let url = "{{route('front-shop.productDetail',$productDetails->slug)}}"+"?product_id="+"{{$productDetails->product_id}}"(($('.variant1Input') && $('.variant1Input').length > 0) ?  "&variant1Id="+$('.variant1Input').val() : '') + (($('.variant2Input') && $('.variant2Input').length > 0) ?  "&variant2Id="+$('.variant2Input').val() : '');
+                window.location.href = url;
+            }
+           
+        });
+        $('.variant2Input').on('change',function(e){
+            e.preventDefault();
+            if($(this).val() && $(this).val() != ''){
+
+                let url = "{{route('front-shop.productDetail',$productDetails->slug)}}"+"?product_id="+"{{$productDetails->product_id}}"(($('.variant1Input') && $('.variant1Input').length > 0) ?  "&variant1Id="+$('.variant1Input').val() : '') + (($('.variant2Input') && $('.variant2Input').length > 0) ?  "&variant2Id="+$('.variant2Input').val() : '');
+                window.location.href = url;
+            }
+           
+        });
+    </script>
     @endsection
