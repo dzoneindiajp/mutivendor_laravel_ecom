@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Cart;
+use App\Models\Wishlist;
 use App\Models\ProductVariantCombination;
 use App\Models\ProductVariantCombinationImage;
 use Session;
@@ -31,6 +32,7 @@ class CartController extends Controller
     }
     public function addToCart(Request $request) {
         try {
+            
             $productId = $request->input('product_id');
             $quantity = $request->input('quantity');
 
@@ -87,19 +89,24 @@ class CartController extends Controller
     public function removeFromCart(Request $request) {
         try {
             $productId = $request->input('product_id');
+            if(auth()->guard('customer')->check()){
+                Cart::where('user_id',auth()->guard('customer')->user()->id)->where('product_id',$productId)->delete();
+            }else{
+                $cart = session()->get('cartData', []);
+           
+                // print_r($cart);die;
+                $isProductAddedInCartAlready = 0;
+                // Check if the product is already in the cart
+                foreach ($cart as $key => &$item) {
+                    if ($item['product_id'] === $productId) {
+                       unset($cart[$key]);
+                    }
 
-            $cart = session()->get('cartData', []);
-
-            // print_r($cart);die;
-            $isProductAddedInCartAlready = 0;
-            // Check if the product is already in the cart
-            foreach ($cart as $key => &$item) {
-                if ($item['product_id'] === $productId) {
-                   unset($cart[$key]);
                 }
+                
+                session()->put('cartData', $cart);
             }
-
-            session()->put('cartData', $cart);
+ 
             if ($request->ajax()) {
                 $cartData = getCartData();
                 $htmlData = View('front.includes.cart_data',compact('cartData'))->render();
@@ -117,7 +124,59 @@ class CartController extends Controller
         }
     }
 
+    public function addToWishlist(Request $request) {
+        try {
+            
+            $productId = $request->input('product_id');
+            if(!empty($request->action) && $request->action == 'move'){
+                Wishlist::where('user_id',auth()->guard('customer')->user()->id)->where('product_id',$productId)->delete();
+            }
+
+            $isProductAddedInWishlistAlready = Wishlist::where('user_id',auth()->guard('customer')->user()->id)->where('product_id',$productId)->first();
+            if(empty($isProductAddedInWishlistAlready)){
+                $obj   = new Wishlist;
+                $obj->user_id = auth()->guard('customer')->user()->id;
+                $obj->product_id = $productId;
+                $obj->save();
+            }
 
 
+            if($request->ajax()){
+                $count = Wishlist::where('user_id',auth()->guard('customer')->user()->id)->count();
+                return response()->json(['success' => true,'data' => ['count' => $count]]);
+            }else{
+                
+                return Redirect()->back()->with(['success' => 'Product has been added to wishlist successfully']);
+            }
+            
+            
+            
+            
+            
+        } catch (Exception $e) {
+            Log::error($e);
+            return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);
+        }
+    }
+
+    public function removeFromWishlist(Request $request) {
+        try {
+            $productId = $request->input('product_id');
+         
+            Wishlist::where('user_id',auth()->guard('customer')->user()->id)->where('product_id',$productId)->delete();
+            
+            if ($request->ajax()) {
+                $count = Wishlist::where('user_id',auth()->guard('customer')->user()->id)->count();
+                return response()->json(['success' => true,'data' => [ 'count' => $count]]);
+            }else{
+                return redirect()->route('front-user.wishlist')->with('success','Product removed from wishlist successfully');
+            }
+            
+               
+        } catch (Exception $e) {
+            Log::error($e);
+            return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);
+        }
+    }
 
 }

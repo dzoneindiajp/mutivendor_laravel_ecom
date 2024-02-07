@@ -79,6 +79,7 @@ class ShopController extends Controller
                         $result->productImages = $tempProductImages;
                     }
                     $result->isProductAddedIntoCart = isProductAddedInCart($result->id) ? 1 : 0;
+                    $result->isProductAddedIntoWishlist = isProductAddedInWishlist($result->id) ? 1 : 0;
                 }
             }
 
@@ -114,7 +115,7 @@ class ShopController extends Controller
                 session()->put('checkoutFrom','detailPage');
                 return redirect()->route('front-user.checkout');
             }
-            $productDetails = ProductVariantCombination::where('product_variant_combinations.slug',$productSlug)->leftJoin('products','products.id','product_variant_combinations.product_id')->leftJoin('categories', 'products.category_id', '=', 'categories.id')->select('product_variant_combinations.*','products.name','products.is_including_taxes','products.in_stock','categories.name as category_name')->groupBy('product_variant_combinations.id')->first();
+            $productDetails = ProductVariantCombination::where('product_variant_combinations.slug',$productSlug)->leftJoin('products','products.id','product_variant_combinations.product_id')->leftJoin('categories', 'products.category_id', '=', 'categories.id')->select('product_variant_combinations.*','products.name','products.is_including_taxes','products.in_stock','categories.name as category_name',DB::raw('(SELECT name from variant_values WHERE id = product_variant_combinations.variant1_value_id ) as variant_value1_name'),DB::raw('(SELECT name from variant_values WHERE id = product_variant_combinations.variant2_value_id ) as variant_value2_name'))->groupBy('product_variant_combinations.id')->first();
 
             if(!empty($productDetails)){
 
@@ -132,6 +133,7 @@ class ShopController extends Controller
                         $productDetails->productImages = $modifiedProductImages;
                     }
                 $productDetails->isProductAddedIntoCart = isProductAddedInCart($productDetails->id) ? 1 : 0;
+                $productDetails->isProductAddedIntoWishlist = isProductAddedInWishlist($productDetails->id) ? 1 : 0;
                 $productDetails->productDescriptions = ProductDescription::where('product_id',$productDetails->product_id)->get();
                 $productDetails->productSpecifications = ProductSpecification::leftJoin('specifications','product_specifications.specification_id','specifications.id')->leftJoin('specification_values','product_specifications.specification_value_id','specification_values.id')->where('product_specifications.product_id',$productDetails->product_id)->select('product_specifications.specification_id','specifications.name',DB::raw('GROUP_CONCAT(specification_values.name) as specification_values_names'))->groupBy('product_specifications.specification_id')->get();
                 $productDetails->productVariants = ProductVariant::leftJoin('variants','variants.id','product_variants.variant_id')->where('product_variants.product_id',$productDetails->product_id)->select('product_variants.*','variants.name')->get();

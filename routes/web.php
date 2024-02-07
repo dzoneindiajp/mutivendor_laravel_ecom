@@ -483,7 +483,7 @@ Route::name('front-')->group(function () {
     Route::get('/shop/{categoryId?}/{subCategoryId?}/{childCategoryId?}', [App\Http\Controllers\Front\ShopController::class, 'index'])->name('shop.index');
     Route::get('/cart', [App\Http\Controllers\Front\CartController::class, 'index'])->name('cart.index');
     Route::get('/product-detail/{productSlug}', [App\Http\Controllers\Front\ShopController::class, 'productDetail'])->name('shop.productDetail');
-    Route::post('/add-to-cart', [App\Http\Controllers\Front\CartController::class, 'addToCart'])->name('user.addToCart');
+    Route::match(['get', 'post'],'/add-to-cart', [App\Http\Controllers\Front\CartController::class, 'addToCart'])->name('user.addToCart');
     Route::match(['get', 'post'],'/remove-from-cart', [App\Http\Controllers\Front\CartController::class, 'removeFromCart'])->name('user.removeFromCart');
 
     Route::middleware(['AuthCustomer'])->group(function () {
@@ -498,7 +498,8 @@ Route::name('front-')->group(function () {
       Route::get('/addresses/delete-address/{addressId}', [App\Http\Controllers\Front\DashboardController::class, 'deleteAddress'])->name('user.deleteAddress');
       Route::get('/orders', [App\Http\Controllers\Front\DashboardController::class, 'orders'])->name('user.orders');
       Route::get('/wishlist', [App\Http\Controllers\Front\DashboardController::class, 'wishlist'])->name('user.wishlist');
-      Route::post('/add-to-wishlist', [App\Http\Controllers\Front\CartController::class, 'addToWishlist'])->name('user.addToWishlist');
+      Route::match(['get', 'post'],'/add-to-wishlist', [App\Http\Controllers\Front\CartController::class, 'addToWishlist'])->name('user.addToWishlist');
+      Route::match(['get', 'post'],'/remove-from-wishlist', [App\Http\Controllers\Front\CartController::class, 'removeFromWishlist'])->name('user.removeFromWishlist');
 
       Route::get('/checkout', [App\Http\Controllers\Front\checkoutController::class, 'index'])->name('user.checkout');
 
