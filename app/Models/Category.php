@@ -12,6 +12,13 @@ class Category extends Model
 
     protected $guarded = ['id'];
 
+    public function children()
+    {
+        return $this->hasMany(Category::class, 'parent_id', 'id')
+                    ->where('is_active', 1)
+                    ->where('is_deleted', 0);
+    }
+
     function getImageAttribute($value = ""){
         if($value != "" && File::exists(Config('constant.CATEGORY_IMAGE_ROOT_PATH').$value)){
             return  Config('constant.CATEGORY_IMAGE_URL').$value;

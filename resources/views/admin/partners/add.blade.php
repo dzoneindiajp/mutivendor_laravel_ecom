@@ -214,8 +214,8 @@
 
                     </div>
                 </div>
-                
-                
+
+
 
             </div>
             <div class="px-4 py-3 border-top border-block-start-dashed d-sm-flex justify-content-end">
@@ -315,7 +315,7 @@ $(document).on('change', '.planSelect', function() {
     }else{
         $('.planDetailsContainer').html('');
     }
-    
+
 });
 </script>
 @endpush

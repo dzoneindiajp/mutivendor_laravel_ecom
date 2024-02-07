@@ -5,6 +5,7 @@ config(["Contact.contact_email"=>"support@Jaipurjewellaryhouse.com"]);
 config(["Contact.contact_number"=>"+1(858)568-1132"]);
 config(["Contact.mail_icon"=>"fa fa-envelope"]);
 config(["Contact.phone_icon"=>"fa fa-mobile"]);
+config(["Currency.default_currency"=>"INR"]);
 config(["Homepage.about_footer"=>"Here you can read some details about a nifty little lifecycle of your order's journey from the time you place your order to your new treasures arriving at your doorstep."]);
 config(["Homepage.paymet_image"=>"JAN2024/1704225873-settings.png"]);
 config(["Reading.date_format"=>"Y-m-d"]);

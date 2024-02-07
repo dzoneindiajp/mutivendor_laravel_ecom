@@ -18,8 +18,9 @@ class SeoPageController extends Controller {
 	public $model      =   'SeoPage';
     public function __construct(Request $request)
     {
-        parent::__construct();
+        $this->listRouteName = 'admin-SeoPage.index';
         View()->share('model', $this->model);
+		View()->share('listRouteName', $this->listRouteName);
         $this->request = $request;
     }
 /**
@@ -61,14 +62,21 @@ public function index(Request $request){
         $DB->where('is_deleted',0);
         $sortBy = ($request->input('sortBy')) ? $request->input('sortBy') : 'created_at';
         $order = ($request->input('order')) ? $request->input('order') : 'DESC';
-        $records_per_page = ($request->input('per_page')) ? $request->input('per_page') : Config::get("Reading.records_per_page");
-        $results = $DB->orderBy($sortBy, $order)->paginate($records_per_page);
-        $complete_string = $request->query();
-        unset($complete_string["sortBy"]);
-        unset($complete_string["order"]);
-        $query_string = http_build_query($complete_string);
-        $results->appends($inputGet)->render();
-	return  View::make('admin.SeoPage.index',compact('results','searchVariable','sortBy','order','query_string'));
+
+		$offset = !empty($request->input('offset')) ? $request->input('offset') : 0 ;
+        $limit =  !empty($request->input('limit')) ? $request->input('limit') : Config("Reading.records_per_page");
+
+        $results = $DB->orderBy($sortBy, $order)->offset($offset)->limit($limit)->get();
+        $totalResults = $DB->count();
+
+        if($request->ajax()){
+
+            return  View("admin.$this->model.load_more_data", compact('results','totalResults'));
+        }else{
+
+            return  View("admin.$this->model.index", compact('results','totalResults'));
+        }
+
 	}// end listDoc()
 /**
 * Function for display page  for add new seo
@@ -90,10 +98,9 @@ public function addDoc(){
 * @return redirect page.
 */
 function saveDoc(Request $request){
+
 	$request->replace($this->arrayStripTags($request->all()));
 	$thisData					=	$request->all();
-
-
    if (!empty($thisData)) {
 	$validator = Validator::make(
          $request->all(),
@@ -155,7 +162,7 @@ function saveDoc(Request $request){
 		}
 			DB::commit();
 			Session::flash('flash_notice', trans("Seo page added successfully"));
-			return Redirect::to('/seo-page-manager');
+			return Redirect::to('/admin/seo-page-manager');
 		}
       }
 	}//end saveBlock()
@@ -170,7 +177,7 @@ public function editDoc($Id){
 	$ids	= base64_decode($Id);
 	$docs				=	SeoPage::where('id',$ids)->first();
 	if(empty($docs)) {
-		return Redirect::to('/seo-page-manager');
+		return Redirect::to('/admin/seo-page-manager');
 	}
 	 return  View::make('admin.SeoPage.edit',array('doc'=>$docs));
 	}// end editBlock()
@@ -181,14 +188,16 @@ public function editDoc($Id){
 *
 * @return redirect page.
 */
-function updateDoc($Id,Request $request){
-$docs				=	SeoPage::find($Id);
+function updateDoc($Id, Request $request){
+	// echo "<pre>";print_r($request->all()); die;
+	$ids	= base64_decode($Id);
+	$docs				=	SeoPage::find($ids);
 	if(empty($docs)) {
-		return Redirect::to('/no-cms-manager');
+		return Redirect::to('/admin/seo-page-manager');
 	}
-	$request->replace($this->arrayStripTags($request->all()));
+	// $request->replace($this->arrayStripTags($request->all()));
 	$this_data				=	$request->all();
-	$doc 					= 	SeoPage:: find($Id);
+	$doc 					= 	SeoPage::find($ids);
 	$validator = Validator::make(
         $request->all(),
 		array(
@@ -216,7 +225,7 @@ $docs				=	SeoPage::find($Id);
 			}
 		} */
 
-		$Seo_response		=	SeoPage::where('id', $Id)->update(array(
+		$Seo_response		=	SeoPage::where('id', $ids)->update(array(
 			'page_id'   	 	=>  $request->input('page_id'),
 			'page_name'   	 	=>  $request->input('page_name'),
 			'title' 			=>  $request->input('title'),
@@ -241,8 +250,9 @@ $docs				=	SeoPage::find($Id);
 			return Redirect::back()->withInput();
 		}
 			DB::commit();
-			Session::flash('flash_notice',  trans("Seo page updated successfully"));
-			return Redirect::intended('/seo-page-manager');
+
+			Session()->flash('success',"Seo page has been updated successfully");
+            return Redirect()->route("admin-". $this->model . ".index");
       }
 	}// end updateSeoPage()
 /**
@@ -264,7 +274,7 @@ public function updateDocStatus($Id = 0, $Status = 0){
 		}
 		$this->_update_all_status('seos',$Id,$Status);
 		Session::flash('flash_notice', $statusMessage);
-		return Redirect::to('/no-cms-manager');
+		return Redirect::to('/admin/seo-page-manager');
 	}// end updateSeoPageStatus()
 /**
 * Function for delete seo
@@ -278,7 +288,7 @@ public function deletePage($modelId, Request $request){
 	$ids	= base64_decode($modelId);
 		$delete_item = SeoPage::where('id',$ids)->update(array('is_deleted' => 1,));
       Session::flash('flash_notice', trans("Seo page has been removed successfully"));
-	  return Redirect::to('/seo-page-manager');
+	  return Redirect::to('/admin/seo-page-manager');
 	}// end deleteSeoPage()
 /**
 * Function for delete multiple seo
