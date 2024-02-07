@@ -44,11 +44,11 @@ function makeAjaxRequest(options,attributes = {}) {
                                     $("input[name = " + index + "]").next().addClass('error');
                                     $("input[name = " + index + "]").next().html(html);
                                     $("input[name = " + index + "]").show();
-                               }else if(elementSubType == 'file' && element.parents('.crm-profile-image-upload-container').length > 0){
-                                $("input[name = " + index + "]").addClass('is-invalid');
-                                $("input[name = " + index + "]").next().addClass('error');
-                                $("input[name = " + index + "]").next().html(html);
-                                $("input[name = " + index + "]").show();
+                               }else if(elementSubType == 'file' && element.parents('.pic-holder').length > 0){
+                                // $("input[name = " + index + "]").addClass('is-invalid');
+                                $("input[name = " + index + "]").parents('.pic-holder').next().addClass('error');
+                                $("input[name = " + index + "]").parents('.pic-holder').next().html(html);
+                                $("input[name = " + index + "]").parents('.pic-holder').next().show();
                            }
                             } else if (elementType === 'textarea' && !element.hasClass('hasCkEditor') ) {
                                 $("textarea[name = " + index + "]").addClass('is-invalid');
@@ -101,7 +101,7 @@ function makeAjaxRequest(options,attributes = {}) {
 
             if (attributes.hasOwnProperty('hasButton') && attributes.hasOwnProperty('btnSelector') && attributes.hasOwnProperty('btnText') ) {
                 $(attributes.btnSelector).prop('disabled',false);
-                $(attributes.btnSelector).text(attributes.btnText);
+                $(attributes.btnSelector).html(attributes.btnText);
             }
 
             
@@ -133,7 +133,7 @@ function makeAjaxRequest(options,attributes = {}) {
 
             if (attributes.hasOwnProperty('hasButton') && attributes.hasOwnProperty('btnSelector') && attributes.hasOwnProperty('btnText') ) {
                 $(attributes.btnSelector).prop('disabled',false);
-                $(attributes.btnSelector).text(attributes.btnText);
+                $(attributes.btnSelector).html(attributes.btnText);
             }
             
         }

@@ -428,12 +428,44 @@ Route::prefix('admin')->name('admin-')->group(function () {
 
 // Route::domain('jaipurjewelleryhouse.com')->name('front-')->group(function () {
 Route::name('front-')->group(function () {
-  Route::get('/', [App\Http\Controllers\Front\HomeController::class, 'index'])->name('home.index');
-  Route::get('/shop/{categoryId?}/{subCategoryId?}/{childCategoryId?}', [App\Http\Controllers\Front\ShopController::class, 'index'])->name('shop.index');
-  Route::get('/cart', [App\Http\Controllers\Front\CartController::class, 'index'])->name('cart.index');
-  Route::get('/product-detail/{productSlug}', [App\Http\Controllers\Front\ShopController::class, 'productDetail'])->name('shop.productDetail');
-  Route::post('/add-to-cart', [App\Http\Controllers\Front\CartController::class, 'addToCart'])->name('user.addToCart');
-  Route::match(['get', 'post'],'/remove-from-cart', [App\Http\Controllers\Front\CartController::class, 'removeFromCart'])->name('user.removeFromCart');
+    Route::get('/', [App\Http\Controllers\Front\HomeController::class, 'index'])->name('home.index');
+
+    Route::middleware(['GuestCustomer'])->group(function () {
+      Route::get('/login', [App\Http\Controllers\Front\Auth\AuthController::class, 'login'])->name('user.login');
+      Route::get('/signup', [App\Http\Controllers\Front\Auth\AuthController::class, 'signup'])->name('user.signup');
+      Route::post('/login', [App\Http\Controllers\Front\Auth\AuthController::class, 'postLogin'])->name('user.postLogin');
+      Route::post('/signup', [App\Http\Controllers\Front\Auth\AuthController::class, 'postSignup'])->name('user.postSignup');
+      Route::match(['get', 'post'], 'forget-password', [App\Http\Controllers\Front\Auth\AuthController::class, 'forgetPassword'])->name('user.forgetPassword');
+      Route::match(['get', 'post'], 'send-password', [App\Http\Controllers\Front\Auth\AuthController::class, 'sendPassword'])->name('user.sendPassword');
+      Route::match(['get', 'post'], 'reset-password/{validstring}', [App\Http\Controllers\Front\Auth\AuthController::class, 'resetPassword'])->name('user.resetPassword');
+      Route::match(['get', 'post'], 'reset-password-save/{validstring}', [App\Http\Controllers\Front\Auth\AuthController::class, 'resetPasswordSave'])->name('user.resetPasswordSave');
+    });
+    
+    Route::get('/shop/{categoryId?}/{subCategoryId?}/{childCategoryId?}', [App\Http\Controllers\Front\ShopController::class, 'index'])->name('shop.index');
+    Route::get('/cart', [App\Http\Controllers\Front\CartController::class, 'index'])->name('cart.index');
+    Route::get('/product-detail/{productSlug}', [App\Http\Controllers\Front\ShopController::class, 'productDetail'])->name('shop.productDetail');
+    Route::post('/add-to-cart', [App\Http\Controllers\Front\CartController::class, 'addToCart'])->name('user.addToCart');
+    Route::match(['get', 'post'],'/remove-from-cart', [App\Http\Controllers\Front\CartController::class, 'removeFromCart'])->name('user.removeFromCart');
+    
+    Route::middleware(['AuthCustomer'])->group(function () {
+      Route::get('/dashboard', [App\Http\Controllers\Front\DashboardController::class, 'index'])->name('user.dashboard');
+      Route::get('/logout', [App\Http\Controllers\Front\Auth\AuthController::class, 'logout'])->name('user.logout');
+      Route::post('/update-profile', [App\Http\Controllers\Front\DashboardController::class, 'updateProfile'])->name('user.updateProfile');
+      Route::post('/change-password', [App\Http\Controllers\Front\DashboardController::class, 'changePassword'])->name('user.changePassword');
+      Route::get('/addresses', [App\Http\Controllers\Front\DashboardController::class, 'addresses'])->name('user.addresses');
+      Route::post('/addresses/add-address', [App\Http\Controllers\Front\DashboardController::class, 'addAddress'])->name('user.addAddress');
+      Route::post('/addresses/edit-address/{addressId}', [App\Http\Controllers\Front\DashboardController::class, 'editAddress'])->name('user.editAddress');
+      Route::get('/addresses/make-primary-address/{addressId}', [App\Http\Controllers\Front\DashboardController::class, 'makeAddressPrimary'])->name('user.makeAddressPrimary');
+      Route::get('/addresses/delete-address/{addressId}', [App\Http\Controllers\Front\DashboardController::class, 'deleteAddress'])->name('user.deleteAddress');
+      Route::get('/orders', [App\Http\Controllers\Front\DashboardController::class, 'orders'])->name('user.orders');
+      Route::get('/wishlist', [App\Http\Controllers\Front\DashboardController::class, 'wishlist'])->name('user.wishlist');
+      Route::post('/add-to-wishlist', [App\Http\Controllers\Front\CartController::class, 'addToWishlist'])->name('user.addToWishlist');
+
+      Route::get('/checkout', [App\Http\Controllers\Front\checkoutController::class, 'index'])->name('user.checkout');
+
+  });
+
+
 });
 
 

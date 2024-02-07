@@ -13,17 +13,17 @@ use App\Models\Cart;
 use App\Models\ProductVariantCombination;
 use App\Models\ProductVariantCombinationImage;
 use Session;
-class CartController extends Controller
+class CheckoutController extends Controller
 {
 
     public function index(Request $request) {
         try {
-            $cartData = getCartData();
+            $checkoutData = getCheckoutData();
             
-            if(count($cartData) == 0){
-                return redirect()->route('front-home.index')->with('error','Cart is empty');
+            if(count($checkoutData) == 0){
+                return redirect()->route('front-cart.index');
             }
-            return view('front.modules.cart.index',compact('cartData'));
+            return view('front.modules.checkout.index',compact('checkoutData'));
         } catch (Exception $e) {
             Log::error($e);
             return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);

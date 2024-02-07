@@ -483,9 +483,10 @@ class ProductController extends Controller
                                 ->get()->toArray();
 
                             $productVariants = ProductVariant::where('product_id',$request->session()->get('currentProductId'))->pluck('variant_id')->toArray();
+                            $hasProductVariantCombinationsOtherThanMainProductOnEditPage = ProductVariantCombination::where('product_id',$request->session()->get('currentProductId'))->where('is_main_product',0)->count();
                             // print_r($productVariants);die;
 
-                            $htmlData = View::make("admin.products.variants_data", compact('variantsData','productVariants'))->render();
+                            $htmlData = View::make("admin.products.variants_data", compact('variantsData','productVariants','hasProductVariantCombinationsOtherThanMainProductOnEditPage'))->render();
                             $response = array();
                             $response["status"] = "success";
                             $response["msg"] = "";
@@ -800,7 +801,7 @@ class ProductController extends Controller
                 }
 
             }
-            // print_r($variantsDataArr);die;
+            print_r($variantsDataArr);die;
 
             $productImages = ProductImage::where('product_id', $request->session()->get('currentProductId'))->get();
             // if($productImages->isNotEmpty()){
@@ -848,7 +849,7 @@ class ProductController extends Controller
                     $query->where('product_variant_combinations.variant1_value_id', $variantValue)
                         ->orWhere('product_variant_combinations.variant2_value_id', $variantValue);
 
-                })->first();
+                })->where('product_variant_combinations.is_main_product',0)->first();
                 if(!empty($variantValueData)){
 
                     $returnData[] = $variantValueData;

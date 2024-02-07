@@ -100,6 +100,20 @@ class ShopController extends Controller
 
     public function productDetail(Request $request,$productSlug) {
         // try {
+            if(!empty($request->product_id)){
+                $findProductCombination = ProductVariantCombination::where('product_id',$request->product_id)->where('variant1_value_id',!empty($request->variant1Id) ? $request->variant1Id : NULL )->where('variant2_value_id',!empty($request->variant2Id) ? $request->variant2Id : NULL )->first();
+                if(!empty($findProductCombination)){
+                    return redirect()->route('front-shop.productDetail',$findProductCombination->slug);
+                }else{
+                    return redirect()->back();
+                }
+            }
+            if(!empty($request->product_id) && !empty($request->quantity) ){
+                $checkoutData = ['product_id' =>$request->product_id, 'quantity' => $request->quantity ];
+                session()->put('checkoutData',$checkoutData);
+                session()->put('checkoutFrom','detailPage');
+                return redirect()->route('front-user.checkout');
+            }
             $productDetails = ProductVariantCombination::where('product_variant_combinations.slug',$productSlug)->leftJoin('products','products.id','product_variant_combinations.product_id')->leftJoin('categories', 'products.category_id', '=', 'categories.id')->select('product_variant_combinations.*','products.name','products.is_including_taxes','products.in_stock','categories.name as category_name')->groupBy('product_variant_combinations.id')->first();
 
             if(!empty($productDetails)){
@@ -127,6 +141,8 @@ class ShopController extends Controller
                     }
                 }
 
+            }else{
+                return redirect()->back()->with(['error' => 'Invalid Request']);
             }
             // echo "<pre>";
             // print_r($productDetails);die;
