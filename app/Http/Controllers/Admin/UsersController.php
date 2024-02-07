@@ -2,17 +2,22 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Config;
+// use App\Config;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\EmailAction;
+use App\Models\EmailTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
-use Redirect,DB,Response,Str;
+use Redirect,DB,Response,Str,Config;
 use Illuminate\Validation\Rule;
 use Carbon\Carbon;
+use App\Exports\UsersExport;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\UsersImport;
 
 class UsersController extends Controller
 {
@@ -218,6 +223,24 @@ class UsersController extends Controller
 
                     // Save the referral code to the user or do whatever is needed
                     User::where('id', $lastId)->update(["referral_code"=>$referralCode]);
+
+                    if(!empty($request->input('email'))){
+                        $settingsEmail 		=  Config::get('Site.from_email');
+                        $full_name			=  $request->input('name');
+                        $email              =  $request->input('email');
+                        $emailActions		= 	EmailAction::where('action','=','registration')->get()->toArray();
+                        $emailTemplates		= 	EmailTemplate::where('action','=','registration')->select("name","action","subject","body")->get()->toArray();
+
+                        $cons 				= 	explode(',',$emailActions[0]['options']);
+                        $constants 			= 	array();
+                        foreach($cons as $key=>$val){
+                            $constants[] = '{'.$val.'}';
+                        }
+                        $subject 			=  $emailTemplates[0]['subject'];
+                        $rep_Array 			= 	array($full_name);
+                        $messageBody		=   str_replace($constants, $rep_Array,$emailTemplates[0]['body']);
+                        $this->sendMail($email,$full_name,$subject,$messageBody,$settingsEmail);
+                    }
 
                     DB::commit();
                 }else{
@@ -446,6 +469,26 @@ class UsersController extends Controller
 
             return View("admin.$this->model.view", $data);
         }
+    }
+
+    public function exportUsers()
+    {
+        return Excel::download(new UsersExport, 'users.xlsx');
+    }
+
+    public function importUsers()
+    {
+        return view("admin.$this->model.import");
+    }
+
+    public function importUsersSave(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,csv',
+        ]);
+        Excel::import(new UsersImport(), $request->file('file'));
+        Session()->flash('flash_notice', trans("File imported successfully."));
+        return Redirect::route('admin-admin_users.index');
     }
 
 }
