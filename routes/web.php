@@ -276,7 +276,6 @@ Route::prefix('admin')->name('admin-')->group(function () {
         Route::get('/import-users', [App\Http\Controllers\Admin\UsersController::class, 'importUsers'])->name('admin_users.import-users');
         Route::post('/import-users', [App\Http\Controllers\Admin\UsersController::class, 'importUsersSave'])->name('admin_users.import-users-save');
 
-
         /* users routes */
 
 
@@ -362,6 +361,30 @@ Route::prefix('admin')->name('admin-')->group(function () {
         Route::get('currencies/mark-default/{ensetid?}', [App\Http\Controllers\Admin\CurrencyController::class, 'makeDefault'])->name('currencies.makeDefault');
         /** currencies routing**/
 
+        /** payment-methods routing**/
+        Route::match(['get', 'post'], '/payment-methods', [App\Http\Controllers\Admin\PaymentMethodController::class, 'index'])->name('payment-methods.index');
+        Route::match(['get', 'post'], '/payment-methods/create', [App\Http\Controllers\Admin\PaymentMethodController::class, 'create'])->name('payment-methods.create');
+        Route::match(['get', 'post'], '/payment-methods/save', [App\Http\Controllers\Admin\PaymentMethodController::class, 'save'])->name('payment-methods.save');
+        Route::match(['get', 'post'], '/payment-methods/edit/{enuserid}', [App\Http\Controllers\Admin\PaymentMethodController::class, 'edit'])->name('payment-methods.edit');
+        Route::match(['get', 'post'], '/payment-methods/update/{enuserid}', [App\Http\Controllers\Admin\PaymentMethodController::class, 'update'])->name('payment-methods.update');
+        Route::get('payment-methods/show/{enuserid}', [App\Http\Controllers\Admin\PaymentMethodController::class, 'show'])->name('cms-manager.show');
+        Route::get('payment-methods/update-status/{id}/{status}', [App\Http\Controllers\Admin\PaymentMethodController::class, 'changeStatus'])->name('payment-methods.status');
+        Route::get('payment-methods/destroy/{ensetid?}', [App\Http\Controllers\Admin\PaymentMethodController::class, 'destroy'])->name('payment-methods.delete');
+
+        /** payment-methods routing**/
+
+        /** faqs routing**/
+        Route::match(['get', 'post'], '/faqs', [App\Http\Controllers\Admin\FaqController::class, 'index'])->name('faqs.index');
+        Route::match(['get', 'post'], '/faqs/create', [App\Http\Controllers\Admin\FaqController::class, 'create'])->name('faqs.create');
+        Route::match(['get', 'post'], '/faqs/save', [App\Http\Controllers\Admin\FaqController::class, 'save'])->name('faqs.save');
+        Route::match(['get', 'post'], '/faqs/edit/{enuserid}', [App\Http\Controllers\Admin\FaqController::class, 'edit'])->name('faqs.edit');
+        Route::match(['get', 'post'], '/faqs/update/{enuserid}', [App\Http\Controllers\Admin\FaqController::class, 'update'])->name('faqs.update');
+        Route::get('faqs/show/{enuserid}', [App\Http\Controllers\Admin\FaqController::class, 'show'])->name('cms-manager.show');
+        Route::get('faqs/update-status/{id}/{status}', [App\Http\Controllers\Admin\FaqController::class, 'changeStatus'])->name('faqs.status');
+        Route::get('faqs/destroy/{ensetid?}', [App\Http\Controllers\Admin\FaqController::class, 'destroy'])->name('faqs.delete');
+
+        /** faqs routing**/
+
         /** price-drops routing**/
         Route::match(['get', 'post'], '/price-drops', [App\Http\Controllers\Admin\PriceDropController::class, 'index'])->name('price-drops.index');
         Route::match(['get', 'post'], '/price-drops/create', [App\Http\Controllers\Admin\PriceDropController::class, 'create'])->name('price-drops.create');
@@ -371,6 +394,7 @@ Route::prefix('admin')->name('admin-')->group(function () {
         Route::get('price-drops/show/{enuserid}', [App\Http\Controllers\Admin\PriceDropController::class, 'show'])->name('cms-manager.show');
         Route::get('price-drops/update-status/{id}/{status}', [App\Http\Controllers\Admin\PriceDropController::class, 'changeStatus'])->name('price-drops.status');
         Route::get('price-drops/destroy/{ensetid?}', [App\Http\Controllers\Admin\PriceDropController::class, 'destroy'])->name('price-drops.delete');
+        Route::get('get-price-drops', [App\Http\Controllers\Admin\PriceDropController::class, 'getPriceData'])->name('price-drops.getPriceData');
         /** price-drops routing**/
 
         /* cms manager routes */

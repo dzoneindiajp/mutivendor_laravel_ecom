@@ -19,7 +19,7 @@ class CartController extends Controller
     public function index(Request $request) {
         try {
             $cartData = getCartData();
-            
+
             if(count($cartData) == 0){
                 return redirect()->route('front-home.index')->with('error','Cart is empty');
             }
@@ -56,7 +56,7 @@ class CartController extends Controller
                     }
                 }
                 if($isProductAddedInCartAlready == 0){
-    
+
                     // If the product is not in the cart, add it
                     $newProduct = [
                         'product_id' => $productId,
@@ -66,18 +66,18 @@ class CartController extends Controller
                 }
                 session()->put('cartData', $cart);
             }
-        
+
             if($request->ajax()){
                 $cartData = getCartData();
                 $htmlData = View('front.includes.cart_data',compact('cartData'))->render();
                 $count = count($cartData);
                 return response()->json(['success' => true,'data' => ['htmlData' => $htmlData, 'count' => $count]]);
             }else{
-                
+
                 return Redirect()->back()->with(['success' => 'Product has been added to cart successfully']);
             }
-            
-            
+
+
         } catch (Exception $e) {
             Log::error($e);
             return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);
@@ -89,7 +89,7 @@ class CartController extends Controller
             $productId = $request->input('product_id');
 
             $cart = session()->get('cartData', []);
-           
+
             // print_r($cart);die;
             $isProductAddedInCartAlready = 0;
             // Check if the product is already in the cart
@@ -98,7 +98,7 @@ class CartController extends Controller
                    unset($cart[$key]);
                 }
             }
-            
+
             session()->put('cartData', $cart);
             if ($request->ajax()) {
                 $cartData = getCartData();
@@ -108,16 +108,16 @@ class CartController extends Controller
             }else{
                 return redirect()->route('front-cart.index')->with('success','Product removed from cart successfully');
             }
-           
-            
-            
+
+
+
         } catch (Exception $e) {
             Log::error($e);
             return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);
         }
     }
 
-    
+
 
 
 }

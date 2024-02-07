@@ -7,6 +7,9 @@
         {{ !empty($result->drop_type) ? ucfirst($result->drop_type) : "" }}
     </td>
     <td>
+        {{ !empty($result->gain_type) ? ucfirst($result->gain_type) : "" }}
+    </td>
+    <td>
         {{ $result->amount ?? "N/A" }}
 
     </td>

@@ -196,6 +196,7 @@ class PriceDropController extends Controller
                 array(
                     'assign_type' => 'required',
                     'drop_type' => 'required',
+                    'gain_type' => 'required',
                     'amount' => 'required|numeric',
                     'start_date' => 'required|date|after_or_equal:today',
                     'end_date' => 'required|date|after_or_equal:start_date',
@@ -208,6 +209,7 @@ class PriceDropController extends Controller
                 $obj                                = new PriceDrop;
                 $obj->assign_type                   = $request->input('assign_type');
                 $obj->drop_type                     = $request->input('drop_type');
+                $obj->gain_type                     = $request->input('gain_type');
                 $obj->amount                        = !empty($request->input('amount')) ? $request->input('amount') : 0;
                 $obj->start_date                    = !empty($request->input('start_date')) ? $request->input('start_date') : null;
                 $obj->end_date                      = !empty($request->input('end_date')) ? $request->input('end_date') : null;
@@ -257,6 +259,7 @@ class PriceDropController extends Controller
                     array(
                         'assign_type' => 'required',
                         'drop_type' => 'required',
+                        'gain_type' => 'required',
                         'amount' => 'required|numeric',
                         'start_date' => 'required|date|after_or_equal:today',
                         'end_date' => 'required|date|after_or_equal:start_date',
@@ -270,6 +273,7 @@ class PriceDropController extends Controller
                     $obj                      = $model;
                     $obj->assign_type                   = $request->input('assign_type');
                     $obj->drop_type                     = $request->input('drop_type');
+                    $obj->gain_type                     = $request->input('gain_type');
                     $obj->amount                        = !empty($request->input('amount')) ? $request->input('amount') : 0;
                     $obj->start_date                    = !empty($request->input('start_date')) ? $request->input('start_date') : null;
                     $obj->end_date                      = !empty($request->input('end_date')) ? $request->input('end_date') : null;
@@ -346,6 +350,12 @@ class PriceDropController extends Controller
         }
         Session()->flash('flash_notice', $statusMessage);
         return back();
+    }
+
+
+    public function getPriceData()
+    {
+       $data = getDropPrices('52', 'selling', 'yes');
     }
 
 }
