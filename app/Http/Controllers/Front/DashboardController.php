@@ -26,6 +26,7 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         try {
+            
             $user = User::where('id',Auth::guard('customer')->user()->id)->first();
             return view('front.modules.dashboard.index',compact('user'));
         } catch (Exception $e) {

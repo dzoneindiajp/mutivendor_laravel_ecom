@@ -38,7 +38,7 @@
                                 </div>
                                 <div class="col-md-9">
                                     <div class="product-details-des cart">
-                                        <h3 class="mt-10 mb-0">{{$cartVal['product_name'] ?? ''}}</h3>
+                                        <h3 class="mt-10 mb-0">{{$cartVal['product_name'] ?? ''}} {{$cartVal['variant_value1_name'] ?? ''}} {{$cartVal['variant_value2_name'] ?? ''}}</h3>
                                         <!-- <h6>
                                             <span class="category-show">Weight : 10.574g | Size : 38.48cm</span>
 
@@ -68,7 +68,7 @@
                                                 </span>
                                             </a>
                                             &nbsp;&nbsp;|&nbsp;&nbsp;
-                                            <a href="#" class="cart-text">
+                                            <a href="{{route('front-user.addToWishlist')."?action=move&product_id=".$cartVal['product_id']}}" class="cart-text">
                                                 <span style="">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-suit-heart" viewBox="0 0 16 16">
                                                         <path d="m8 6.236-.894-1.789c-.222-.443-.607-1.08-1.152-1.595C5.418 2.345 4.776 2 4 2 2.324 2 1 3.326 1 4.92c0 1.211.554 2.066 1.868 3.37.337.334.721.695 1.146 1.093C5.122 10.423 6.5 11.717 8 13.447c1.5-1.73 2.878-3.024 3.986-4.064.425-.398.81-.76 1.146-1.093C14.446 6.986 15 6.131 15 4.92 15 3.326 13.676 2 12 2c-.777 0-1.418.345-1.954.852-.545.515-.93 1.152-1.152 1.595L8 6.236zm.392 8.292a.513.513 0 0 1-.784 0c-1.601-1.902-3.05-3.262-4.243-4.381C1.3 8.208 0 6.989 0 4.92 0 2.755 1.79 1 4 1c1.6 0 2.719 1.05 3.404 2.008.26.365.458.716.596.992a7.55 7.55 0 0 1 .596-.992C9.281 2.049 10.4 1 12 1c2.21 0 4 1.755 4 3.92 0 2.069-1.3 3.288-3.365 5.227-1.193 1.12-2.642 2.48-4.243 4.38z" />
@@ -91,11 +91,11 @@
                     <h6 class="text-center">No Data Found</h6>
                     @endif
                     <div class="col-lg-4">
-                        <div class="login-signup mb-20">
+                        <!-- <div class="login-signup mb-20">
                             <p><a href="#">Register</a> / <a href="#"> Login</a> to get exciting offers & benefits on your account</p>
-                        </div>
+                        </div> -->
                         <div class="cart-amount">
-                            <div class="cart-update-option d-block d-md-flex justify-content-between">
+                            <!-- <div class="cart-update-option d-block d-md-flex justify-content-between">
                                 <div class="apply-coupon-wrapper" style="width:100%;">
                                     <form action="#" method="post">
                                         <div class="row" style="width: 100%; --bs-gutter-x: 0;">
@@ -110,17 +110,17 @@
                                 </div>
                             </div>
                             <p class="mb-20"><a href="#" style="border-bottom: 2px solid #446e6f; color: #446e6f;">CHECK COUPON</a></p>
-                            <hr />
+                            <hr /> -->
                             <div class="cart-calculator-wrapper">
                                 <div class="cart-calculate-items">
                                     <h3 class="mb-20">Order Summary</h3>
                                     <hr />
                                     <div class="table-responsive">
                                         <table width="100%">
-                                            <tr>
+                                            <!-- <tr>
                                                 <td>Sub-Total</td>
                                                 <td style="text-align:right;font-weight:500;">{{config('Reading.default_currency').number_format($totalPrice,2)}}</td>
-                                            </tr>
+                                            </tr> -->
                                             <!-- <tr>
                                                 <td>Delivery Charge</td>
                                                 <td style="text-align: right; font-weight: 500;">₹500</td>
@@ -130,7 +130,7 @@
                                                 <td style="text-align: right; font-weight: 500; color: #4eb250; " class="total-amount">-₹1,500</td>
                                             </tr> -->
                                             <tr class="total">
-                                                <td style="font-weight:500;">TOTAL (incl of all Taxes.)</td>
+                                                <td style="font-weight:500;">Total ({{count($cartData)}} items)</td>
                                                 <td style="text-align: right; font-weight: 500;">{{config('Reading.default_currency').number_format($totalPrice,2)}}</td>
                                             </tr>
                                             <!-- <tr class="total">
@@ -142,14 +142,8 @@
                                 </div>
 
                             </div>
-                            <!-- Cart Update Option -->
-                            <!--<a href="checkout.html" class="sqr-btn d-block">
-                                Continue to checkout
-                                <svg width="29" height="8" viewBox="0 0 29 8" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M0.5 3.5C0.223858 3.5 0 3.72386 0 4C0 4.27614 0.223858 4.5 0.5 4.5V3.5ZM28.8536 4.35355C29.0488 4.15829 29.0488 3.84171 28.8536 3.64645L25.6716 0.464466C25.4763 0.269204 25.1597 0.269204 24.9645 0.464466C24.7692 0.659728 24.7692 0.976311 24.9645 1.17157L27.7929 4L24.9645 6.82843C24.7692 7.02369 24.7692 7.34027 24.9645 7.53553C25.1597 7.7308 25.4763 7.7308 25.6716 7.53553L28.8536 4.35355ZM0.5 4.5H28.5V3.5H0.5V4.5Z" />
-                                </svg>
-
-                            </a>-->
+                            
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -165,12 +159,12 @@
                     <h5>Total ({{count($cartData)}} items) &nbsp;&nbsp;:&nbsp;&nbsp; {{config('Reading.default_currency').number_format($totalPrice,2)}}</h5>
                 </div>
                 <div class="col-md-2">
-                    <a href="checkout.html" class="sqr-btn d-block">
+                    <a href="{{route('front-shop.index')}}" class="sqr-btn d-block">
                         Continue Shopping
                     </a>
                 </div>
                 <div class="col-md-2">
-                    <a href="checkout.html" class="sqr-btn buy-now d-block">
+                    <a href="{{route('front-cart.index').'?checkoutFrom=cartPage'}}" class="sqr-btn buy-now d-block">
                         Proceed to Checkout
                     </a>
                 </div>
