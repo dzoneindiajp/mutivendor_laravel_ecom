@@ -22,6 +22,7 @@ use App\Models\OrderItemTax;
 use App\Models\Transaction;
 use App\Mail\InvoiceEmail;
 use App\Models\Currency;
+use App\Models\Cart;
 use Barryvdh\DomPDF\Facade\Pdf;
 class Controller extends BaseController
 {
@@ -190,10 +191,10 @@ class Controller extends BaseController
 		}
 	}
 
-    public function createOrderAndInvoice($data = []){
-        $checkoutData = session()->get('checkoutData') ?? [];
-        $checkoutItemData = session()->get('checkoutItemData') ?? [];
-        
+    public function createOrderAndInvoice($data = [],$checkoutData,$checkoutItemData){
+        // $checkoutData = session()->get('checkoutData') ?? [];
+        // $checkoutItemData = session()->get('checkoutItemData') ?? [];
+        // print_r($checkoutData);die;
         if(!empty($checkoutData)){
             //Create TOrder
             $obj    =   new Order;
@@ -207,6 +208,7 @@ class Controller extends BaseController
             $obj->payment_method  = $checkoutData['payment_method'] ?? Null;
             $obj->transaction_id  = $data['transaction_id'] ?? Null;
             $obj->currency_code  = session()->get('currency') ?? 'INR';
+            $obj->order_number  = ' ';
             $obj->save();
             $lastId = $obj->id;
             if(!empty($lastId)){
@@ -274,6 +276,12 @@ class Controller extends BaseController
             // Send email to customer with the invoice as an attachment
             $this->sendInvoiceEmail($checkoutData,$checkoutItemData,$lastId);
 
+            session()->forget('checkoutData');
+            session()->forget('checkoutItemData');
+            if($checkoutData['checkoutFrom'] == 'cartPage'){
+                Cart::where('user_id',auth()->guard('customer')->user()->id)->delete();
+            }
+
         }
     }
 
@@ -283,6 +291,10 @@ class Controller extends BaseController
         $currency = Currency::where('currency_code',$order->currency_code)->value('symbol') ;
         $pdf = PDF::loadView('invoices.order_invoice', ['checkoutData' => $checkoutData,'checkoutItemData' => $checkoutItemData,'order' => $order,'currency' => $currency ]);
         $path = Config('constant.ORDER_INVOICE_ROOT_PATH') . $lastId."_invoice.pdf";
+        $invoiceDirectory = Config('constant.ORDER_INVOICE_ROOT_PATH');
+        if (!file_exists($invoiceDirectory)) {
+            mkdir($invoiceDirectory, 0755, true);
+        }
         $pdf->save($path);
 
         return $path;

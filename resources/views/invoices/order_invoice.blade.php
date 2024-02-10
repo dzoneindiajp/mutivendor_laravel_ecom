@@ -54,8 +54,20 @@
                     @else
                     <td>-</td>
                     @endif
-                    <td>{{ $currency ?? '' }}{{ number_format($checkout['delivery'] ?? 0, 2) }}</td>
-                    <td>{{ $checkout['coupon_name'] ?? '' }} - {{ $currency ?? '' }}{{ number_format($checkout['coupon_discount'] ?? 0, 2) }}</td>
+                    <td>
+                    @if(!empty($checkout['delivery']))
+                    {{ $currency ?? '' }}{{ number_format($checkout['delivery'] ?? 0, 2) }}
+                    @else
+                    -
+                    @endif
+                    </td>
+                    <td>
+                    @if(!empty($checkout['coupon_discount']))
+                    {{ $checkout['coupon_name'] ?? '' }} - {{ $currency ?? '' }}{{ number_format($checkout['coupon_discount'] ?? 0, 2) }}
+                    @else
+                    -
+                    @endif
+                    </td>
                     <td>{{ $currency ?? '' }}{{ number_format($checkout['total'] ?? 0, 2) }}</td>
                 </tr>
                 @endforeach
@@ -70,7 +82,9 @@
         <br>
         @endforeach
         @endif
+        @if(!empty($checkoutData['delivery']))
         <p>Delivery: {{ $currency ?? '' }}{{ number_format($checkoutData['delivery'] ?? 0, 2) }}</p>
+        @endif
         @if(!empty($checkoutData['coupon_name']))
         <p>Coupon ({{ $checkoutData['coupon_name'] }}) : {{ $currency ?? '' }}{{ number_format($checkoutData['coupon_discount'] ?? 0, 2) }}</p>
         @endif

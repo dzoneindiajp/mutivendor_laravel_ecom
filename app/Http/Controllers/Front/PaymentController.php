@@ -12,7 +12,7 @@ use App\Models\User;
 use App\Models\Cart;
 use App\Models\ProductVariantCombination;
 use App\Models\ProductVariantCombinationImage;
-use App\Models\PaymentGateway;
+use App\Models\PaymentMethod;
 use Session;
 use Ixudra\Curl\Facades\Curl;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
@@ -20,20 +20,39 @@ class PaymentController extends Controller
 {
     public function processPayment(Request $request){
         $inputData = $request->all();
-        if(!empty($inputData['payment_method']) && $inputData['payment_method'] == 'cod'){
-            
-        }else{
-            $defaultPaymentGateway = PaymentGateway::where('is_active',1)->where('is_deleted',0)->first();
-            if(strtolower($defaultPaymentGateway) == 'paypal'){
-                $this->paypalProcessPayment($inputData);
-            }else if(strtolower($defaultPaymentGateway) == 'ccavenue'){
-                $this->ccProcessPayment($inputData);
-            }else if(strtolower($defaultPaymentGateway) == 'phonepe'){
-                $this->phonepeProcessPayment($inputData);
+        // print_r($inputData);die;
+        $checkoutData = session()->get('checkoutData') ?? [];
+        $checkoutItemData = session()->get('checkoutItemData') ?? [];
+        // print_r($checkoutData);die;
+        if(empty($checkoutData['address_id'])){
+            return redirect()->back()->with(['error' => 'Please select address before continuing']);  
+        }
+        if(!empty($inputData['paymentmethod'])){
+            $checkoutData['payment_method'] = $inputData['paymentmethod'];
+            session()->put('checkoutData');
+
+            if(!empty($inputData['paymentmethod']) && $inputData['paymentmethod'] == 'cod'){
+                // Process the order creation process
+                $this->createOrderAndInvoice([],$checkoutData,$checkoutItemData);
+
+                return redirect()->route('front-user.dashboard')->with('flash_notice','Order Placed Successfully');
             }else{
-                Log::error('No Default Payment Gateway');
-                return redirect()->back()->with(['error' => 'Invalid Request']);
+                $defaultPaymentGateway = PaymentMethod::where('is_active',1)->value('name');
+                if(strtolower($defaultPaymentGateway) == 'paypal'){
+                    // print_r($defaultPaymentGateway);die;
+                    $redirectUrl = $this->paypalProcessPayment($checkoutData);
+                    return redirect()->to($redirectUrl);
+                }else if(strtolower($defaultPaymentGateway) == 'ccavenue'){
+                    $this->ccProcessPayment($inputData);
+                }else if(strtolower($defaultPaymentGateway) == 'phonepe'){
+                    $this->phonepeProcessPayment($inputData);
+                }else{
+                    Log::error('No Default Payment Gateway');
+                    return redirect()->back()->with(['error' => 'Invalid Payment gateway selected']);
+                }
             }
+        }else{
+            return redirect()->back()->with('error','Invalid Payment gateway selected');
         }
 
     }
@@ -69,19 +88,20 @@ class PaymentController extends Controller
     }
 
     public function paypalProcessPayment($data = []){
+        // print_r('asdasd');die;  
         $provider = new PayPalClient;
         // $provider = PayPalClient::setProvider();
         $provider->getAccessToken();
 
-        $provider->setCurrency(getCurrentCurrency());
-
+        $provider->setCurrency('USD');
+       
         $data = [
             "intent"              => "CAPTURE",
             "purchase_units"      => [
                 [
                     "amount" => [
-                        "value"         => $data['total'],
-                        "currency_code" => getCurrentCurrency(),
+                        "value"         => number_format(convertOneCurrencyToAnother(getCurrentCurrency(),'USD',$data['total']), 2, '.', ''),
+                        "currency_code" => 'USD',
                     ],
                 ]
             ],
@@ -91,8 +111,9 @@ class PaymentController extends Controller
             ],
         ];
         $order = $provider->createOrder($data);
-
-        return redirect($order['links'][1]['href']);
+        // print_r($order);die;
+        $url = $order['links'][1]['href'];
+        return $url;
     }
 
     public function paypalFailed()
@@ -108,9 +129,13 @@ class PaymentController extends Controller
 
         $orderInfo = $provider->showOrderDetails($token);
         $response = $provider->capturePaymentOrder($token);
-        
-        dump($orderInfo);
-        dd($response);
+        $transactionId = $response['id'] ?? '';
+        $checkoutData = session()->get('checkoutData') ?? [];
+        // print_r($checkoutData);die;
+        $checkoutItemData = session()->get('checkoutItemData') ?? [];
+        //Creating order
+        $this->createOrderAndInvoice(['transaction_id' => $transactionId],$checkoutData,$checkoutItemData);
+        return redirect()->route('front-user.dashboard')->with('flash_notice','Order Placed Successfully');
     }
     public function phonepeProcessPayment($data = [])
     {

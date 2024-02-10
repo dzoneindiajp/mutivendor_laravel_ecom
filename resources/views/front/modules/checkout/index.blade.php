@@ -1,22 +1,24 @@
 @extends('front.layouts.app')
 @section('content')
-<!-- header area end -->
-<div class="breadcrumb-area pb-60 pt-60"
-    style="background-image: url({{asset('assets/front/img/slider/bg-about.png')}}); background-size: 100%; background-repeat: no-repeat; ">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <div class="breadcrumb-wrap">
-                    <h2 class="text-white">Checkout</h2>
-                    <p class="text-white">Home / Checkout</p>
+<!-- page main wrapper start -->
+<form id="checkoutForm" action="{{route('front-user.processPayment')}}" method="post">
+@csrf
+    <!-- header area end -->
+    <div class="breadcrumb-area pb-60 pt-60"
+        style="background-image: url({{asset('assets/front/img/slider/bg-about.png')}}); background-size: 100%; background-repeat: no-repeat; ">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="breadcrumb-wrap">
+                        <h2 class="text-white">Checkout</h2>
+                        <p class="text-white">Home / Checkout</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<!-- page main wrapper start -->
-<!-- page main wrapper start -->
-<form id="checkoutForm" action="{{route('front-user.processPayment')}}" method="post">
+    <!-- page main wrapper start -->
+
     <main class="main-bg">
         <!-- cart main wrapper start -->
         <div class="cart-main-wrapper pt-50 pb-50 pt-sm-58 pb-sm-58">
@@ -52,7 +54,9 @@
                                                                 {{$address->landmark ?? ''}}, {{$address->city ?? ''}},
                                                                 {{$address->state ?? ''}},{{$address->country ?? ''}}
                                                                 {{$address->postal_code ?? ''}}
-                                                                <a href="{{(!empty($checkoutData['address_id']) && $checkoutData['address_id'] == $address->id ) ? 'javascript:void(0)' : route('front-user.checkout')."?action=addressSelect&address_id=".$address->id}}"><span class="primary-button">{{(!empty($checkoutData['address_id']) && $checkoutData['address_id'] == $address->id ) ? 'Selected' : 'Select this address'}}</span></a>
+                                                                <a
+                                                                    href="{{(!empty($checkoutData['address_id']) && $checkoutData['address_id'] == $address->id ) ? 'javascript:void(0)' : route('front-user.checkout')."?action=addressSelect&address_id=".$address->id}}"><span
+                                                                        class="primary-button">{{(!empty($checkoutData['address_id']) && $checkoutData['address_id'] == $address->id ) ? 'Selected' : 'Select this address'}}</span></a>
                                                             </p>
                                                         </td>
 
@@ -133,11 +137,15 @@
                                                                             for="paymentmethod{{$paymentMethod->id}}">{{$paymentMethod->name ?? ''}}</label>
                                                                     </div>
                                                                 </div>
-                                                                <div class="payment-method-details" data-method="bank" style="display: none;">
+                                                                <div class="payment-method-details" data-method="bank"
+                                                                    style="display: none;">
                                                                     <div class="row">
                                                                         <div class="col-md-6">
                                                                             <div class="form-group">
-                                                                                <input type="text" class="form-control login" id="full-name" placeholder="Pay with {{$paymentMethod->name ?? ''}}" />
+                                                                                <input type="text"
+                                                                                    class="form-control login"
+                                                                                    id="full-name"
+                                                                                    placeholder="Pay with {{$paymentMethod->name ?? ''}}" />
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -301,6 +309,26 @@
                     </div>
                     <div class="col-lg-4">
                         <div class="cart-amount">
+                            <div class="cart-update-option d-block d-md-flex justify-content-between">
+                                <div class="apply-coupon-wrapper" style="width:100%;">
+                                    <form action="#" method="post">
+                                        <div class="row" style="width: 100%; --bs-gutter-x: 0;">
+                                            <div class="col-md-8">
+                                                <input type="text" name="coupon_code"
+                                                    placeholder="Enter Your Coupon Code" class="form-control"
+                                                    value="{{!empty($checkoutData['coupon_name']) ? $checkoutData['coupon_name'] : ''}}"
+                                                    required />
+                                            </div>
+                                            <div class="col-md-4" style="padding-left:10px;">
+                                                <button class="sqr-btn w-100 applyCouponBtn"
+                                                    type="button">Apply</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <hr />
                             <div class="cart-calculator-wrapper">
                                 <div class="cart-calculate-items">
                                     <h3 class="mb-20">Order Summary</h3>
@@ -318,6 +346,16 @@
                                                 <td>Delivery Charge</td>
                                                 <td style="text-align: right; font-weight: 500;">
                                                     {{getDefaultCurrencySymbol()}}{{number_format($checkoutData['delivery'],2)}}
+                                                </td>
+                                            </tr>
+                                            @endif
+                                            @if(!empty($checkoutData['coupon_discount']))
+                                            <tr class="total">
+                                                <td style="color: #4eb250;">Coupon Discount
+                                                    ({{$checkoutData['coupon_name']}})</td>
+                                                <td style="text-align: right; font-weight: 500; color: #4eb250; "
+                                                    class="total-amount">
+                                                    -{{getDefaultCurrencySymbol()}}{{number_format($checkoutData['coupon_discount'],2)}}
                                                 </td>
                                             </tr>
                                             @endif
@@ -383,7 +421,7 @@
                         {{getDefaultCurrencySymbol()}}{{number_format($checkoutData['total'],2)}}</h5>
                 </div>
                 <div class="col-md-2">
-                    <button type=submit class="sqr-btn buy-now d-block">
+                    <button type=submit class="sqr-btn buy-now d-block placeOrderBtn">
                         Place the order
                     </button>
                 </div>
@@ -520,6 +558,19 @@ $(document).on('submit', '.addAddressForm', function(e) {
     };
 
     makeAjaxRequest(ajaxOptions, attributes);
+});
+$(document).on('click', '.applyCouponBtn', function(e) {
+    e.preventDefault();
+    $couponCode = $('input[name=coupon_code]').val();
+    if ($couponCode && $couponCode != '') {
+        let url = "{{route('front-user.checkout')}}" + "?action=applyCoupon&coupon_code=" + $couponCode;
+        window.location.href = url;
+    }
+});
+$(document).on('click', '.placeOrderBtn', function(e) {
+    e.preventDefault();
+    $('#checkoutForm')[0].submit();
+    
 });
 </script>
 @endsection

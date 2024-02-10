@@ -19,7 +19,7 @@ class CartController extends Controller
 {
 
     public function index(Request $request) {
-        try {
+        // try {
             if(!empty($request->checkoutFrom) ){
                 if (auth()->guard('customer')->check()) {
                     $cartData = Cart::where('user_id', auth()->guard('customer')->user()->id)->select('product_id', 'quantity')->get()->toArray();
@@ -38,10 +38,10 @@ class CartController extends Controller
                 return redirect()->route('front-home.index')->with('error','Cart is empty');
             }
             return view('front.modules.cart.index',compact('cartData'));
-        } catch (Exception $e) {
-            Log::error($e);
-            return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);
-        }
+        // } catch (Exception $e) {
+        //     Log::error($e);
+        //     return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);
+        // }
     }
     public function addToCart(Request $request) {
         try {

@@ -21,17 +21,25 @@ class CheckoutController extends Controller
     public function index(Request $request) {
         // try {
             $userAddresses = UserAddress::where('user_id',Auth::guard('customer')->user()->id)->get();
-            $paymentMethods = PaymentMethod::get();
+            $paymentMethods = PaymentMethod::where('is_active',1)->get();
             if(!empty($request->action) && $request->action == 'addressSelect'){
                 $addressData = UserAddress::where('id',$request->address_id ?? 0)->first();
                 if(!empty($addressData)){
                     setDeliveryChargesIntoCheckoutSession($addressData->postal_code,$request->address_id);
                 }
-                // print_r(session()->get('checkoutData'));die;
+                return redirect()->back()->with('flash_notice','Address changes successfully');
+               
+            }
+            if(!empty($request->action) && $request->action == 'applyCoupon'){
+                $applyCouponResponse = isCouponValid($request->coupon_code);
+                
+                return redirect()->back()->with($applyCouponResponse['status'],$applyCouponResponse['msg']);
+               
             }
             $checkoutData = session()->has('checkoutData') ? session()->get('checkoutData') : [];
             $checkoutItemData = getCheckoutItemData();
-            if(count($checkoutItemData) == 0){
+            
+            if(count($checkoutItemData) == 0 || count($checkoutData) == 0){
                 return redirect()->route('front-cart.index');
             }
             // print_r($checkoutItemData);die;

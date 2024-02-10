@@ -523,6 +523,8 @@ Route::name('front-')->group(function () {
       Route::match(['get', 'post'],'/remove-from-wishlist', [App\Http\Controllers\Front\CartController::class, 'removeFromWishlist'])->name('user.removeFromWishlist');
 
       Route::get('/checkout', [App\Http\Controllers\Front\CheckoutController::class, 'index'])->name('user.checkout');
+      Route::get('/paypal-failed', [App\Http\Controllers\Front\PaymentController::class, 'paypalFailed'])->name('user.paypalFailed');
+      Route::get('/paypal-success', [App\Http\Controllers\Front\PaymentController::class, 'paypalSuccess'])->name('user.paypalSuccess');
 
       Route::post('purchase', [App\Http\Controllers\Front\PaymentController::class, 'processPayment'])->name('user.processPayment');
 

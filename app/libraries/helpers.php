@@ -301,22 +301,50 @@ function isCouponValid($coupon_code = "")
       }
 
       if(!empty($productIds)){
-
+          $totalDiscount = 0;
+          $convertedCouponAmount =($coupon->coupon_type == 'flat') ? currencyConversionPrice($coupon->amount) : $coupon->amount;
+          $couponAmountForSpecificProduct =$convertedCouponAmount/count($productIds);
           foreach($checkoutItemData as &$checkout1){
             if(in_array($checkout1['product_id'],$productIds)){
+              
+              if($checkout1['sub_total'] > ($couponAmountForSpecificProduct)){
 
-              if($coupon->coupon_type == 'flat'){
+              
+                if($coupon->coupon_type == 'flat'){
+                  
+                  $checkout1['coupon_discount'] = $couponAmountForSpecificProduct ?? 0;
+                  $checkout1['coupon_name'] = $coupon['coupon_code'] ?? '';
+                }else{
+                  $checkout1['coupon_name'] = $coupon['coupon_code'] ?? '';
+                  $checkout1['coupon_discount'] =$checkout1['sub_total'] * ($couponAmountForSpecificProduct) ?? 0;
+                  
+                }
+                $checkout1['total'] = $checkout1['total_with_taxes'] - (!empty($checkout1['coupon_discount']) ? $checkout1['coupon_discount'] : 0)  + (!empty($checkout1['delivery']) ? $checkout1['delivery'] : 0);
+                $totalDiscount += $checkout1['coupon_discount'];
 
-                $checkout1['total'] = (($checkout1['sub_total'] - ($coupon->amount/count($productIds))) > 0) ? $checkout1['sub_total'] - ($coupon->amount/count($productIds)) : 0;
-                $checkout1['coupon_name'] = $coupon['coupon_code'] ?? '';
-                $checkout1['coupon_discount'] = $coupon->amount/count($productIds) ?? 0;
-              }else{
-                $checkout1['total'] = (($checkout1['sub_total'] - ($checkout1['sub_total'] * ($coupon->amount/count($productIds)))) > 0) ? $checkout1['sub_total'] - ($checkout1['sub_total'] * ($coupon->amount/count($productIds))) : 0;
-                $checkout1['coupon_name'] = $coupon['coupon_code'] ?? '';
-                $checkout1['coupon_discount'] =$checkout1['sub_total'] * ($coupon->amount/count($productIds)) ?? 0;
               }
             }
 
+          }
+        
+          $checkoutData = session::get('checkoutData') ?? [];
+          if($totalDiscount > 0){
+            // print_r( $coupon['coupon_code']);die;
+            $checkoutData['coupon_name'] = $coupon['coupon_code'] ?? '';
+            $checkoutData['coupon_discount'] = $totalDiscount ?? 0;
+            $checkoutData['total'] = $checkoutData['total_with_taxes'] - $checkoutData['coupon_discount'] + (!empty($checkoutData['delivery']) ? $checkoutData['delivery'] : 0);
+            session::put('checkoutData',$checkoutData);
+
+            $response["status"] = "success";
+            $response["msg"] = "Coupon code applied successfully";
+            $response["price"] = "";
+            return $response;
+
+          }else{
+            $response["status"] = "error";
+            $response["msg"] = "Coupon code is not applicable on current cart items.";
+            $response["price"] = "";
+            return $response;
           }
 
       }else{
@@ -360,13 +388,13 @@ function setDeliveryChargesIntoCheckoutSession($postalCode = "",$addressId = 0)
 
               if(!empty($getDeliveryAmount)){
                 $checkout['delivery'] = currencyConversionPrice($getDeliveryAmount);
-                $checkout['total'] = $checkout['total'] + $checkout['delivery'];
+                $checkout['total'] = $checkout['total_with_taxes'] - (!empty($checkout['coupon_discount']) ? $checkout['coupon_discount'] : 0)  + (!empty($checkout['delivery']) ? $checkout['delivery'] : 0);
               }
             }
 
 
           }
-          // print_r($checkoutItemData);die;
+        
           session::put('checkoutItemData',$checkoutItemData);
           $totalDeliveryCharge = array_reduce($checkoutItemData, function($carry, $item) {
             return $carry + (!empty($item['delivery']) ?  $item['delivery'] : 0);
@@ -374,10 +402,11 @@ function setDeliveryChargesIntoCheckoutSession($postalCode = "",$addressId = 0)
           $checkoutData = session::get('checkoutData') ?? [];
           $checkoutData['delivery'] = $totalDeliveryCharge ?? 0;
           $checkoutData['address_id'] = $addressId ?? 0;
-          $checkoutData['total'] = $checkoutData['default_total'] + ($checkoutData['delivery'] ?? 0);
+          $checkoutData['total'] = $checkoutData['total_with_taxes'] - (!empty($checkoutData['coupon_discount']) ? $checkoutData['coupon_discount'] : 0)  + (!empty($checkoutData['delivery']) ? $checkoutData['delivery'] : 0);
           session::put('checkoutData',$checkoutData);
 
         }
+        
       }
     }
   }
@@ -460,7 +489,7 @@ if (!function_exists('getDropPrices')) {
       }
     }
 
-    return $price;
+    return (float)number_format($price,2);
   }
 }
 
@@ -487,7 +516,7 @@ if (!function_exists('currencyConversionPrice')) {
       }
     }
 
-    return $price;
+    return (float)number_format($price,2);
   }
 }
 
@@ -700,6 +729,7 @@ if (!function_exists('moveCartSessionDataToCheckoutSessionData')) {
                       $cart['total'] += $cart['tax'][$taxKey]['tax_price'];
                   }
                 }
+                $cart['total_with_taxes'] = $cart['total'];
                 $cart['product'] = $productDetails;
                 $totalPrice += $cart['total'];
             }
@@ -707,14 +737,32 @@ if (!function_exists('moveCartSessionDataToCheckoutSessionData')) {
         }
         session()->put('checkoutItemData',$cartData);
     }
-    $checkoutData = [];
-    $checkoutData['checkoutFrom'] = $checkoutFrom;
-    $checkoutData['sub_total'] = $subTotalPrice;
-    $checkoutData['total'] = $totalPrice;
-    $checkoutData['default_total'] = $totalPrice;
-    $checkoutData['tax'] = $checkoutTaxArr;
+    $checkoutData = []; 
+    $checkoutData['checkoutFrom'] = $checkoutFrom; 
+    $checkoutData['sub_total'] = $subTotalPrice; 
+    $checkoutData['total'] = $totalPrice; 
+    $checkoutData['total_with_taxes'] = $totalPrice; 
+    $checkoutData['tax'] = $checkoutTaxArr; 
+
     session()->put('checkoutData',$checkoutData);
   }
+}
+
+function convertOneCurrencyToAnother($currency1,$currency2,$price){
+
+    $currency = $currency2;
+    $default_currency = $currency1;
+
+    if ($currency != $default_currency) {
+      $user_currency_amount = Currency::where('currency_code', $currency)->where('is_active', 1)->value('amount');
+      $default_currency_amount = Currency::where('currency_code', $default_currency)->where('is_active', 1)->value('amount');
+
+      $price = ($user_currency_amount * $price) / $default_currency_amount;
+
+    }
+
+    return (float)number_format($price,2);
+  
 }
 
 
