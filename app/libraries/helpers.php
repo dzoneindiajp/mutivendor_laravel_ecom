@@ -296,17 +296,17 @@ function isCouponValid($coupon_code = "")
           ->select('coupons.*', 'coupon_assigns.reference_id')
           ->first();
           if(!empty($checkIfCouponApplicableOnThisProduct)){
-            $productIds[] = $checkout['product_id']; 
+            $productIds[] = $checkout['product_id'];
           }
       }
 
       if(!empty($productIds)){
-        
+
           foreach($checkoutItemData as &$checkout1){
             if(in_array($checkout1['product_id'],$productIds)){
 
               if($coupon->coupon_type == 'flat'){
-  
+
                 $checkout1['total'] = (($checkout1['sub_total'] - ($coupon->amount/count($productIds))) > 0) ? $checkout1['sub_total'] - ($coupon->amount/count($productIds)) : 0;
                 $checkout1['coupon_name'] = $coupon['coupon_code'] ?? '';
                 $checkout1['coupon_discount'] = $coupon->amount/count($productIds) ?? 0;
@@ -316,9 +316,9 @@ function isCouponValid($coupon_code = "")
                 $checkout1['coupon_discount'] =$checkout1['sub_total'] * ($coupon->amount/count($productIds)) ?? 0;
               }
             }
-            
+
           }
-       
+
       }else{
         $response["status"] = "error";
         $response["msg"] = "Coupon code is not applicable on current cart items.";
@@ -352,19 +352,19 @@ function setDeliveryChargesIntoCheckoutSession($postalCode = "",$addressId = 0)
         $checkoutItemData = session()->get('checkoutItemData') ?? [];
         if (!empty($checkoutItemData)) {
           foreach ($checkoutItemData as &$checkout) {
-            
+
             $productWeight = ProductVariantCombination::where('product_variant_combinations.id', $checkout['product_id'] ?? 0)
             ->value('weight');
             if(!empty($productWeight)){
               $getDeliveryAmount = ShippingCost::where('shipping_company_id',$shippingCompanyByShippingArea)->where('shipping_area_id',$shippingAreaByCity)->whereRaw('ROUND(weight) = ROUND(?)', [$productWeight])->value('amount');
-     
+
               if(!empty($getDeliveryAmount)){
                 $checkout['delivery'] = currencyConversionPrice($getDeliveryAmount);
                 $checkout['total'] = $checkout['total'] + $checkout['delivery'];
               }
             }
-    
-            
+
+
           }
           // print_r($checkoutItemData);die;
           session::put('checkoutItemData',$checkoutItemData);
@@ -376,7 +376,7 @@ function setDeliveryChargesIntoCheckoutSession($postalCode = "",$addressId = 0)
           $checkoutData['address_id'] = $addressId ?? 0;
           $checkoutData['total'] = $checkoutData['default_total'] + ($checkoutData['delivery'] ?? 0);
           session::put('checkoutData',$checkoutData);
-         
+
         }
       }
     }
@@ -488,6 +488,42 @@ if (!function_exists('currencyConversionPrice')) {
     }
 
     return $price;
+  }
+}
+
+
+
+if (!function_exists('getCurrencySymbol')) {
+  function getCurrencySymbol($currency_code = "")
+  {
+    $currency = Currency::where('currency_code', $currency_code)->where('is_active', 1)->value('symbol');
+
+    return $currency;
+  }
+}
+
+if (!function_exists('getStatusValue')) {
+  function getStatusValue($status = "")
+  {
+    $statusValue = "";
+
+    if ($status == "received"){
+        $statusValue = "Received";
+    } elseif ($status == "confirmed"){
+        $statusValue = "Confirmed";
+    } elseif ($status == "shipped") {
+        $statusValue = "Shipped";
+    } elseif ($status == "delivered") {
+      $statusValue = "Delivered";
+    } elseif ($status == "cancelled") {
+      $statusValue = "Cancelled";
+    } elseif ($status == "returned") {
+      $statusValue = "Returned";
+    } else {
+        $statusValue = "Out For Delivery";
+    }
+
+    return $statusValue;
   }
 }
 
@@ -631,7 +667,7 @@ if (!function_exists('moveCartSessionDataToCheckoutSessionData')) {
     $totalPrice = 0;
     $subTotalPrice = 0;
     $checkoutTaxArr = [];
-   
+
     if(!empty($cartData)){
         foreach($cartData as &$cart){
             $productVariantCombination = new ProductVariantCombination;
@@ -648,7 +684,7 @@ if (!function_exists('moveCartSessionDataToCheckoutSessionData')) {
                     $cart['tax'][$taxKey]['category_tax_id'] = $tax->id;
                     $cart['tax'][$taxKey]['tax_id'] = $tax->tax_id;
                     $cart['tax'][$taxKey]['tax_val'] = $tax->tax_value ?? 0;
-                 
+
                       $cart['tax'][$taxKey]['tax_price'] = ($cart['tax'][$taxKey]['tax_val'] > 0) ? $cart['total'] * ($cart['tax'][$taxKey]['tax_val']/100) : 0;
                       $cart['tax'][$taxKey]['tax_name'] = $tax->tax_name;
 
@@ -656,9 +692,9 @@ if (!function_exists('moveCartSessionDataToCheckoutSessionData')) {
                       if ($existKey !== false) {
                           $checkoutTaxArr[$existKey]['tax_val'] += $cart['tax'][$taxKey]['tax_val'];
                           $checkoutTaxArr[$existKey]['tax_price'] += $cart['tax'][$taxKey]['tax_price'];
-                          
+
                       } else {
-                          
+
                           $checkoutTaxArr[$taxKey] = $cart['tax'][$taxKey];
                       }
                       $cart['total'] += $cart['tax'][$taxKey]['tax_price'];
@@ -667,16 +703,16 @@ if (!function_exists('moveCartSessionDataToCheckoutSessionData')) {
                 $cart['product'] = $productDetails;
                 $totalPrice += $cart['total'];
             }
-            
+
         }
         session()->put('checkoutItemData',$cartData);
     }
-    $checkoutData = []; 
-    $checkoutData['checkoutFrom'] = $checkoutFrom; 
-    $checkoutData['sub_total'] = $subTotalPrice; 
-    $checkoutData['total'] = $totalPrice; 
-    $checkoutData['default_total'] = $totalPrice; 
-    $checkoutData['tax'] = $checkoutTaxArr; 
+    $checkoutData = [];
+    $checkoutData['checkoutFrom'] = $checkoutFrom;
+    $checkoutData['sub_total'] = $subTotalPrice;
+    $checkoutData['total'] = $totalPrice;
+    $checkoutData['default_total'] = $totalPrice;
+    $checkoutData['tax'] = $checkoutTaxArr;
     session()->put('checkoutData',$checkoutData);
   }
 }
