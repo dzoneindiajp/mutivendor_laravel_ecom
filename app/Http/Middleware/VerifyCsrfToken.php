@@ -22,6 +22,10 @@ class VerifyCsrfToken extends Middleware
             return $next($request);
         }
 
+        if(!Session::has('currency')){
+            Session::put('currency', 'INR');
+        }
+
         return parent::handle($request, $next);
     }
 }

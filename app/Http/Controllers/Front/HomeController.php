@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Banner;
+use App\Models\Testimonial;
 
 class HomeController extends Controller
 {
@@ -32,8 +33,11 @@ class HomeController extends Controller
 
                 $sub_category->sub_cat_products = $sub_cat_products;
             }
+
+            $testimonials = new Testimonial;
+            $all_testimonials = $testimonials->getActiveTestimonial();
             // echo "<pre>"; print_r($sub_category); die;
-            return view('front.modules.home.index',compact("all_top_sliders", "all_middle_sliders","all_categories","featured_products", "sub_category"));
+            return view('front.modules.home.index',compact("all_top_sliders", "all_middle_sliders","all_categories","featured_products", "sub_category", "all_testimonials"));
         } catch (Exception $e) {
             Log::error($e);
             return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);

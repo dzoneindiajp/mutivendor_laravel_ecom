@@ -642,6 +642,7 @@
     </div>
     <!-- details area end -->
     <!-- testimonial area start -->
+    @if(!empty($all_testimonials))
     <div class="testimonial-area pt-20 pb-50 pt-sm-58 pb-sm-92">
         <!--<img src="{{ asset('assets/front/img/logo/left-shape.svg')}}" class="test-left" />
         <img src="{{ asset('assets/front/img/logo/right-shape.svg')}}" class="test-right" />-->
@@ -653,24 +654,27 @@
             <div class="row">
                 <div class="col-12">
                     <div class="testimonial-carousel-active slick-dot-style">
+                        @foreach($all_testimonials as $all_testimonial)
                         <div class="testimonial-item text-center">
                             <div class="testimonial-border">
                                 <div class="row">
                                     <div class="col-md-2 col-2">
-                                        <img src="{{ asset('assets/front/img/product/product-1.jpg')}}" class="testimonial-pic" alt="">
+                                        <img src="{{ $all_testimonial['image']}}" class="testimonial-pic" alt="">
                                     </div>
                                     <div class="col-md-10 col-10">
                                         <div class="testimonial-thumb">
                                             <div class="user-details">
                                                 <h3>
-                                                    <a href="#">Nice Product</a>
+                                                    <a href="javascript::void(0)">{{ $all_testimonial['name']}}</a>
                                                     <span style="float:right;">
-                                                        <i class="fa fa-star fill"></i>
-                                                        <i class="fa fa-star fill"></i>
-                                                        <i class="fa fa-star fill"></i>
-                                                        <i class="fa fa-star fill"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        4.5/5.0
+                                                        @for ($i = 1; $i <= 5; $i++)
+                                                            @if ($i <= $all_testimonial['rating'])
+                                                                <i class="fa fa-star fill"></i>
+                                                            @else
+                                                                <i class="fa fa-star"></i>
+                                                            @endif
+                                                        @endfor
+                                                        {{ $all_testimonial['rating']}}/5.0
                                                     </span>
                                                 </h3>
 
@@ -678,161 +682,20 @@
                                         </div>
                                         <div class="testimonial-content">
                                             <p>
-                                                “I was amazed by the quality and beauty of the jewelry I purchased from 8thiniq.
-                                                The craftsmanship is exceptional, and each piece truly exudes a regal feel.
-                                                The best part is that the prices are so affordable, allowing me to indulge in luxury without breaking the bank.
-                                                ”
+                                                {!! $all_testimonial['description'] !!}
                                             </p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="testimonial-item text-center">
-                            <div class="testimonial-border">
-                                <div class="row">
-                                    <div class="col-md-2 col-2">
-                                        <img src="{{ asset('assets/front/img/product/product-2.jpg')}}" class="testimonial-pic" alt="">
-                                    </div>
-                                    <div class="col-md-10 col-10">
-                                        <div class="testimonial-thumb">
-                                            <div class="user-details">
-                                                <h3>
-                                                    <a href="#">Excellent Product</a>
-                                                    <span style="float:right;">
-                                                        <i class="fa fa-star fill"></i>
-                                                        <i class="fa fa-star fill"></i>
-                                                        <i class="fa fa-star fill"></i>
-                                                        <i class="fa fa-star fill"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        4.5/5.0
-                                                    </span>
-                                                </h3>
-
-                                            </div>
-                                        </div>
-                                        <div class="testimonial-content">
-                                            <p>
-                                                “I was amazed by the quality and beauty of the jewelry I purchased from 8thiniq.
-                                                The craftsmanship is exceptional, and each piece truly exudes a regal feel.
-                                                The best part is that the prices are so affordable, allowing me to indulge in luxury without breaking the bank.
-                                                ”
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="testimonial-item text-center">
-                            <div class="testimonial-border">
-                                <div class="row">
-                                    <div class="col-md-2 col-2">
-                                        <img src="{{ asset('assets/front/img/product/product-3.jpg')}}" class="testimonial-pic" alt="">
-                                    </div>
-                                    <div class="col-md-10 col-10">
-                                        <div class="testimonial-thumb">
-                                            <div class="user-details">
-                                                <h3>
-                                                    <a href="#">Great Product</a>
-                                                    <span style="float:right;">
-                                                        <i class="fa fa-star fill"></i>
-                                                        <i class="fa fa-star fill"></i>
-                                                        <i class="fa fa-star fill"></i>
-                                                        <i class="fa fa-star fill"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        4.5/5.0
-                                                    </span>
-                                                </h3>
-
-                                            </div>
-                                        </div>
-                                        <div class="testimonial-content">
-                                            <p>
-                                                “I was amazed by the quality and beauty of the jewelry I purchased from 8thiniq.
-                                                The craftsmanship is exceptional, and each piece truly exudes a regal feel.
-                                                The best part is that the prices are so affordable, allowing me to indulge in luxury without breaking the bank.
-                                                ”
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="testimonial-item text-center">
-                            <div class="testimonial-border">
-                                <div class="row">
-                                    <div class="col-md-2 col-2">
-                                        <img src="{{ asset('assets/front/img/product/product-4.jpg')}}" class="testimonial-pic" alt="">
-                                    </div>
-                                    <div class="col-md-10 col-10">
-                                        <div class="testimonial-thumb">
-                                            <div class="user-details">
-                                                <h3>
-                                                    <a href="#">Payal Zala</a>
-                                                    <span style="float:right;">
-                                                        <i class="fa fa-star fill"></i>
-                                                        <i class="fa fa-star fill"></i>
-                                                        <i class="fa fa-star fill"></i>
-                                                        <i class="fa fa-star fill"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        4.5/5.0
-                                                    </span>
-                                                </h3>
-
-                                            </div>
-                                        </div>
-                                        <div class="testimonial-content">
-                                            <p>
-                                                “I was amazed by the quality and beauty of the jewelry I purchased from 8thiniq.
-                                                The craftsmanship is exceptional, and each piece truly exudes a regal feel.
-                                                The best part is that the prices are so affordable, allowing me to indulge in luxury without breaking the bank.
-                                                ”
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="testimonial-item text-center">
-                            <div class="testimonial-border">
-                                <div class="row">
-                                    <div class="col-md-2 col-2">
-                                        <img src="{{ asset('assets/front/img/product/product-5.jpg')}}" class="testimonial-pic" alt="">
-                                    </div>
-                                    <div class="col-md-10 col-10">
-                                        <div class="testimonial-thumb">
-                                            <div class="user-details">
-                                                <h3>
-                                                    <a href="#">Payal Zala</a>
-                                                    <span style="float:right;">
-                                                        <i class="fa fa-star fill"></i>
-                                                        <i class="fa fa-star fill"></i>
-                                                        <i class="fa fa-star fill"></i>
-                                                        <i class="fa fa-star fill"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        4.5/5.0
-                                                    </span>
-                                                </h3>
-
-                                            </div>
-                                        </div>
-                                        <div class="testimonial-content">
-                                            <p>
-                                                “I was amazed by the quality and beauty of the jewelry I purchased from 8thiniq.
-                                                The craftsmanship is exceptional, and each piece truly exudes a regal feel.
-                                                The best part is that the prices are so affordable, allowing me to indulge in luxury without breaking the bank.
-                                                ”
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    @endif
     <!-- testimonial area end -->
     <!-- latest blog area start -->
     <div class="latest-blog-area pt-50 pb-90 pt-sm-58 pb-sm-50">

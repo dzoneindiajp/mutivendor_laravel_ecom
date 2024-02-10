@@ -21,10 +21,10 @@ class Testimonial extends Model
     }
 
     function getImageAttribute($value = ""){
-        if($value != "" && File::exists(Config('constants.TESTIMONIAL_IMAGE_ROOT_PATH').$value)){
-            return  Config('constants.TESTIMONIAL_IMAGE_URL').$value;
+        if($value != "" && File::exists(Config('constant.TESTIMONIAL_IMAGE_ROOT_PATH').$value)){
+            return  Config('constant.TESTIMONIAL_IMAGE_URL').$value;
         }else {
-            return  Config('constants.WEBSITE_IMG_URL')."astro/noimage.png";
+            return  Config('constant.WEBSITE_IMG_URL')."astro/noimage.png";
         }
     }
 }
