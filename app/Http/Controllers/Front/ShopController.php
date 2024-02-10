@@ -15,6 +15,9 @@ use App\Models\ProductVariantCombinationImage;
 use App\Models\ProductSpecification;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantValue;
+use App\Models\SizeChartAssign;
+use App\Models\SizeChartDetailValue;
+use App\Models\SizeChartDetail;
 
 class ShopController extends Controller
 {
@@ -115,7 +118,7 @@ class ShopController extends Controller
                 session()->put('checkoutFrom','detailPage');
                 return redirect()->route('front-user.checkout');
             }
-            $productDetails = ProductVariantCombination::where('product_variant_combinations.slug',$productSlug)->leftJoin('products','products.id','product_variant_combinations.product_id')->leftJoin('categories', 'products.category_id', '=', 'categories.id')->select('product_variant_combinations.*','products.name','products.is_including_taxes','products.in_stock','categories.name as category_name',DB::raw('(SELECT name from variant_values WHERE id = product_variant_combinations.variant1_value_id ) as variant_value1_name'),DB::raw('(SELECT name from variant_values WHERE id = product_variant_combinations.variant2_value_id ) as variant_value2_name'))->groupBy('product_variant_combinations.id')->first();
+            $productDetails = ProductVariantCombination::where('product_variant_combinations.slug',$productSlug)->leftJoin('products','products.id','product_variant_combinations.product_id')->leftJoin('categories', 'products.category_id', '=', 'categories.id')->select('product_variant_combinations.*','products.category_id','products.name','products.is_including_taxes','products.in_stock','categories.name as category_name',DB::raw('(SELECT name from variant_values WHERE id = product_variant_combinations.variant1_value_id ) as variant_value1_name'),DB::raw('(SELECT name from variant_values WHERE id = product_variant_combinations.variant2_value_id ) as variant_value2_name'))->groupBy('product_variant_combinations.id')->first();
 
             if(!empty($productDetails)){
 
@@ -142,6 +145,76 @@ class ShopController extends Controller
                         $productVariant->variantValuesData = ProductVariantValue::where('product_variant_values.product_veriant_id',$productVariant->id)->leftJoin('variant_values','variant_values.id','product_variant_values.veriant_value_id')->select('product_variant_values.*','variant_values.name')->get();
                     }
                 }
+
+                $size_charts_product = SizeChartAssign::where('size_chart_assigns.product_id', $productDetails->product_id)
+                                                        ->leftJoin('size_charts', 'size_charts.id', 'size_chart_assigns.size_chart_id')
+                                                        ->select(
+                                                            'size_chart_assigns.*',
+                                                            'size_charts.name',
+                                                            'size_charts.file',
+                                                            'size_charts.description',
+                                                        )
+                                                        ->first();
+
+                    if (!empty($size_charts_product)) {
+                        if (!empty($size_charts_product->file)) {
+                            $size_charts_product->file = Config('constant.SIZECHART_IMAGE_URL') . $size_charts_product->file;
+                        }
+
+                        // Group size chart details by name
+                        $groupedDetails = [];
+                        $size_chart_detail_values = SizeChartDetail::where('size_chart_id', $size_charts_product->size_chart_id)
+                            ->leftJoin('size_chart_detail_values', 'size_chart_detail_values.size_chart_detail_id', 'size_chart_details.id')
+                            ->select('size_chart_details.*', 'size_chart_detail_values.size_name', 'size_chart_detail_values.size_value')
+                            ->get();
+
+                        foreach ($size_chart_detail_values as $detail) {
+                            $name = $detail->name;
+                            $sizeName = $detail->size_name;
+                            $sizeValue = $detail->size_value;
+
+                            // Check if the name is not already in the grouped details array
+                            if (!array_key_exists($name, $groupedDetails)) {
+                                $groupedDetails[$name] = [];
+                            }
+
+                            // Add the size value to the grouped details under the respective size name
+                            $groupedDetails[$name][$sizeName] = $sizeValue;
+                        }
+
+                        // Assign grouped details back to size_charts_product
+                        $size_charts_product->detail_values = $groupedDetails;
+                        $productDetails->size_charts = $size_charts_product;
+                    } else {
+                    $size_charts_category = SizeChartAssign::where('size_chart_assigns.category_id', $productDetails->category_id)
+                                                        ->leftJoin('size_charts', 'size_charts.id', 'size_chart_assigns.size_chart_id')
+                                                        ->select(
+                                                            'size_chart_assigns.*',
+                                                            'size_charts.name',
+                                                            'size_charts.file',
+                                                            'size_charts.description',
+                                                        )
+                                                        ->first();
+                    if(!empty($size_charts_category)) {
+                        if(!empty($size_charts_category->file)){
+                            $size_charts_category->file = Config('constant.SIZECHART_IMAGE_URL').$size_charts_category->file;
+                        }
+                        $size_chart_detail_values = SizeChartDetail::where('size_chart_id', $size_charts_category->size_chart_id)
+                                                                    ->leftJoin('size_chart_detail_values', 'size_chart_detail_values.size_chart_detail_id', 'size_chart_details.id')
+                                                                    ->select('size_chart_details.*','size_chart_detail_values.size_name','size_chart_detail_values.size_value')
+                                                                    ->get();
+                        $size_charts_category->detail_values = $size_chart_detail_values;
+                        $productDetails->size_charts = $size_charts_category;
+                    } else {
+                        // If no size chart data is available for the category as well, set size_charts to null
+                        $productDetails->size_charts = null;
+                    }
+                }
+
+                $products_on_detail = new Product;
+                $productDetails->moreProducts = $products_on_detail->getAllCategoryProductsOnDetailPage($productDetails->category_id);
+                // echo "<pre>"; print_r($productDetails->size_charts); die;
+
 
             }else{
                 return redirect()->back()->with(['error' => 'Invalid Request']);

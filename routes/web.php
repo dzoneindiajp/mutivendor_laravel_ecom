@@ -25,6 +25,7 @@ use App\Http\Controllers\Admin\ProductValuesController;
 
 
 
+Route::post('/set-currency', [App\Http\Controllers\Front\HomeController::class, 'setCurrency'])->name('set-currency');
 
 // Route::domain('admin.jaipurjewelleryhouse.com')->name('admin-')->group(function () {
 Route::prefix('admin')->name('admin-')->group(function () {
@@ -126,7 +127,7 @@ Route::prefix('admin')->name('admin-')->group(function () {
        Route::get('child-category/delete/{endesid?}', [App\Http\Controllers\Admin\ChildCategoryController::class, 'destroy'])->name('child-category.delete');
        /* ChildCategory routes */
 
-       /** shipping companies routes **/
+       /** plans routes **/
        Route::match(['get', 'post'], '/plans', [App\Http\Controllers\Admin\PlansController::class, 'index'])->name('plans.index');
        Route::match(['get', 'post'], '/plans/create', [App\Http\Controllers\Admin\PlansController::class, 'create'])->name('plans.create');
        Route::match(['get', 'post'], '/plans/save', [App\Http\Controllers\Admin\PlansController::class, 'store'])->name('plans.store');
@@ -135,7 +136,7 @@ Route::prefix('admin')->name('admin-')->group(function () {
        Route::get('plans/show/{enuserid}', [App\Http\Controllers\Admin\PlansController::class, 'show'])->name('plans.show');
        Route::get('plans/update-status/{id}/{status}', [App\Http\Controllers\Admin\PlansController::class, 'changeStatus'])->name('plans.status');
        Route::get('plans/destroy/{endepid?}', [App\Http\Controllers\Admin\PlansController::class, 'destroy'])->name('plans.delete');
-      /* shipping companies routes */
+      /* plans routes */
 
        /** shipping companies routes **/
        Route::match(['get', 'post'], '/shipping-companies', [App\Http\Controllers\Admin\ShippingCompanyController::class, 'index'])->name('shipping-companies.index');
@@ -163,6 +164,26 @@ Route::prefix('admin')->name('admin-')->group(function () {
         Route::get('shipping-costs/update-status/{id}/{status}', [App\Http\Controllers\Admin\ShippingCostsController::class, 'changeStatus'])->name('shipping-costs.status');
         Route::get('shipping-costs/delete/{endesid?}', [App\Http\Controllers\Admin\ShippingCostsController::class, 'delete'])->name('shipping-costs.delete');
         /* ShippingCosts routes */
+
+
+        /** size-charts routes **/
+       Route::match(['get', 'post'], '/size-charts', [App\Http\Controllers\Admin\SizeChartController::class, 'index'])->name('size-charts.index');
+       Route::match(['get', 'post'], '/size-charts/create', [App\Http\Controllers\Admin\SizeChartController::class, 'create'])->name('size-charts.create');
+       Route::match(['get', 'post'], '/size-charts/save', [App\Http\Controllers\Admin\SizeChartController::class, 'store'])->name('size-charts.store');
+       Route::match(['get', 'post'], '/size-charts/edit/{enuserid}', [App\Http\Controllers\Admin\SizeChartController::class, 'edit'])->name('size-charts.edit');
+       Route::match(['get', 'post'], '/size-charts/update/{enuserid}', [App\Http\Controllers\Admin\SizeChartController::class, 'update'])->name('size-charts.update');
+       Route::get('size-charts/show/{enuserid}', [App\Http\Controllers\Admin\SizeChartController::class, 'show'])->name('size-charts.show');
+       Route::get('size-charts/update-status/{id}/{status}', [App\Http\Controllers\Admin\SizeChartController::class, 'changeStatus'])->name('size-charts.status');
+       Route::get('size-charts/destroy/{endepid?}', [App\Http\Controllers\Admin\SizeChartController::class, 'destroy'])->name('size-charts.delete');
+      /* size-charts routes */
+
+       /**  size chart details routes **/
+       Route::match(['get', 'post'], '/size-chart-details/{endesid?}', [App\Http\Controllers\Admin\SizeChartDetailController::class, 'index'])->name('size-chart-details.index');
+       Route::match(['get', 'post'], 'size-chart-details/add/{endesid?}', [App\Http\Controllers\Admin\SizeChartDetailController::class, 'add'])->name('size-chart-details.add');
+       Route::match(['get', 'post'], 'size-chart-details/edit/{endesid?}', [App\Http\Controllers\Admin\SizeChartDetailController::class, 'update'])->name('size-chart-details.edit');
+       Route::get('size-chart-details/update-status/{id}/{status}', [App\Http\Controllers\Admin\SizeChartDetailController::class, 'changeStatus'])->name('size-chart-details.status');
+       Route::get('size-chart-details/delete/{endesid?}', [App\Http\Controllers\Admin\SizeChartDetailController::class, 'delete'])->name('size-chart-details.delete');
+       /* size chart details routes */
 
 
         /* Referral History routes */

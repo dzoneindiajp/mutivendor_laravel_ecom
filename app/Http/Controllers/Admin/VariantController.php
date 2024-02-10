@@ -16,7 +16,7 @@ class VariantController extends Controller
         View()->share('model', $this->model);
         View()->share('listRouteName', $this->listRouteName);
         $this->request = $request;
-        
+
     }
     public function index(Request $request){
 
@@ -24,7 +24,7 @@ class VariantController extends Controller
         $sortBy = $request->input('sortBy') ? $request->input('sortBy') : 'variants.created_at';
         $order = $request->input('order') ? $request->input('order') : 'desc';
         $offset = !empty($request->input('offset')) ? $request->input('offset') : 0 ;
-        $limit =  !empty($request->input('limit')) ? $request->input('limit') : Config("Reading.records_per_page"); 
+        $limit =  !empty($request->input('limit')) ? $request->input('limit') : Config("Reading.records_per_page");
 
         if ($request->all()) {
             $searchData            =    $request->all();
@@ -61,7 +61,7 @@ class VariantController extends Controller
                     if ($fieldName == "is_active") {
                         $DB->where("variants.is_active", $fieldValue);
                     }
-                   
+
                 }
             }
         }
@@ -73,7 +73,7 @@ class VariantController extends Controller
 
             return  View("admin.$this->model.load_more_data", compact('results','totalResults'));
         }else{
-            
+
             return  View("admin.$this->model.index", compact('results','totalResults'));
         }
     }
@@ -126,7 +126,7 @@ class VariantController extends Controller
                     Session()->flash('flash_notice', 'Something Went Wrong');
                     return Redirect::route('admin-variants.index');
                 }
-               
+
             }
         }
     }
@@ -157,12 +157,12 @@ class VariantController extends Controller
                     array(
 
                         'name' => 'required',
-                       
+
                     ),
                     array(
 
                         "name.required" => trans("The name field is required."),
-                        
+
                     )
                 );
                 if ($validator->fails()) {
@@ -171,7 +171,7 @@ class VariantController extends Controller
                     DB::beginTransaction();
                     $obj                                = $model;
                     $obj->name                          = $request->input('name');
-                  
+
                     $obj->save();
                     $lastId = $obj->id;
                     if(!empty($lastId)){
@@ -198,7 +198,7 @@ class VariantController extends Controller
                         Session()->flash('flash_notice', 'Something Went Wrong');
                         return Redirect::route('admin-variants.index');
                     }
-                   
+
                 }
             }
         }

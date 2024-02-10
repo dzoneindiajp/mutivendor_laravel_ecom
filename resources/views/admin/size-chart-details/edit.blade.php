@@ -3,12 +3,7 @@
 @push('styles')
 <link href="{{ asset('assets/plugin/tagify/tagify.css') }}" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}">
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css"/>
-
-<!-- Include Pickr JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
-
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 @endpush
 @section('content')
 @include('admin.layout.response_message')
@@ -19,7 +14,9 @@
         <nav>
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('admin-dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Create Variant</li>
+                <li class="breadcrumb-item"><a href="{{  route('admin-size-charts.index')}}">Size Chart</a></li>
+                <li class="breadcrumb-item"><a href="{{  route('admin-size-chart-details.index', base64_encode($SizeChartDetail->size_chart_id))}}">Size Chart Detail</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Edit Size Chart Detail</li>
             </ol>
         </nav>
     </div>
@@ -28,13 +25,13 @@
 
 <div class="row">
     <div class="col-xl-12">
-        <form action="{{route('admin-'.$model.'.store')}}" method="post" id="variantForm" autocomplete="off"
+        <form action="{{route('admin-'.$model.'.edit',base64_encode($SizeChartDetail->id))}}" method="post" id="shippingAreaForm"
             enctype="multipart/form-data">
             @csrf
             <div class="card custom-card">
                 <div class="card-header">
                     <div class="card-title">
-                        Create Variant
+                        Edit Size Chart Detail
                     </div>
                 </div>
                 <div class="card-body">
@@ -44,19 +41,16 @@
                                 <div class="mb-3">
                                     <label for="name" class="form-label"><span class="text-danger">* </span>Name</label>
                                     <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                        id="name" name="name" placeholder="Enter Name"
-                                        value="{{ $recordDetails->name ?? '' }}">
+                                        id="name" name="name" placeholder="Enter Name" value = "{{ $SizeChartDetail->name }}">
                                     @if ($errors->has('name'))
-                                    <div class=" invalid-feedback">
+                                    <div class="invalid-feedback">
                                         {{ $errors->first('name') }}
                                     </div>
                                     @endif
                                 </div>
                             </div>
                         </div>
-
                     </div>
-
                 </div>
             </div>
 
@@ -64,66 +58,66 @@
 
                 <div class="card-header">
                     <div class="card-title">
-                        Variant Values
+                        Size Chart Detail Values
                     </div>
                 </div>
                 <div class="card-body">
-                    @if(!empty(($variantValuesData)))
+                    @if(!empty(($sizeChartDetailValue)))
                     <?php $iterationCount = 0; ?>
                     <div id="kt_repeater_1" class="ml-7">
                         <div class="form-group row" id="kt_repeater_1">
                             <div data-repeater-list="dataArr" class="col-lg-12">
-                                @foreach($variantValuesData as $dataKey => $dataVal)
-                                @if(!empty($dataVal['name']))
+                                @foreach($sizeChartDetailValue as $dataKey => $dataVal)
+
                                 <div data-repeater-item class="form-group row align-items-center mb-0">
-                                    <div class="col-md-5 mb-3">
+                                    <div class="col-xl-4 mb-3">
                                         <div class="form-group">
-                                            <label for="name">Name</label><span class="text-danger">
+                                            <label for="size_name">Size Name</label><span class="text-danger">
                                                  </span>
-                                            <input type="text" name="name"
-                                                class="form-control form-control-solid form-control-lg  @error('name') is-invalid @enderror"
-                                                value="{{!empty($dataVal['name']) ? $dataVal['name'] : ''}}">
+                                            <input type="text" name="size_name"
+                                                class="form-control form-control-solid form-control-lg  @error('size_name') is-invalid @enderror"
+                                                value="{{!empty($dataVal['size_name']) ? $dataVal['size_name'] : ''}}">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4 mb-3">
+                                        <div class="form-group">
+                                            <label for="size_value">Size Value(CM)</label><span class="text-danger">
+                                                 </span>
+                                            <input type="text" name="size_value"
+                                                class="form-control form-control-solid form-control-lg  @error('size_value') is-invalid @enderror"
+                                                value="{{!empty($dataVal['size_value']) ? $dataVal['size_value'] : ''}}">
 
                                         </div>
                                     </div>
 
-                                    <div class="col-md-3 mb-3 colorPickerIn" style="display:none ">
-                                        <div class="form-group">
-                                            <label for="color">Color</label><span class="text-danger">
-                                                 </span>
 
-                                            <input type="text" name="color_code"
-                                                class="form-control form-control-color border-0 @error('color_code') is-invalid @enderror" value="{{!empty($dataVal['color_code']) ? $dataVal['color_code'] : ''}}">
-                                                <input type="hidden" name="color_code_hidden" class="colorCodeInputHidden" value="{{!empty($dataVal['color_code']) ? $dataVal['color_code'] : '#000000'}}">
-
-                                        </div>
-                                    </div>
 
                                     <div class="col-md-2">
                                         @if($iterationCount == 0)
                                         <a href="javascript:;" data-repeater-create=""
-                                            class="btn btn-teal-primary btn-border-down">
-                                            <i class="la la-plus"></i>Add More Variant Value
+                                            class="btn btn-sm font-weight-bolder btn btn-primary-light btn-border-down">
+                                            <i class="la la-plus"></i>Add More Value
                                         </a>
                                         <a href="javascript:;" data-repeater-delete=""
-                                            class="btn btn-sm font-weight-bolder btn-light-danger"
+                                            class="btn btn-sm font-weight-bolder btn btn-danger-light btn-border-down"
                                             style="display:none;">
-                                            <i class="la la-trash-o"></i>Delete Variant Value
+                                            <i class="la la-trash-o"></i>Delete Value
                                         </a>
                                         @else
                                         <a href="javascript:;" data-repeater-create=""
-                                            class="btn btn-teal-primary btn-border-down"
+                                            class="btn btn-sm font-weight-bolder btn btn-primary-light btn-border-down"
                                             style="display:none;">
-                                            <i class="la la-plus"></i>Add More Variant Value
+                                            <i class="la la-plus"></i>Add More Value
                                         </a>
                                         <a href="javascript:;" data-repeater-delete=""
-                                            class="btn btn-sm font-weight-bolder btn-light-danger">
-                                            <i class="la la-trash-o"></i>Delete Variant Value
+                                            class="btn btn-sm font-weight-bolder btn btn-danger-light btn-border-down">
+                                            <i class="la la-trash-o"></i>Delete Value
                                         </a>
                                         @endif
                                     </div>
                                 </div>
-                                @endif
+
 
 
                                 <?php $iterationCount++; ?>
@@ -138,38 +132,36 @@
 
                             <div data-repeater-list="dataArr" class="col-lg-12">
                                 <div data-repeater-item class="form-group row align-items-center mb-0">
-                                    <div class="col-md-5 mb-3">
+                                    <div class="col-xl-4 mb-3">
                                         <div class="form-group">
-                                            <label for="name">Name</label><span class="text-danger">
+                                            <label for="size_name">Size Name</label><span class="text-danger">
                                                  </span>
-                                            <input type="text" name="name"
-                                                class="form-control form-control-solid form-control-lg variant-value @error('name') is-invalid @enderror"
+                                            <input type="text" name="size_name"
+                                                class="form-control form-control-solid form-control-lg variant-value @error('size_name') is-invalid @enderror"
+                                                value="">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4 mb-3">
+                                        <div class="form-group">
+                                            <label for="size_value">Size Value(CM)</label><span class="text-danger">
+                                                 </span>
+                                            <input type="text" name="size_value"
+                                                class="form-control form-control-solid form-control-lg variant-value @error('size_value') is-invalid @enderror"
                                                 value="">
 
                                         </div>
                                     </div>
 
-                                    <div class="col-md-3 mb-3 colorPickerIn"  style="display: none;">
-                                        <div class="form-group">
-                                            <label for="color">Color</label><span class="text-danger">
-                                                 </span>
-                                            <input type="text" name="color_code"
-                                                class="form-control form-control-color border-0 @error('color_code') is-invalid @enderror" value="">
-                                            <input type="hidden" name="color_code_hidden" class="colorCodeInputHidden" value="#000000" >
-                                        </div>
-                                    </div>
-
-
-
                                     <div class="col-md-2">
                                         <a href="javascript:;" data-repeater-create=""
                                             class="btn btn-sm font-weight-bolder btn btn-primary-light btn-border-down">
-                                            <i class="la la-plus"></i>Add More Variant Value
+                                            <i class="la la-plus"></i>Add More Value
                                         </a>
                                         <a href="javascript:;" data-repeater-delete=""
                                             class="btn btn-sm font-weight-bolder btn btn-danger-light btn-border-down"
                                             style="display:none;">
-                                            <i class="la la-trash-o"></i>Delete Variant Value
+                                            <i class="la la-trash-o"></i>Delete Value
                                         </a>
                                     </div>
                                 </div>
@@ -180,11 +172,8 @@
                     </div>
                     @endif
                 </div>
-
-
-
-
             </div>
+
             <div class="px-4 py-3 border-top border-block-start-dashed d-sm-flex justify-content-end">
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
@@ -193,50 +182,17 @@
 </div>
 
 
-
-
-
-
 @endsection
-
 @push('scripts')
+<!-- Select2 Cdn -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="{{ asset('assets/plugin/jquery-validation/jquery.validate.min.js') }}"></script>
-<script src="{{ asset('assets/plugin/tagify/tagify.min.js') }}"></script>
 <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+<!-- Internal Select-2.js -->
+<script src="{{ asset('assets/js/select2.js') }}"></script>
 <script src="{{ asset('assets/js/sweet-alerts.js') }}"></script>
+<script src="{{ asset('assets/js/form-validation.js') }}"></script>
+<script src="{{ asset('assets/plugin/tagify/tagify.min.js') }}"></script>
 <script src="{{ asset('assets/js/repeater.js')}}"></script>
-<script src="{{ asset('assets/js/custom/variants.js')}}"></script>
-<!-- <script src="{{ asset('assets/js/form-validation.js') }}"></script> -->
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#name').on('input', function() {
-            var name = $(this).val().toLowerCase();
-
-            // Check if the name contains "color" or "Color"
-            if (name.toString() === 'color') {
-                $('.colorPickerIn').show();
-            } else {
-                $('.colorPickerIn').hide();
-            }
-        });
-
-        // // Event listener for the color picker
-        // $(document).on('change', 'input[name="color_code"]', function() {
-        //     var selectedColor = $(this).val();
-
-        //     // Find the corresponding "Name" input field within the same block
-        //     var nameInput = $(this).closest('.form-group').find('.variant-value');
-
-        //     // Set the value of the "Name" field to the selected color
-        //     nameInput.val(selectedColor);
-
-        //     // Check if the value was updated
-        //     alert(nameInput.val());
-        // });
-
-    });
-</script>
-
-
+<script src="{{ asset('assets/js/custom/sizecharts.js')}}"></script>
 @endpush
