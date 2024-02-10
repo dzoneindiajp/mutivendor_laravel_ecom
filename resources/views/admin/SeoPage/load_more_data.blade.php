@@ -5,7 +5,9 @@
     <td>{{ $result->title ?? "N/A" }}</td>
     <td>{{ $result->page_id ?? "N/A" }}</td>
     <td>{{ $result->page_name ?? "N/A" }}</td>
-    <td>{{ $result->meta_description ?? "N/A" }}</td>
+    <td>
+        {!! strip_tags(Str::limit($result->meta_description, 30)) !!}
+    </td>
     <td>{{ $result->meta_keywords ?? "N/A" }}</td>
 
     <td>{{ date("Y-m-d" ,strtotime($result->created_at)) }}</td>

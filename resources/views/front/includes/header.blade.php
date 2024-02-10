@@ -7,12 +7,16 @@
     </div>
 </div>
 <div class="select-language">
-    <select class="form-control">
-        <option>INR</option>
-        <option>USD</option>
-        <option>EUR</option>
-    </select>
+    <form id="currency-form" method="POST" action="{{route('set-currency')}}">
+        @csrf
+        <select id="currency-selector" class="form-control" name="currency">
+            <option value="INR" {{ session('currency') === 'INR' ? 'selected' : '' }}>INR</option>
+            <option value="USD" {{ session('currency') === 'USD' ? 'selected' : '' }}>USD</option>
+            <option value="EUR" {{ session('currency') === 'EUR' ? 'selected' : '' }}>EUR</option>
+        </select>
+    </form>
 </div>
+
 <!-- header area start -->
 <header>
     <!-- main menu area start -->
@@ -125,7 +129,7 @@
                                 <p>Search</p>
                             </button>
                         </div>
-                        
+
                         @if(auth()->guard('customer')->check())
                         <div class="settings-top">
                             <div class="settings-btn">
@@ -169,7 +173,7 @@
                                 </svg>
                                 <p >Login</p>
                             </div>
-                            
+
                         </div>
                         @endif
                         @php
@@ -242,4 +246,13 @@
     var isLoggedIn = "{{auth()->guard('customer')->check() ? 'yes' : 'no'}}";
 </script>
 <script src="{{ asset('assets/js/custom/header.js') }}"></script>
+<script>
+    $(document).ready(function() {
+        // Attach change event handler to the select element
+        $('#currency-selector').change(function() {
+            $('#currency-form').submit();
+        });
+    });
+</script>
+
 @endpush

@@ -78,6 +78,42 @@ class Product extends Model
     }
 
 
+    public function getAllCategoryProductsOnDetailPage($categoryId = null,$subCategoryId = null,$childCategory = null)
+    {
+            $DB = ProductVariantCombination::leftJoin('products','products.id','product_variant_combinations.product_id')->leftJoin('categories', 'products.category_id', '=', 'categories.id');
+
+            if(!empty($categoryId)){
+                $DB->where('products.category_id',$categoryId);
+            }
+            if(!empty($subCategoryId)){
+                $DB->where('products.sub_category_id',$subCategoryId);
+            }
+            if(!empty($childCategory)){
+                $DB->where('products.child_category_id',$childCategory);
+            }
+            $limit = 7;
+            $results = $DB->where('products.is_active', 1)->where('products.is_deleted', 0)->select('product_variant_combinations.*','products.name','products.category_id','products.sub_category_id','products.child_category_id','categories.name as category_name', 'products.is_featured',DB::raw('(SELECT name from variant_values WHERE id = product_variant_combinations.variant1_value_id ) as variant_value1_name'),DB::raw('(SELECT name from variant_values WHERE id = product_variant_combinations.variant2_value_id ) as variant_value2_name'))->groupBy('product_variant_combinations.id')->limit($limit)->get();
+            if($results->isNotEmpty()){
+                foreach($results as $result){
+                    $result->productImages = ProductVariantCombinationImage::where('product_variant_combination_images.product_variant_combination_id',$result->id)->leftJoin('product_images','product_images.id','product_variant_combination_images.product_image_id')->limit(2)->pluck('product_images.image')->toArray();
+                    $result->isProductAddedIntoCart = isProductAddedInCart($result->id) ? 1 : 0;
+                    $result->isProductAddedIntoWishlist = isProductAddedInWishlist($result->id) ? 1 : 0;
+                    if(!empty($result->productImages)){
+                        $tempProductImages = [];
+
+                        foreach ($result->productImages as $productImageKey => $productImage) {
+                            $productImage = (!empty($productImage)) ? Config('constant.PRODUCT_IMAGE_URL') . $productImage : Config('constant.IMAGE_URL') . "noimage.png";
+                            $tempProductImages[$productImageKey] = $productImage;
+                        }
+
+                        $result->productImages = $tempProductImages;
+                    }
+                }
+            }
+            return $results;
+    }
+
+
     public function getAllHomeSubCatProducts($subCategoryId) {
 
         // try {

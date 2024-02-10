@@ -12,6 +12,10 @@ return [
 	'USER_IMAGE_ROOT_PATH'                       => 'public/uploads/users/',
 	'USER_IMAGE_URL'                       => url('/').'/public/uploads/users/',
 
+	'SIZECHART_IMAGE_PATH'                       => $WEBSITE_URL.'public/uploads/size_charts/',
+	'SIZECHART_IMAGE_ROOT_PATH'                       => 'public/uploads/size_charts/',
+	'SIZECHART_IMAGE_URL'                       => url('/').'/public/uploads/size_charts/',
+
 	'STAFF_IMAGE_PATH'                       => $WEBSITE_URL.'public/uploads/staffs/',
 	'STAFF_IMAGE_ROOT_PATH'                       => 'public/uploads/staffs/',
 	'STAFF_IMAGE_URL'                       => url('/').'/public/uploads/staffs/',
@@ -39,6 +43,10 @@ return [
 	'PRODUCT_IMAGE_PATH'                       => $WEBSITE_URL.'public/uploads/products/',
 	'PRODUCT_IMAGE_ROOT_PATH'                       => 'public/uploads/products/',
 	'PRODUCT_IMAGE_URL'                       => url('/').'/public/uploads/products/',
+
+	'TESTIMONIAL_IMAGE_PATH'                       => $WEBSITE_URL.'public/uploads/testimonials/',
+	'TESTIMONIAL_IMAGE_ROOT_PATH'                       => 'public/uploads/testimonials/',
+	'TESTIMONIAL_IMAGE_URL'                       => url('/').'/public/uploads/testimonials/',
 
 	'IMAGE_PATH'                       => $WEBSITE_URL.'img/',
 	'IMAGE_ROOT_PATH'                       => 'img/',

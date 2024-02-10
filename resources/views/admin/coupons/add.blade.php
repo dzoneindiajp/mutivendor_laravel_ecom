@@ -138,7 +138,7 @@
                                                 </div>
                                                 @endif
                                             </div>
-                                            <div class="col-xl-6">
+                                            {{-- <div class="col-xl-6">
                                                 <label for="max_amount" class="form-label"><span class="text-danger">
                                                     </span>Maximum Amount</label>
                                                 <input type="text"
@@ -151,7 +151,7 @@
                                                     {{ $errors->first('max_amount') }}
                                                 </div>
                                                 @endif
-                                            </div>
+                                            </div> --}}
 
                                             <div class="col-xl-12 mb-3">
                                                 <label for="description" class="form-label">Description</label>

@@ -39,4 +39,15 @@ class HomeController extends Controller
             return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);
         }
     }
+
+    public function setCurrency(Request $request)
+    {
+        // Retrieve the selected currency from the request
+        $selectedCurrency = $request->input('currency');
+        // Set the selected currency in the session
+        $request->session()->put('currency', $selectedCurrency);
+
+        // You can return a response if needed
+        return back();
+    }
 }

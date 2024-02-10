@@ -327,69 +327,147 @@ function isCouponValid($coupon_code = "") {
   return $response;
 }
 
-if(!function_exists('getDropPrices')){
-  function getDropPrices($id = "", $type = "", $with_sign = "") {
-    $response = array();
-    $product_variant_combinations = ProductVariantCombination::where('product_variant_combinations.id', $id ?? 0)
-      ->leftJoin('products', 'products.id', 'product_variant_combinations.product_id')
-      ->select('product_variant_combinations.*', 'products.category_id', 'products.sub_category_id', 'products.child_category_id')
-      ->first();
+// if(!function_exists('getDropPrices')){
+//   function getDropPrices($id = "", $type = "", $with_sign = "") {
+//     $response = array();
+//     $product_variant_combinations = ProductVariantCombination::where('product_variant_combinations.id', $id ?? 0)
+//       ->leftJoin('products', 'products.id', 'product_variant_combinations.product_id')
+//       ->select('product_variant_combinations.*', 'products.category_id', 'products.sub_category_id', 'products.child_category_id')
+//       ->first();
 
-    $price = ($type == "buying") ? $product_variant_combinations->buying_price : $product_variant_combinations->selling_price;
+//     $price = ($type == "buying") ? $product_variant_combinations->buying_price : $product_variant_combinations->selling_price;
+
+//     $now = Carbon::now();
+//     $endOfDay = $now->copy()->endOfDay();
+
+//     $drop_prices_data = PriceDrop::leftJoin('price_drop_assigns', 'price_drop_assigns.price_drop_id', 'price_drops.id')
+//                                 ->whereDate('price_drops.start_date', '<=', $now)
+//                                 ->whereDate('price_drops.end_date', '>=', $endOfDay)
+
+//                                 ->where(function ($query) use ($product_variant_combinations) {
+//                                     $query->where(function ($innerQuery) use ($product_variant_combinations) {
+//                                         $innerQuery->where(function ($query) use ($product_variant_combinations) {
+//                                                       $query->where('reference_id', $product_variant_combinations->category_id)
+//                                                           ->orWhere('reference_id', $product_variant_combinations->sub_category_id)
+//                                                           ->orWhere('reference_id', $product_variant_combinations->child_category_id);
+//                                                   })
+//                                                   ->where('price_drops.assign_type', 'category');
+//                                     })->orWhere(function ($innerQuery) use ($product_variant_combinations) {
+//                                         $innerQuery->where('reference_id', $product_variant_combinations->product_id)
+//                                                   ->where('price_drops.assign_type', 'product');
+//                                     });
+//                                 })
+//                                 ->select('price_drops.*', 'price_drop_assigns.reference_id')
+//                                 ->first();
+
+//     if($drop_prices_data->drop_type == "flat") {
+//       if($drop_prices_data->gain_type == "gain"){
+//         $price = $price + $drop_prices_data->amount;
+//       } else {
+//         $price = $price - $drop_prices_data->amount;
+//       }
+//     } else {
+//       $percentage_amount = ($price*$drop_prices_data->amount)/100;
+//       if($drop_prices_data->gain_type == "gain"){
+//         $price = $price + $percentage_amount;
+//       } else {
+//         $price = $price - $percentage_amount;
+//       }
+
+//     }
+
+//     if(Session::has('currency')) {
+//       $currency = Session::get('currency');
+//       $default_currency = Currency::where('is_default', 1)->where('is_active', 1)->first();
+
+//       if($currency != $default_currency->currency_code ) {
+//         $user_currency_data = Currency::where('currency_code', $currency)->where('is_active', 1)->first();
+
+//         $price = ($user_currency_data->amount*$price)/$default_currency->amount;
+
+//       }
+
+//       if ($with_sign == "yes") {
+//         $user_currency_data = Currency::where('currency_code', $currency)->where('is_active', 1)->first();
+//         $price = $user_currency_data->symbol.$price;
+//       }
+//     }
+
+//     return $price;
+//   }
+// }
+
+if (!function_exists('getDropPrices')) {
+  function getDropPrices($id = "", $hasProductData = [], $type = "", $with_sign = "")
+  {
+    $response = array();
+    if (!empty($hasProductData)) {
+      $product_variant_combinations = $hasProductData;
+    } else {
+      $product_variant_combinations = ProductVariantCombination::where('product_variant_combinations.id', $id ?? 0)
+        ->leftJoin('products', 'products.id', 'product_variant_combinations.product_id')
+        ->select('product_variant_combinations.*', 'products.category_id', 'products.sub_category_id', 'products.child_category_id')
+        ->first();
+    }
+
+    $price = ($type == "buying") ? $product_variant_combinations['buying_price'] : $product_variant_combinations['selling_price'];
+
 
     $now = Carbon::now();
     $endOfDay = $now->copy()->endOfDay();
 
     $drop_prices_data = PriceDrop::leftJoin('price_drop_assigns', 'price_drop_assigns.price_drop_id', 'price_drops.id')
-                                ->whereDate('price_drops.start_date', '<=', $now)
-                                ->whereDate('price_drops.end_date', '>=', $endOfDay)
+      ->whereDate('price_drops.start_date', '<=', $now)
+      ->whereDate('price_drops.end_date', '>=', $endOfDay)
 
-                                ->where(function ($query) use ($product_variant_combinations) {
-                                    $query->where(function ($innerQuery) use ($product_variant_combinations) {
-                                        $innerQuery->where(function ($query) use ($product_variant_combinations) {
-                                                      $query->where('reference_id', $product_variant_combinations->category_id)
-                                                          ->orWhere('reference_id', $product_variant_combinations->sub_category_id)
-                                                          ->orWhere('reference_id', $product_variant_combinations->child_category_id);
-                                                  })
-                                                  ->where('price_drops.assign_type', 'category');
-                                    })->orWhere(function ($innerQuery) use ($product_variant_combinations) {
-                                        $innerQuery->where('reference_id', $product_variant_combinations->product_id)
-                                                  ->where('price_drops.assign_type', 'product');
-                                    });
-                                })
-                                ->select('price_drops.*', 'price_drop_assigns.reference_id')
-                                ->first();
+      ->where(function ($query) use ($product_variant_combinations) {
+        $query->where(function ($innerQuery) use ($product_variant_combinations) {
+          $innerQuery->where(function ($query) use ($product_variant_combinations) {
+            $query->where('reference_id', $product_variant_combinations['category_id'])
+              ->orWhere('reference_id', $product_variant_combinations['sub_category_id'])
+              ->orWhere('reference_id', $product_variant_combinations['child_category_id']);
+          })
+            ->where('price_drops.assign_type', 'category');
+        })->orWhere(function ($innerQuery) use ($product_variant_combinations) {
+          $innerQuery->where('reference_id', $product_variant_combinations['product_id'])
+            ->where('price_drops.assign_type', 'product');
+        });
+      })
+      ->select('price_drops.*', 'price_drop_assigns.reference_id')
+      ->first();
+      if(!empty($drop_prices_data)){
 
-    if($drop_prices_data->drop_type == "flat") {
-      if($drop_prices_data->gain_type == "gain"){
-        $price = $price + $drop_prices_data->amount;
-      } else {
-        $price = $price - $drop_prices_data->amount;
+        if ($drop_prices_data->drop_type == "flat") {
+          if ($drop_prices_data->gain_type == "gain") {
+            $price = $price + $drop_prices_data->amount;
+          } else {
+            $price = $price - $drop_prices_data->amount;
+          }
+        } else {
+          $percentage_amount = ($price * $drop_prices_data->amount) / 100;
+          if ($drop_prices_data->gain_type == "gain") {
+            $price = $price + $percentage_amount;
+          } else {
+            $price = $price - $percentage_amount;
+          }
+
+        }
       }
-    } else {
-      $percentage_amount = ($price*$drop_prices_data->amount)/100;
-      if($drop_prices_data->gain_type == "gain"){
-        $price = $price + $percentage_amount;
-      } else {
-        $price = $price - $percentage_amount;
-      }
 
-    }
-
-    if(Session::has('currency')) {
+    if (Session::has('currency')) {
       $currency = Session::get('currency');
       $default_currency = Currency::where('is_default', 1)->where('is_active', 1)->first();
 
-      if($currency != $default_currency->currency_code ) {
-        $user_currency_data = Currency::where('currency_code', $currency)->where('is_active', 1)->first();
+      if ($currency != $default_currency->currency_code) {
+        $user_currency_amount = Currency::where('currency_code', $currency)->where('is_active', 1)->value('amount');
 
-        $price = ($user_currency_data->amount*$price)/$default_currency->amount;
+        $price = ($user_currency_amount * $price) / $default_currency->amount;
 
       }
 
       if ($with_sign == "yes") {
-        $user_currency_data = Currency::where('currency_code', $currency)->where('is_active', 1)->first();
-        $price = $user_currency_data->symbol.$price;
+        $userCurrencySymbol = Currency::where('currency_code', $currency)->where('is_active', 1)->value('symbol');
+        $price = ($userCurrencySymbol ?? '') . $price;
       }
     }
 
@@ -444,9 +522,9 @@ if(!function_exists('isProductAddedInWishlist'))
 {
   function isProductAddedInWishlist($productId){
     if(auth()->guard('customer')->check()){
-      
+
       $cartData = Wishlist::where('user_id',auth()->guard('customer')->user()->id)->select('product_id')->get()->toArray();
-      
+
       if(!empty($cartData)){
         foreach($cartData as $cartVal){
           if($productId == $cartVal['product_id']){
@@ -455,7 +533,7 @@ if(!function_exists('isProductAddedInWishlist'))
         }
       }
     }
-    
+
     return false;
   }
 }
