@@ -59,13 +59,13 @@
                                             <div class="card-body">
                                                 <div class="filter-check">
                                                     @foreach($categoriesData as $category)
-                                                    <label class="container categoriesCheck" onclick = "window.open('{{ 
-                                                        !empty($childCategorySlug) ? 
-                                                            route('front-shop.index', [$categorySlug, $subCategorySlug, $childCategorySlug]) : 
-                                                            (!empty($subCategorySlug) ? 
-                                                                route('front-shop.index', [$categorySlug, $subCategorySlug,$category->slug]) : 
-                                                                (!empty($categorySlug) ? 
-                                                                    route('front-shop.index', [$categorySlug,$category->slug]) : 
+                                                    <label class="container categoriesCheck" onclick = "window.open('{{
+                                                        !empty($childCategorySlug) ?
+                                                            route('front-shop.index', [$categorySlug, $subCategorySlug, $childCategorySlug]) :
+                                                            (!empty($subCategorySlug) ?
+                                                                route('front-shop.index', [$categorySlug, $subCategorySlug,$category->slug]) :
+                                                                (!empty($categorySlug) ?
+                                                                    route('front-shop.index', [$categorySlug,$category->slug]) :
                                                                     route('front-shop.index',$category->slug)
                                                                 )
                                                             )
@@ -73,10 +73,10 @@
                                                         {{$category->name ?? ''}}
                                                         <input type="checkbox">
                                                         <span class="checkmark"></span>
-                                                        
+
                                                     </label>
                                                     @endforeach
-                                                    
+
                                                 </div>
                                             </div>
                                         </div>
@@ -87,7 +87,7 @@
                         </div>
                     </div>
                     @endif
-                    <div class="col-xl-3 col-lg-4 hidden-xs">
+                    {{-- <div class="col-xl-3 col-lg-4 hidden-xs">
                         <div class="sidebar-wrapper mt-md-100 mt-sm-48 mobile-none">
                             <div class="sidebar-body">
                                 <div class="accordion" id="general-question2">
@@ -231,7 +231,7 @@
                             </div>
                             <!-- single sidebar end -->
                         </div>
-                    </div>
+                    </div> --}}
                     <!-- product view wrapper area start -->
                     <div class="col-xl-12 col-lg-12">
                         <div class="shop-product-wrapper">
@@ -310,5 +310,5 @@
             </div>
         </div>
     </div>
-    
+
 @endsection

@@ -176,7 +176,8 @@
 
 
                                         <div class="pricebox">
-                                            Offer Price &nbsp;&nbsp;<span class="regular-price"> {{config('Reading.default_currency').number_format($productDetails->selling_price,2)}} </span>&nbsp;&nbsp; <del>{{config('Reading.default_currency').number_format($productDetails->buying_price,2)}}</del>
+                                            Offer Price &nbsp;&nbsp;<span class="regular-price">
+                                                {{getDropPrices($productDetails->id,['category_id' => $productDetails->category_id, 'sub_category_id' => $productDetails->sub_category_id, 'child_category_id' => $productDetails->child_category_id,'selling_price' => $productDetails->selling_price,'product_id' => $productDetails->product_id],'selling','yes')}} </span>&nbsp;&nbsp; <del>{{getDropPrices($productDetails->id,['category_id' => $productDetails->category_id, 'sub_category_id' => $productDetails->sub_category_id, 'child_category_id' => $productDetails->child_category_id,'buying_price' => $productDetails->buying_price,'product_id' => $productDetails->product_id],'buying','yes')}}</del>
                                             <!-- <div class="toggle-button-cover">
                                                 <div class="button-cover">
                                                     <div class="button b2" id="button-10">

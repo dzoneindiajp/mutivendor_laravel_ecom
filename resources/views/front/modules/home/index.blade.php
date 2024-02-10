@@ -35,7 +35,9 @@
                         <div class="category-heading">
                             <div class="border-category">
                                 <!--<h5>Category</h5>-->
-                                <h2>{{ $all_category['name']}}</h2>
+                                <a href="{{route('front-shop.index', $all_category['slug'])}}">
+                                    <h2>{{ $all_category['name']}}</h2>
+                                </a>
                                 <a href="{{route('front-shop.index', $all_category['slug'])}}" class="home-btn btn" tabindex="0">
                                     Check more products &nbsp;&nbsp;&nbsp;
                                     <svg class="right-arrow" width="30" height="9" viewBox="0 0 30 9" xmlns="http://www.w3.org/2000/svg">
@@ -227,7 +229,9 @@
                                     <div class="product-description">
                                         <div class="price-box mt-10">
                                             <span
-                                                class="regular-price">{{config('Reading.default_currency').number_format($result->selling_price,2)}}</span>
+                                                class="regular-price">
+                                                {{getDropPrices($result->id,['category_id' => $result->category_id, 'sub_category_id' => $result->sub_category_id, 'child_category_id' => $result->child_category_id,'selling_price' => $result->selling_price,'product_id' => $result->product_id],'selling','yes')}}
+                                            </span>
                                             <span
                                                 class="old-price"><del>{{config('Reading.default_currency').number_format($result->buying_price,2)}}</del></span>
                                             <span style="float:right;">

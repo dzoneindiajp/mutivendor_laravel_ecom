@@ -53,10 +53,12 @@ class DashboardController extends Controller
             ->leftjoin('orders', 'orders.id', 'order_items.order_id')
             ->leftjoin('product_variant_combinations', 'product_variant_combinations.id', 'order_items.product_id')
             ->leftjoin('products', 'product_variant_combinations.product_id', 'products.id')
+            ->leftjoin('user_addresses', 'user_addresses.id', 'orders.address_id')
             ->where('orders.user_id', Auth::guard('customer')->user()->id)
-            ->select('order_items.*','orders.order_number','orders.currency_code','products.name')
-            ->get()
-            ->toArray();
+            ->select('order_items.*','orders.order_number','orders.currency_code','products.name', 'user_addresses.name', 'user_addresses.email', 'user_addresses.phone_number', 'user_addresses.country', 'user_addresses.address_line_1', 'user_addresses.address_line_2', 'user_addresses.postal_code', 'user_addresses.city', 'user_addresses.state', 'user_addresses.landmark')
+            ->get();
+            $active_orders_count = $active_orders->count();
+            $active_orders = $active_orders->toArray();
 
             if(!empty($active_orders)){
                 foreach($active_orders as &$active_order){
@@ -67,8 +69,50 @@ class DashboardController extends Controller
                     }
                 }
             }
+
+            $delivered_orders = OrderItem::where('status', 'delivered')
+            ->leftjoin('orders', 'orders.id', 'order_items.order_id')
+            ->leftjoin('product_variant_combinations', 'product_variant_combinations.id', 'order_items.product_id')
+            ->leftjoin('products', 'product_variant_combinations.product_id', 'products.id')
+            ->leftjoin('user_addresses', 'user_addresses.id', 'orders.address_id')
+            ->where('orders.user_id', Auth::guard('customer')->user()->id)
+            ->select('order_items.*','orders.order_number','orders.currency_code','products.name', 'user_addresses.name', 'user_addresses.email', 'user_addresses.phone_number', 'user_addresses.country', 'user_addresses.address_line_1', 'user_addresses.address_line_2', 'user_addresses.postal_code', 'user_addresses.city', 'user_addresses.state', 'user_addresses.landmark')
+            ->get();
+            $delivered_orders_count = $delivered_orders->count();
+            $delivered_orders = $delivered_orders->toArray();
+
+            if(!empty($delivered_orders)){
+                foreach($delivered_orders as &$delivered_order){
+                    $delivered_order['product_image'] = ProductVariantCombinationImage::where('product_variant_combination_images.product_variant_combination_id',$delivered_order['product_id'])->leftJoin('product_images','product_images.id','product_variant_combination_images.product_image_id')->select('product_images.image')->first();
+                    if(!empty($delivered_order['product_image'])){
+                        $productImage = (!empty($delivered_order['product_image'])) ? Config('constant.PRODUCT_IMAGE_URL') . $delivered_order['product_image']['image'] : Config('constant.IMAGE_URL') . "noimage.png";
+                        $delivered_order['product_image'] = $productImage;
+                    }
+                }
+            }
+
+            $cancelled_orders = OrderItem::where('status', 'cancelled')
+            ->leftjoin('orders', 'orders.id', 'order_items.order_id')
+            ->leftjoin('product_variant_combinations', 'product_variant_combinations.id', 'order_items.product_id')
+            ->leftjoin('products', 'product_variant_combinations.product_id', 'products.id')
+            ->leftjoin('user_addresses', 'user_addresses.id', 'orders.address_id')
+            ->where('orders.user_id', Auth::guard('customer')->user()->id)
+            ->select('order_items.*','orders.order_number','orders.currency_code','products.name', 'user_addresses.name', 'user_addresses.email', 'user_addresses.phone_number', 'user_addresses.country', 'user_addresses.address_line_1', 'user_addresses.address_line_2', 'user_addresses.postal_code', 'user_addresses.city', 'user_addresses.state', 'user_addresses.landmark')
+            ->get();
+            $cancelled_orders_count = $cancelled_orders->count();
+            $cancelled_orders = $cancelled_orders->toArray();
+
+            if(!empty($cancelled_orders)){
+                foreach($cancelled_orders as &$cancelled_order){
+                    $cancelled_order['product_image'] = ProductVariantCombinationImage::where('product_variant_combination_images.product_variant_combination_id',$cancelled_order['product_id'])->leftJoin('product_images','product_images.id','product_variant_combination_images.product_image_id')->select('product_images.image')->first();
+                    if(!empty($cancelled_order['product_image'])){
+                        $productImage = (!empty($cancelled_order['product_image'])) ? Config('constant.PRODUCT_IMAGE_URL') . $cancelled_order['product_image']['image'] : Config('constant.IMAGE_URL') . "noimage.png";
+                        $cancelled_order['product_image'] = $productImage;
+                    }
+                }
+            }
             // echo "<pre>"; print_r($active_orders); die;
-            return view('front.modules.dashboard.orders',compact('active_orders'));
+            return view('front.modules.dashboard.orders',compact('active_orders', 'delivered_orders', 'cancelled_orders', 'cancelled_orders_count', 'active_orders_count', 'delivered_orders_count'));
         // } catch (Exception $e) {
         //     Log::error($e);
         //     return redirect()->back()->with(['error' => 'Somethig went wrong', 'error_msg' => $e->getMessage()]);
