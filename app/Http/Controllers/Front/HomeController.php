@@ -34,6 +34,9 @@ class HomeController extends Controller
                 $sub_category->sub_cat_products = $sub_cat_products;
             }
 
+            $product  =  new Product;
+            $bottom_products = $product->getAllBottomProducts();
+
             $testimonials = new Testimonial;
             $all_testimonials = $testimonials->getActiveTestimonial();
             // echo "<pre>"; print_r($sub_category); die;

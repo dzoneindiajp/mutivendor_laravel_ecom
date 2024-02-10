@@ -90,13 +90,13 @@ class UsersController extends Controller
         $results = $DB->orderBy($sortBy, $order)->offset($offset)->limit($limit)->get();
         $totalResults = $DB->count();
 
-        if(!empty($results)) {
-            foreach($results as &$result) {
-                if(!empty($result->image)){
-                    $result->image = Config('constant.USER_IMAGE_URL').$result->image;
-                }
-            }
-        }
+        // if(!empty($results)) {
+        //     foreach($results as &$result) {
+        //         if(!empty($result->image)){
+        //             $result->image = Config('constant.USER_IMAGE_URL').$result->image;
+        //         }
+        //     }
+        // }
         if($request->ajax()){
 
             return  View("admin.$this->model.load_more_data", compact('results','totalResults'));
@@ -119,9 +119,9 @@ class UsersController extends Controller
             $user_id = base64_decode($enuserid);
             $userDetails = User::where('users.id',$user_id)->first();
 
-            if(!empty($userDetails->image)){
-                $userDetails->image = Config('constant.USER_IMAGE_URL').$userDetails->image;
-            }
+            // if(!empty($userDetails->image)){
+            //     $userDetails->image = Config('constant.USER_IMAGE_URL').$userDetails->image;
+            // }
 
             return View("admin.$this->model.edit", compact( 'userDetails'));
         }
@@ -461,9 +461,9 @@ class UsersController extends Controller
             $user_id = base64_decode($enuserid);
             $userDetails = User::where('users.id',$user_id)->first();
 
-            if(!empty($userDetails->image)){
-                $userDetails->image = Config('constant.USER_IMAGE_URL').$userDetails->image;
-            }
+            // if(!empty($userDetails->image)){
+            //     $userDetails->image = Config('constant.USER_IMAGE_URL').$userDetails->image;
+            // }
 
             $data = compact('user_id', 'userDetails');
 
