@@ -99,7 +99,6 @@ class TestimonialController extends Controller
             $user_id = base64_decode($enuserid);
             $userDetails = Testimonial::where('id',$user_id)->first();
 
-
             return View("admin.$this->model.edit", compact( 'userDetails'));
         }
     }
@@ -159,7 +158,7 @@ class TestimonialController extends Controller
     public function update(Request $request, $enuserid = null)
     {
 
-        $model = User::find($enuserid);
+        $model = Testimonial::find($enuserid);
         if (empty($model)) {
             return View("admin.$this->model.edit");
         } else {

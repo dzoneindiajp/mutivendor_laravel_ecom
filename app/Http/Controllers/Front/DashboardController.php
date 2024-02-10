@@ -18,6 +18,7 @@ use App\Models\UserAddress;
 use App\Models\Wishlist;
 use App\Models\ProductVariantCombination;
 use App\Models\ProductVariantCombinationImage;
+use App\Models\Order;
 use Illuminate\Validation\Rule;
 use Carbon\Carbon;
 class DashboardController extends Controller
@@ -45,12 +46,15 @@ class DashboardController extends Controller
     }
     public function orders(Request $request)
     {
-        try {
-            return view('front.modules.dashboard.orders');
-        } catch (Exception $e) {
-            Log::error($e);
-            return redirect()->back()->with(['error' => 'Somethig went wrong', 'error_msg' => $e->getMessage()]);
-        }
+        // try {
+            $active_orders = Order::whereNotIn('status', ['delivered', 'cancelled', 'returned'])->get();
+
+
+            return view('front.modules.dashboard.orders',compact('active_orders'));
+        // } catch (Exception $e) {
+        //     Log::error($e);
+        //     return redirect()->back()->with(['error' => 'Somethig went wrong', 'error_msg' => $e->getMessage()]);
+        // }
     }
     public function wishlist(Request $request)
     {
@@ -77,7 +81,7 @@ class DashboardController extends Controller
 
                     $cartVal['isProductAddedIntoCart'] = isProductAddedInCart($productDetails->id) ? 1 : 0;
                     $cartVal['isProductAddedIntoWishlist'] = isProductAddedInWishlist($productDetails->id) ? 1 : 0;
-                 
+
                 }
             }
             return view('front.modules.dashboard.wishlist',compact('wishlistData'));
@@ -110,7 +114,7 @@ class DashboardController extends Controller
                         "email.required" => trans("The email field is required"),
                         "email.email" => trans("The email field must be a valid email address"),
                         "email.unique" => trans("The email has already been taken"),
-                        
+
                     )
                 );
                 if ($validator->fails()) {
@@ -165,7 +169,7 @@ class DashboardController extends Controller
                 $response["http_code"] = 500;
                 return Response::json($response, 500);
             }
-       
+
     }
 
     public function changePassword(Request $request)
@@ -192,7 +196,7 @@ class DashboardController extends Controller
                         "new_password.min" => trans("The new password must be atleast 8 characters"),
                         "confirm_password.required" => trans("The confirm password field is required"),
                         "confirm_password.same" => trans("The confirm password should be same as new password")
-                        
+
                     )
                 );
                 if ($validator->fails()) {
@@ -215,7 +219,7 @@ class DashboardController extends Controller
                     }
                     DB::commit();
 
-                    
+
 
                     $response = array();
                     $response["status"] = "success";
@@ -233,7 +237,7 @@ class DashboardController extends Controller
                 $response["http_code"] = 500;
                 return Response::json($response, 500);
             }
-        
+
     }
 
     public function addAddress(Request $request)
@@ -275,7 +279,7 @@ class DashboardController extends Controller
                     $obj->is_primary = 1;
                    }
                    $obj->save();
-                  
+
                     $lastId = $obj->id;
                     if (empty($lastId)) {
                         DB::rollback();
@@ -304,7 +308,7 @@ class DashboardController extends Controller
                 $response["http_code"] = 500;
                 return Response::json($response, 500);
             }
-       
+
     }
 
     public function editAddress(Request $request,$addressId)
@@ -341,7 +345,7 @@ class DashboardController extends Controller
                    $obj->state = !empty($request->state) ? $request->state : NULL;
                    $obj->landmark = !empty($request->landmark) ? $request->landmark : NULL;
                    $obj->save();
-                  
+
                     $lastId = $obj->id;
                     if (empty($lastId)) {
                         DB::rollback();
@@ -370,20 +374,20 @@ class DashboardController extends Controller
                 $response["http_code"] = 500;
                 return Response::json($response, 500);
             }
-       
+
     }
 
     public function deleteAddress(Request $request,$addressId)
     {
         $checkIfAddressExists = UserAddress::where('id',$addressId)->first();
         if(!empty($checkIfAddressExists)){
-            
+
             UserAddress::where('id',$addressId)->delete();
             if($checkIfAddressExists->is_primary == 1){
                 $addressCount = UserAddress::where('user_id',$checkIfAddressExists->user_id)->count();
                 if($addressCount > 0){
 
-                    UserAddress::where('user_id',$checkIfAddressExists->user_id)->first()->update(['is_primary' => 1]); 
+                    UserAddress::where('user_id',$checkIfAddressExists->user_id)->first()->update(['is_primary' => 1]);
                 }
             }
             Session()->flash('flash_notice', 'Address deleted successfully');
@@ -392,23 +396,23 @@ class DashboardController extends Controller
             Session()->flash('error', 'Invalid Request');
             return Redirect::route('front-user.addresses');
         }
-       
+
     }
     public function makeAddressPrimary(Request $request,$addressId)
     {
         $checkIfAddressExists = UserAddress::where('id',$addressId)->first();
         if(!empty($checkIfAddressExists)){
-            
+
             UserAddress::where('user_id',$checkIfAddressExists->user_id)->update(['is_primary' => 0]);
             UserAddress::where('id',$addressId)->update(['is_primary' => 1]);
-            
+
             Session()->flash('flash_notice', 'Address status changed successfully');
             return Redirect::route('front-user.addresses');
         }else{
             Session()->flash('error', 'Invalid Request');
             return Redirect::route('front-user.addresses');
         }
-       
+
     }
 
 
