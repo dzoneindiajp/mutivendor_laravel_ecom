@@ -113,9 +113,8 @@ class ShopController extends Controller
                 }
             }
             if(!empty($request->product_id) && !empty($request->quantity) ){
-                $checkoutData = ['product_id' =>$request->product_id, 'quantity' => $request->quantity ];
-                session()->put('checkoutData',$checkoutData);
-                session()->put('checkoutFrom','detailPage');
+                $checkoutItemData = [['product_id' =>$request->product_id, 'quantity' => $request->quantity ]];
+                moveCartSessionDataToCheckoutSessionData($checkoutItemData,'detailPage');
                 return redirect()->route('front-user.checkout');
             }
             $productDetails = ProductVariantCombination::where('product_variant_combinations.slug',$productSlug)->leftJoin('products','products.id','product_variant_combinations.product_id')->leftJoin('categories', 'products.category_id', '=', 'categories.id')->select('product_variant_combinations.*','products.category_id','products.name','products.is_including_taxes','products.in_stock','categories.name as category_name',DB::raw('(SELECT name from variant_values WHERE id = product_variant_combinations.variant1_value_id ) as variant_value1_name'),DB::raw('(SELECT name from variant_values WHERE id = product_variant_combinations.variant2_value_id ) as variant_value2_name'))->groupBy('product_variant_combinations.id')->first();

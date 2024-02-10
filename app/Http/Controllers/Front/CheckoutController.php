@@ -11,23 +11,35 @@ use App\Models\Product;
 use App\Models\User;
 use App\Models\Cart;
 use App\Models\ProductVariantCombination;
+use App\Models\UserAddress;
+use App\Models\PaymentMethod;
 use App\Models\ProductVariantCombinationImage;
-use Session;
+use Session,Auth;
 class CheckoutController extends Controller
 {
 
     public function index(Request $request) {
-        try {
-            $checkoutData = getCheckoutData();
-            
-            if(count($checkoutData) == 0){
+        // try {
+            $userAddresses = UserAddress::where('user_id',Auth::guard('customer')->user()->id)->get();
+            $paymentMethods = PaymentMethod::get();
+            if(!empty($request->action) && $request->action == 'addressSelect'){
+                $addressData = UserAddress::where('id',$request->address_id ?? 0)->first();
+                if(!empty($addressData)){
+                    setDeliveryChargesIntoCheckoutSession($addressData->postal_code,$request->address_id);
+                }
+                // print_r(session()->get('checkoutData'));die;
+            }
+            $checkoutData = session()->has('checkoutData') ? session()->get('checkoutData') : [];
+            $checkoutItemData = getCheckoutItemData();
+            if(count($checkoutItemData) == 0){
                 return redirect()->route('front-cart.index');
             }
-            return view('front.modules.checkout.index',compact('checkoutData'));
-        } catch (Exception $e) {
-            Log::error($e);
-            return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);
-        }
+            // print_r($checkoutItemData);die;
+            return view('front.modules.checkout.index',compact('checkoutItemData','checkoutData','userAddresses','paymentMethods'));
+        // } catch (Exception $e) {
+        //     Log::error($e);
+        //     return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);
+        // }
     }
 
     

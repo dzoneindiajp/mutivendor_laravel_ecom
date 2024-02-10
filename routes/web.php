@@ -522,7 +522,9 @@ Route::name('front-')->group(function () {
       Route::match(['get', 'post'],'/add-to-wishlist', [App\Http\Controllers\Front\CartController::class, 'addToWishlist'])->name('user.addToWishlist');
       Route::match(['get', 'post'],'/remove-from-wishlist', [App\Http\Controllers\Front\CartController::class, 'removeFromWishlist'])->name('user.removeFromWishlist');
 
-      Route::get('/checkout', [App\Http\Controllers\Front\checkoutController::class, 'index'])->name('user.checkout');
+      Route::get('/checkout', [App\Http\Controllers\Front\CheckoutController::class, 'index'])->name('user.checkout');
+
+      Route::post('purchase', [App\Http\Controllers\Front\PaymentController::class, 'processPayment'])->name('user.processPayment');
 
   });
 
