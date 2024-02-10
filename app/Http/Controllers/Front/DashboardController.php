@@ -19,6 +19,7 @@ use App\Models\Wishlist;
 use App\Models\ProductVariantCombination;
 use App\Models\ProductVariantCombinationImage;
 use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Validation\Rule;
 use Carbon\Carbon;
 class DashboardController extends Controller
@@ -26,7 +27,7 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         try {
-            
+
             $user = User::where('id',Auth::guard('customer')->user()->id)->first();
             return view('front.modules.dashboard.index',compact('user'));
         } catch (Exception $e) {
@@ -48,9 +49,25 @@ class DashboardController extends Controller
     public function orders(Request $request)
     {
         // try {
-            $active_orders = Order::whereNotIn('status', ['delivered', 'cancelled', 'returned'])->get();
+            $active_orders = OrderItem::whereNotIn('status', ['delivered', 'cancelled', 'returned'])
+            ->leftjoin('orders', 'orders.id', 'order_items.order_id')
+            ->leftjoin('product_variant_combinations', 'product_variant_combinations.id', 'order_items.product_id')
+            ->leftjoin('products', 'product_variant_combinations.product_id', 'products.id')
+            ->where('orders.user_id', Auth::guard('customer')->user()->id)
+            ->select('order_items.*','orders.order_number','orders.currency_code','products.name')
+            ->get()
+            ->toArray();
 
-
+            if(!empty($active_orders)){
+                foreach($active_orders as &$active_order){
+                    $active_order['product_image'] = ProductVariantCombinationImage::where('product_variant_combination_images.product_variant_combination_id',$active_order['product_id'])->leftJoin('product_images','product_images.id','product_variant_combination_images.product_image_id')->select('product_images.image')->first();
+                    if(!empty($active_order['product_image'])){
+                        $productImage = (!empty($active_order['product_image'])) ? Config('constant.PRODUCT_IMAGE_URL') . $active_order['product_image']['image'] : Config('constant.IMAGE_URL') . "noimage.png";
+                        $active_order['product_image'] = $productImage;
+                    }
+                }
+            }
+            // echo "<pre>"; print_r($active_orders); die;
             return view('front.modules.dashboard.orders',compact('active_orders'));
         // } catch (Exception $e) {
         //     Log::error($e);
