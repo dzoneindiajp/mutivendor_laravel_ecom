@@ -1,0 +1,237 @@
+<?php
+
+namespace App\Http\Controllers\Front;
+
+use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Product;
+use App\Models\User;
+use App\Models\Cart;
+use App\Models\ProductVariantCombination;
+use App\Models\ProductVariantCombinationImage;
+use App\Models\PaymentGateway;
+use Session;
+use Ixudra\Curl\Facades\Curl;
+use Srmklive\PayPal\Services\PayPal as PayPalClient;
+class PaymentController extends Controller
+{
+    public function processPayment(Request $request){
+        $inputData = $request->all();
+        if(!empty($inputData['payment_method']) && $inputData['payment_method'] == 'cod'){
+            
+        }else{
+            $defaultPaymentGateway = PaymentGateway::where('is_active',1)->where('is_deleted',0)->first();
+            if(strtolower($defaultPaymentGateway) == 'paypal'){
+                $this->paypalProcessPayment($inputData);
+            }else if(strtolower($defaultPaymentGateway) == 'ccavenue'){
+                $this->ccProcessPayment($inputData);
+            }else if(strtolower($defaultPaymentGateway) == 'phonepe'){
+                $this->phonepeProcessPayment($inputData);
+            }else{
+                Log::error('No Default Payment Gateway');
+                return redirect()->back()->with(['error' => 'Invalid Request']);
+            }
+        }
+
+    }
+    public function ccProcessPayment($data = [])
+    {
+        $input = [];
+        $input['amount'] = $data['total'];
+        $input['order_id'] = "123XSDDD456";
+        $input['currency'] = getCurrentCurrency();
+        $input['redirect_url'] = route('front-user.cc-response');
+        $input['cancel_url'] = route('front-user.cc-response');
+        $input['language'] = "EN";
+        $input['merchant_id'] = env('CC_MERCHANT_ID');
+
+        $merchant_data = "";
+
+        $working_key = env('CC_WORKING_KEY'); 
+        $access_code = env('CC_ACCESS_CODE'); 
+
+        // $input['address_id'] = "some-custom-inputs"; // optional parameter
+        // $input['sub_total'] = "some-custom-inputs"; // optional parameter
+        // $input['coupon_name'] = "some-custom-inputs"; // optional parameter
+        // $input['coupon_discount'] = "some-custom-inputs"; // optional parameter
+        // $input['delivery'] = "some-custom-inputs"; // optional parameter
+        foreach ($input as $key => $value) {
+            $merchant_data .= $key . '=' . $value . '&';
+        }
+
+        $encrypted_data = $this->encryptCC($merchant_data, $working_key);
+        $url = env('CC_URL') . '/transaction/transaction.do?command=initiateTransaction&encRequest=' . $encrypted_data . '&access_code=' . $access_code;
+
+        return redirect($url);
+    }
+
+    public function paypalProcessPayment($data = []){
+        $provider = new PayPalClient;
+        // $provider = PayPalClient::setProvider();
+        $provider->getAccessToken();
+
+        $provider->setCurrency(getCurrentCurrency());
+
+        $data = [
+            "intent"              => "CAPTURE",
+            "purchase_units"      => [
+                [
+                    "amount" => [
+                        "value"         => $data['total'],
+                        "currency_code" => getCurrentCurrency(),
+                    ],
+                ]
+            ],
+            "application_context" => [
+                "cancel_url" => route('front-user.paypalFailed'),
+                "return_url" => route('front-user.paypalSuccess'),
+            ],
+        ];
+        $order = $provider->createOrder($data);
+
+        return redirect($order['links'][1]['href']);
+    }
+
+    public function paypalFailed()
+    {
+        dd('Your payment has been declend. The payment cancelation page goes here!');
+    }
+
+    public function paypalSuccess(Request $request)
+    {
+        $provider = new PayPalClient();      // To use express checkout.
+        $provider->getAccessToken();
+        $token = $request->get('token');
+
+        $orderInfo = $provider->showOrderDetails($token);
+        $response = $provider->capturePaymentOrder($token);
+        
+        dump($orderInfo);
+        dd($response);
+    }
+    public function phonepeProcessPayment($data = [])
+    {
+        $data = array (
+            'merchantId' => 'MERCHANTUAT',
+            'merchantTransactionId' => uniqid(),
+            'merchantUserId' => 'MUID123',
+            'amount' => $data['total'],
+            'redirectUrl' => route('front-user.phonepeResponse'),
+            'redirectMode' => 'POST',
+            'callbackUrl' => route('front-user.phonepeResponse'),
+            'mobileNumber' => '9999999999',
+            'paymentInstrument' => 
+            array (
+            'type' => 'PAY_PAGE',
+            ),
+        );
+
+        $encode = base64_encode(json_encode($data));
+
+        $saltKey = '099eb0cd-02cf-4e2a-8aca-3e6c6aff0399';
+        $saltIndex = 1;
+
+        $string = $encode.'/pg/v1/pay'.$saltKey;
+        $sha256 = hash('sha256',$string);
+
+        $finalXHeader = $sha256.'###'.$saltIndex;
+
+        $url = "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay";
+
+        $response = Curl::to($url)
+                ->withHeader('Content-Type:application/json')
+                ->withHeader('X-VERIFY:'.$finalXHeader)
+                ->withData(json_encode(['request' => $encode]))
+                ->post();
+
+        $rData = json_decode($response);
+
+        return redirect()->to($rData->data->instrumentResponse->redirectInfo->url);
+    }
+
+    public function phonepeResponse(Request $request)
+    {
+        $input = $request->all();
+
+        $saltKey = '099eb0cd-02cf-4e2a-8aca-3e6c6aff0399';
+        $saltIndex = 1;
+
+        $finalXHeader = hash('sha256','/pg/v1/status/'.$input['merchantId'].'/'.$input['transactionId'].$saltKey).'###'.$saltIndex;
+
+        $response = Curl::to('https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/status/'.$input['merchantId'].'/'.$input['transactionId'])
+                ->withHeader('Content-Type:application/json')
+                ->withHeader('accept:application/json')
+                ->withHeader('X-VERIFY:'.$finalXHeader)
+                ->withHeader('X-MERCHANT-ID:'.$input['transactionId'])
+                ->get();
+
+        dd(json_decode($response));
+    }
+
+
+    public function ccResponse(Request $request)
+    {
+        try {
+            $workingKey = config('cc-avenue.working_key'); //Working Key should be provided here.
+            $encResponse = $_POST["encResp"];
+
+            $rcvdString = $this->decryptCC($encResponse, $workingKey);        //Crypto Decryption used as per the specified working key.
+            $order_status = "";
+            $decryptValues = explode('&', $rcvdString);
+            $dataSize = sizeof($decryptValues);
+        } catch (Exception $e) {
+            Log::error($e);
+            return redirect()->back()->with(['error' => 'Something is wrong', 'error_msg' => $e->getMessage()]);
+        }
+    }
+
+    public function encryptCC($plainText, $key)
+    {
+        $key = $this->hextobin(md5($key));
+        $initVector = pack("C*", 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f);
+        $openMode = openssl_encrypt($plainText, 'AES-128-CBC', $key, OPENSSL_RAW_DATA, $initVector);
+        $encryptedText = bin2hex($openMode);
+        return $encryptedText;
+    }
+
+    public function decryptCC($encryptedText, $key)
+    {
+        $key = $this->hextobin(md5($key));
+        $initVector = pack("C*", 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f);
+        $encryptedText = $this->hextobin($encryptedText);
+        $decryptedText = openssl_decrypt($encryptedText, 'AES-128-CBC', $key, OPENSSL_RAW_DATA, $initVector);
+        return $decryptedText;
+    }
+
+    public function pkcs5_padCC($plainText, $blockSize)
+    {
+        $pad = $blockSize - (strlen($plainText) % $blockSize);
+        return $plainText . str_repeat(chr($pad), $pad);
+    }
+
+    public function hextobin($hexString)
+    {
+        $length = strlen($hexString);
+        $binString = "";
+        $count = 0;
+        while ($count < $length) {
+            $subString = substr($hexString, $count, 2);
+            $packedString = pack("H*", $subString);
+            if ($count == 0) {
+                $binString = $packedString;
+            } else {
+                $binString .= $packedString;
+            }
+
+            $count += 2;
+        }
+        return $binString;
+    }
+
+
+
+
+}

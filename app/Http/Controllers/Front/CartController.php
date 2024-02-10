@@ -13,12 +13,25 @@ use App\Models\Cart;
 use App\Models\Wishlist;
 use App\Models\ProductVariantCombination;
 use App\Models\ProductVariantCombinationImage;
+use App\Models\CategoryTax;
 use Session;
 class CartController extends Controller
 {
 
     public function index(Request $request) {
         try {
+            if(!empty($request->checkoutFrom) ){
+                if (auth()->guard('customer')->check()) {
+                    $cartData = Cart::where('user_id', auth()->guard('customer')->user()->id)->select('product_id', 'quantity')->get()->toArray();
+                  } else {
+              
+                    $cartData = session()->get('cartData', []);
+                  }
+               
+                moveCartSessionDataToCheckoutSessionData($cartData,$request->checkoutFrom);
+           
+                return redirect()->route('front-user.checkout');
+            }
             $cartData = getCartData();
 
             if(count($cartData) == 0){
@@ -113,7 +126,7 @@ class CartController extends Controller
                 $count = count($cartData);
                 return response()->json(['success' => true,'data' => ['htmlData' => $htmlData, 'count' => $count]]);
             }else{
-                return redirect()->route('front-cart.index')->with('success','Product removed from cart successfully');
+                return redirect()->back()->with('success','Product removed from cart successfully');
             }
 
 
@@ -129,7 +142,7 @@ class CartController extends Controller
             
             $productId = $request->input('product_id');
             if(!empty($request->action) && $request->action == 'move'){
-                Wishlist::where('user_id',auth()->guard('customer')->user()->id)->where('product_id',$productId)->delete();
+                Cart::where('user_id',auth()->guard('customer')->user()->id)->where('product_id',$productId)->delete();
             }
 
             $isProductAddedInWishlistAlready = Wishlist::where('user_id',auth()->guard('customer')->user()->id)->where('product_id',$productId)->first();

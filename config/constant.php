@@ -42,7 +42,11 @@ return [
 
 	'PRODUCT_IMAGE_PATH'                       => $WEBSITE_URL.'public/uploads/products/',
 	'PRODUCT_IMAGE_ROOT_PATH'                       => 'public/uploads/products/',
-	'PRODUCT_IMAGE_URL'                       => url('/').'/public/uploads/products/',
+	'PRODUCT_IMAGE_URL'                       => url('/').'/public/uploads/products/',	
+	
+	'ORDER_INVOICE_PATH'                       => $WEBSITE_URL.'public/uploads/invoices/',
+	'ORDER_INVOICE_ROOT_PATH'                       => 'public/uploads/invoices/',
+	'ORDER_INVOICE_URL'                       => url('/').'/public/uploads/invoices/',
 
 	'TESTIMONIAL_IMAGE_PATH'                       => $WEBSITE_URL.'public/uploads/testimonials/',
 	'TESTIMONIAL_IMAGE_ROOT_PATH'                       => 'public/uploads/testimonials/',

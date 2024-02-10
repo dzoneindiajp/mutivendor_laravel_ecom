@@ -15,6 +15,14 @@ use Request;
 use Str;
 use File;
 use App\Models\User;
+use App\Models\Order;
+use App\Models\OrderTax;
+use App\Models\OrderItem;
+use App\Models\OrderItemTax;
+use App\Models\Transaction;
+use App\Mail\InvoiceEmail;
+use App\Models\Currency;
+use Barryvdh\DomPDF\Facade\Pdf;
 class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
@@ -172,5 +180,122 @@ class Controller extends BaseController
                 });
             }
         }
+    }
+
+    public function generateOrderNumber($lastId = 0){
+		if(!empty($lastId)){
+			$orderNumber = "JJ-".($lastId + 10000);
+			return $orderNumber;
+			
+		}
+	}
+
+    public function createOrderAndInvoice($data = []){
+        $checkoutData = session()->get('checkoutData') ?? [];
+        $checkoutItemData = session()->get('checkoutItemData') ?? [];
+        
+        if(!empty($checkoutData)){
+            //Create TOrder
+            $obj    =   new Order;
+            $obj->user_id  = auth()->guard('customer')->user()->id;
+            $obj->address_id  = $checkoutData['address_id'];
+            $obj->sub_total  = $checkoutData['sub_total'] ?? 0;
+            $obj->total  = $checkoutData['total'] ?? 0;
+            $obj->coupon_name  = $checkoutData['coupon_name'] ?? Null;
+            $obj->coupon_discount  = $checkoutData['coupon_discount'] ?? 0;
+            $obj->delivery  = $checkoutData['delivery'] ?? 0;
+            $obj->payment_method  = $checkoutData['payment_method'] ?? Null;
+            $obj->transaction_id  = $data['transaction_id'] ?? Null;
+            $obj->currency_code  = session()->get('currency') ?? 'INR';
+            $obj->save();
+            $lastId = $obj->id;
+            if(!empty($lastId)){
+
+                Order::where('id',$lastId)->update(['order_number' => $this->generateOrderNumber($lastId)]);
+
+                if(!empty($checkoutData['tax'])){
+                    foreach($checkoutData['tax'] as $tax){
+
+                        $obj2   =   new OrderTax;
+                        $obj2->order_id = $lastId;
+                        $obj2->category_tax_id = $tax['category_tax_id'];
+                        $obj2->tax_val = $tax['tax_val'];
+                        $obj2->tax_price = $tax['tax_price'];
+                        $obj2->save();
+                    }
+                }
+
+                //Creating Order Items
+                $checkoutItemData = session()->get('checkoutItemData') ?? [];
+                if(!empty($checkoutItemData)){
+                    foreach($checkoutItemData as $checkout){
+                        $obj              =    new OrderItem;
+                        $obj->order_id    = $lastId;
+                        $obj->product_id    = $checkout['product_id'];
+                        $obj->qty           = $checkout['quantity'];
+                        $obj->sub_total  = $checkout['sub_total'] ?? 0;
+                        $obj->total  = $checkout['total'] ?? 0;
+                        $obj->coupon_name  = $checkout['coupon_name'] ?? Null;
+                        $obj->coupon_discount  = $checkout['coupon_discount'] ?? 0;
+                        $obj->delivery  = $checkout['delivery'] ?? 0;
+                        $obj->status  = OrderItem::RECEIVED;
+                        $obj->save();
+                        $lastItemId = $obj->id;
+                        if(!empty($lastItemId)){
+                            if(!empty($checkout['tax'])){
+                                foreach($checkout['tax'] as $tax){
+
+                                    $obj1   =   new OrderItemTax;
+                                    $obj1->order_item_id = $lastItemId;
+                                    $obj1->category_tax_id = $tax['category_tax_id'];
+                                    $obj1->tax_val = $tax['tax_val'];
+                                    $obj1->tax_price = $tax['tax_price'];
+                                    $obj1->save();
+                                }
+                            }
+
+                        }
+                    }
+                }
+                // Creating Transaction 
+                $obj           =   new Transaction; 
+                $obj->user_id  = auth()->guard('customer')->user()->id;
+                $obj->reference_id  = $lastId;
+                $obj->type  = Transaction::ORDER_TYPE;
+                $obj->amount  = $checkoutData['total'] ?? 0;
+                $obj->status  = Transaction::SUCCESS;
+                $obj->transaction_id  = $data['transaction_id'] ?? Null;
+                $obj->save();
+            }
+            //Generating Invoice
+            $invoicePath = $this->generateInvoice($checkoutData,$checkoutItemData,$lastId);
+            Order::where('id',$lastId)->update(['invoice_path' => $invoicePath]);
+
+            // Send email to customer with the invoice as an attachment
+            $this->sendInvoiceEmail($checkoutData,$checkoutItemData,$lastId);
+
+        }
+    }
+
+    protected function generateInvoice($checkoutData,$checkoutItemData,$lastId)
+    {
+        $order = Order::where('orders.id',$lastId)->leftJoin('users','users.id','orders.user_id')->select('orders.*','users.name as user_name','users.email as user_email')->first();
+        $currency = Currency::where('currency_code',$order->currency_code)->value('symbol') ;
+        $pdf = PDF::loadView('invoices.order_invoice', ['checkoutData' => $checkoutData,'checkoutItemData' => $checkoutItemData,'order' => $order,'currency' => $currency ]);
+        $path = Config('constant.ORDER_INVOICE_ROOT_PATH') . $lastId."_invoice.pdf";
+        $pdf->save($path);
+
+        return $path;
+    }
+
+    protected function sendInvoiceEmail($checkoutData,$checkoutItemData,$lastId)
+    {
+        $order = Order::where('orders.id',$lastId)->leftJoin('users','users.id','orders.user_id')->select('orders.*','users.name as user_name','users.email as user_email')->first();
+        $currency = Currency::where('currency_code',$order->currency_code)->value('symbol') ;
+        $to = $order->user_email;
+        $subject = 'Order Placed Successfully';
+        $attachmentPath = Config('constant.ORDER_INVOICE_ROOT_PATH') . $lastId."_invoice.pdf";
+
+        Mail::to($to)->send(new InvoiceEmail($subject, $attachmentPath, $order->user_name));
     }
 }
