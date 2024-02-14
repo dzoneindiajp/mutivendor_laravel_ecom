@@ -73,7 +73,8 @@ class AuthController extends Controller
 						if($user_details->is_active == 0){
 							return Redirect::back()->with('error', trans("Your account is blocked. Please contact admin"));
 						}else {
-                            Auth::guard('customer')->login($user_details);
+                            Auth::guard('customer')->login(user:$user_details,remember: true);
+                            $request->session()->regenerate();
                             moveCartDataFromSession();
                                 
                                 Session::flash('flash_notice', trans('You are now logged in'));

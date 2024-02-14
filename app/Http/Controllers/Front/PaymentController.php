@@ -23,13 +23,12 @@ class PaymentController extends Controller
         // print_r($inputData);die;
         $checkoutData = session()->get('checkoutData') ?? [];
         $checkoutItemData = session()->get('checkoutItemData') ?? [];
-        // print_r($checkoutData);die;
         if(empty($checkoutData['address_id'])){
             return redirect()->back()->with(['error' => 'Please select address before continuing']);  
         }
         if(!empty($inputData['paymentmethod'])){
             $checkoutData['payment_method'] = $inputData['paymentmethod'];
-            session()->put('checkoutData');
+            session()->put('checkoutData',$checkoutData);
 
             if(!empty($inputData['paymentmethod']) && $inputData['paymentmethod'] == 'cod'){
                 // Process the order creation process
@@ -88,7 +87,7 @@ class PaymentController extends Controller
     }
 
     public function paypalProcessPayment($data = []){
-        // print_r('asdasd');die;  
+        // print_r(session()->get('checkoutData'));die;  
         $provider = new PayPalClient;
         // $provider = PayPalClient::setProvider();
         $provider->getAccessToken();
@@ -126,21 +125,20 @@ class PaymentController extends Controller
         $provider = new PayPalClient();      // To use express checkout.
         $provider->getAccessToken();
         $token = $request->get('token');
-
+        $checkoutData = session()->get('checkoutData') ?? [];
+        $checkoutItemData = session()->get('checkoutItemData') ?? [];
         $orderInfo = $provider->showOrderDetails($token);
         $response = $provider->capturePaymentOrder($token);
         $transactionId = $response['id'] ?? '';
-        $checkoutData = session()->get('checkoutData') ?? [];
-        // print_r($checkoutData);die;
-        $checkoutItemData = session()->get('checkoutItemData') ?? [];
+        
         //Creating order
-        $this->createOrderAndInvoice(['transaction_id' => $transactionId],$checkoutData,$checkoutItemData);
-        return redirect()->route('front-user.dashboard')->with('flash_notice','Order Placed Successfully');
+        $this->createOrderAndInvoice(['transaction_id' => $transactionId,'response' =>$response ],$checkoutData,$checkoutItemData);
+        return redirect()->route('front-user.dashboard')->with('flash_notice','Order Placed Successfully'); 
     }
     public function phonepeProcessPayment($data = [])
     {
         $data = array (
-            'merchantId' => 'MERCHANTUAT',
+            'merchantId' => 'UATMERCHANT',
             'merchantTransactionId' => uniqid(),
             'merchantUserId' => 'MUID123',
             'amount' => $data['total'],

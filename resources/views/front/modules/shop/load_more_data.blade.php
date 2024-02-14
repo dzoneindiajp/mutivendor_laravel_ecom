@@ -44,9 +44,9 @@
         <div class="product-description">
             <div class="price-box mt-10">
                 <span
-                    class="regular-price">{{getDropPrices($result->id,['category_id' => $result->category_id, 'sub_category_id' => $result->sub_category_id, 'child_category_id' => $result->child_category_id,'selling_price' => $result->selling_price,'product_id' => $result->product_id],'selling','yes')}}</span>
+                    class="regular-price">{{getDropPrices($result->id,['category_id' => $result->category_id, 'sub_category_id' => $result->sub_category_id, 'child_category_id' => $result->child_category_id,'selling_price' => $result->selling_price,'product_id' => $result->product_id],'selling')}}</span>
                 <span
-                    class="old-price"><del>{{getDropPrices($result->id,['category_id' => $result->category_id, 'sub_category_id' => $result->sub_category_id, 'child_category_id' => $result->child_category_id,'buying_price' => $result->buying_price,'product_id' => $result->product_id],'buying','yes')}}</del></span>
+                    class="old-price"><del>{{getDropPrices($result->id,['category_id' => $result->category_id, 'sub_category_id' => $result->sub_category_id, 'child_category_id' => $result->child_category_id,'buying_price' => $result->buying_price,'product_id' => $result->product_id],'buying')}}</del></span>
                 <span style="float:right;">
                     <a href="javascript:void(0)" class="d-block text-center cartIconAction {{!empty($result->isProductAddedIntoCart) ? 'added' : ''}}"  data-id = "{{$result->id}}">
                         <svg class="product-list-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="16"

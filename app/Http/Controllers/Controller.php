@@ -266,7 +266,9 @@ class Controller extends BaseController
                 $obj->type  = Transaction::ORDER_TYPE;
                 $obj->amount  = $checkoutData['total'] ?? 0;
                 $obj->status  = Transaction::SUCCESS;
+                $obj->response  = !empty($data['response']) ? json_encode($data['response']) : Null;
                 $obj->transaction_id  = $data['transaction_id'] ?? Null;
+                $obj->payment_method  = $checkoutData['payment_method'] ?? Null;
                 $obj->save();
             }
             //Generating Invoice
