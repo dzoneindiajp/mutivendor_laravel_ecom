@@ -507,7 +507,7 @@ Route::name('front-')->group(function () {
     Route::match(['get', 'post'],'/add-to-cart', [App\Http\Controllers\Front\CartController::class, 'addToCart'])->name('user.addToCart');
     Route::match(['get', 'post'],'/remove-from-cart', [App\Http\Controllers\Front\CartController::class, 'removeFromCart'])->name('user.removeFromCart');
 
-    Route::middleware(['AuthCustomer'])->group(function () {
+    Route::middleware(['web','AuthCustomer'])->group(function () {
       Route::get('/dashboard', [App\Http\Controllers\Front\DashboardController::class, 'index'])->name('user.dashboard');
       Route::get('/logout', [App\Http\Controllers\Front\Auth\AuthController::class, 'logout'])->name('user.logout');
       Route::post('/update-profile', [App\Http\Controllers\Front\DashboardController::class, 'updateProfile'])->name('user.updateProfile');

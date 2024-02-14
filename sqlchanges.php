@@ -89,3 +89,9 @@ ALTER TABLE `orders` ADD `invoice_path` VARCHAR(255) NULL DEFAULT NULL AFTER `tr
 ALTER TABLE `orders` ADD `currency_code` VARCHAR(20) NULL DEFAULT NULL AFTER `invoice_path`;
 
 ALTER TABLE `order_item_taxes` ADD `tax_price` FLOAT(11,2) NOT NULL DEFAULT '0.00' AFTER `tax_val`;
+
+
+
+
+15/2/2024 =>>>>>>>
+ALTER TABLE `transactions` ADD `payment_method` VARCHAR(50) NULL DEFAULT NULL AFTER `transaction_id`, ADD `response` TEXT NULL DEFAULT NULL AFTER `payment_method`;

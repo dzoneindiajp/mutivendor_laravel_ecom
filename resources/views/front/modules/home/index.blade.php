@@ -230,7 +230,7 @@
                                         <div class="price-box mt-10">
                                             <span
                                                 class="regular-price">
-                                                {{getDropPrices($result->id,['category_id' => $result->category_id, 'sub_category_id' => $result->sub_category_id, 'child_category_id' => $result->child_category_id,'selling_price' => $result->selling_price,'product_id' => $result->product_id],'selling','yes')}}
+                                                {{getDropPrices($result->id,['category_id' => $result->category_id, 'sub_category_id' => $result->sub_category_id, 'child_category_id' => $result->child_category_id,'selling_price' => $result->selling_price,'product_id' => $result->product_id],'selling')}}
                                             </span>
                                             <span
                                                 class="old-price"><del>{{config('Reading.default_currency').number_format($result->buying_price,2)}}</del></span>

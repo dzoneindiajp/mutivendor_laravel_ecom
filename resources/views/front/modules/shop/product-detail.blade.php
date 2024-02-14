@@ -177,7 +177,7 @@
 
                                         <div class="pricebox">
                                             Offer Price &nbsp;&nbsp;<span class="regular-price">
-                                                {{getDropPrices($productDetails->id,['category_id' => $productDetails->category_id, 'sub_category_id' => $productDetails->sub_category_id, 'child_category_id' => $productDetails->child_category_id,'selling_price' => $productDetails->selling_price,'product_id' => $productDetails->product_id],'selling','yes')}} </span>&nbsp;&nbsp; <del>{{getDropPrices($productDetails->id,['category_id' => $productDetails->category_id, 'sub_category_id' => $productDetails->sub_category_id, 'child_category_id' => $productDetails->child_category_id,'buying_price' => $productDetails->buying_price,'product_id' => $productDetails->product_id],'buying','yes')}}</del>
+                                                {{getDropPrices($productDetails->id,['category_id' => $productDetails->category_id, 'sub_category_id' => $productDetails->sub_category_id, 'child_category_id' => $productDetails->child_category_id,'selling_price' => $productDetails->selling_price,'product_id' => $productDetails->product_id],'selling')}} </span>&nbsp;&nbsp; <del>{{getDropPrices($productDetails->id,['category_id' => $productDetails->category_id, 'sub_category_id' => $productDetails->sub_category_id, 'child_category_id' => $productDetails->child_category_id,'buying_price' => $productDetails->buying_price,'product_id' => $productDetails->product_id],'buying')}}</del>
                                             <!-- <div class="toggle-button-cover">
                                                 <div class="button-cover">
                                                     <div class="button b2" id="button-10">
@@ -519,8 +519,8 @@
                             </div>
                             <div class="product-description">
                                 <div class="price-box mt-10">
-                                    <span class="regular-price">{{getDropPrices($more_products->id,['category_id' => $more_products->category_id, 'sub_category_id' => $more_products->sub_category_id, 'child_category_id' => $more_products->child_category_id,'selling_price' => $more_products->selling_price,'product_id' => $more_products->product_id],'selling','yes')}}</span>
-                                    <span class="old-price"><del>{{getDropPrices($more_products->id,['category_id' => $more_products->category_id, 'sub_category_id' => $more_products->sub_category_id, 'child_category_id' => $more_products->child_category_id,'buying_price' => $more_products->buying_price,'product_id' => $more_products->product_id],'buying','yes')}}</del></span>
+                                    <span class="regular-price">{{getDropPrices($more_products->id,['category_id' => $more_products->category_id, 'sub_category_id' => $more_products->sub_category_id, 'child_category_id' => $more_products->child_category_id,'selling_price' => $more_products->selling_price,'product_id' => $more_products->product_id],'selling')}}</span>
+                                    <span class="old-price"><del>{{getDropPrices($more_products->id,['category_id' => $more_products->category_id, 'sub_category_id' => $more_products->sub_category_id, 'child_category_id' => $more_products->child_category_id,'buying_price' => $more_products->buying_price,'product_id' => $more_products->product_id],'buying')}}</del></span>
                                     <span style="float:right;">
                                         <a href="#" class="d-block text-center">
                                             <svg class="product-list-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="16" viewBox="0 0 14 16">
